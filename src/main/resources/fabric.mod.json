@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "beaverutils",
+  "version": "${version}",
+  "name": "BeaverUtils",
+  "description": "A simple Utility Mod for Minecraft",
+  "authors": [
+    "Bebomny"
+  ],
+  "contact": {},
+  "license": "MIT",
+  "icon": "icon/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient"
+    ],
+    "main": [
+      "dev.bebomny.beaver.beaverutils.BeaverUtils"
+    ]
+  },
+  "mixins": [
+    "BeaverUtils.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.11",
+    "fabric-api": "*",
+    "minecraft": "1.19.3"
+  }
+}
