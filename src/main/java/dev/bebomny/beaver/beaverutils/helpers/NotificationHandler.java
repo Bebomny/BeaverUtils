@@ -33,7 +33,11 @@ public class NotificationHandler {
             Color color1 = notification.getColor();
             //int duration = notification.getDuration();
             //int color = ((color1.getRed() / duration) * decay) << 16 | ((color1.getGreen() / duration) * decay) << 8 | ((color1.getBlue() / duration) * decay);
-            int color = color1.getRed() << 16 | color1.getGreen() << 8 | color1.getBlue();
+            int color = decay < 30 ?
+                    ((color1.getRed() / 30) * decay) << 16 | ((color1.getGreen() / 30) * decay) << 8 | ((color1.getBlue() / 30) * decay)
+                    :
+                    color1.getRed() << 16 | color1.getGreen() << 8 | color1.getBlue();
+
             int alpha = decay < 30 ? ((0xFF / 30) * decay) << 24 : 0xFF << 24;
 
             client.inGameHud.getTextRenderer().drawWithShadow(matrices, notification.getText(), x, y, color | alpha);

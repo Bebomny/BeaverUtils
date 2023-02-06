@@ -142,6 +142,30 @@ public class ConfigurationMenu extends Screen {
                 20
         ).build();
 
+        //elytraSpeedControl
+        ButtonWidget elytraSpeedControlButton = ButtonWidget.builder(getText(modBeaverUtils.elytraSpeedControl),
+                button -> {
+                    modBeaverUtils.elytraSpeedControl.setEnabled(!modBeaverUtils.elytraSpeedControl.isEnabled());
+                    button.setMessage(getText(modBeaverUtils.elytraSpeedControl));
+                }).dimensions(
+                (this.width/2) - 12 - 128,
+                (44 + 20) + (margin * 3),
+                128,
+                20
+        ).build();
+
+        //elytraSpeedControl instantFly
+        ButtonWidget elytraSpeedControlInstantFlyButton = ButtonWidget.builder(getTextOnOff("InstantFly", modBeaverUtils.elytraSpeedControl.instantFly),
+                button -> {
+                    modBeaverUtils.elytraSpeedControl.setInstantFly(!modBeaverUtils.elytraSpeedControl.instantFly);
+                    button.setMessage(getTextOnOff("InstantFly", modBeaverUtils.elytraSpeedControl.instantFly));
+                }).dimensions(
+                (this.width/2) - 12 - 128 - 4 - 80,
+                (44 + 20) + (margin * 3),
+                80,
+                20
+        ).build();
+
         //reach
         ButtonWidget reachButton = ButtonWidget.builder(getText(modBeaverUtils.reach),
                 button -> {
@@ -199,31 +223,39 @@ public class ConfigurationMenu extends Screen {
         ).build();
 
 
-        //1 row
+        //1st row
         this.addDrawableChild(flightButton);
         this.addDrawableChild(fullBrightButton);
-        //2 row
+        //2nd row
         this.addDrawableChild(noFallButton);
         this.addDrawableChild(autoPlantButton);
-        //3 row
+        //3rd row
         this.addDrawableChild(xrayButton);
         this.addDrawableChild(autoClickerButton);
         this.addDrawableChild(autoClickerPlusButton);
         this.addDrawableChild(autoClickerDisplayButton);
         this.addDrawableChild(autoClickerMinusButton);
         this.addDrawableChild(autoClickerModeButton);
-        //4 row
-        //this.addDrawableChild(autoTotemButton);
+        //4th row
+        this.addDrawableChild(elytraSpeedControlButton);
+        this.addDrawableChild(elytraSpeedControlInstantFlyButton);
         this.addDrawableChild(reachButton);
         this.addDrawableChild(reachPlusButton);
         this.addDrawableChild(reachDisplayButton);
         this.addDrawableChild(reachMinusButton);
+        //5th row
+        //this.addDrawableChild(autoTotemButton);
+
         //done button
         this.addDrawableChild(doneButton);
     }
 
     private Text getText(Feature feature) {
         return Text.literal(feature.getName() + (feature.isEnabled() ? " Enabled" : " Disabled"));
+    }
+
+    private Text getTextOnOff(String name, boolean enabled) {
+        return Text.literal(name + (enabled ? " ON" : " OFF"));
     }
 
     @Override

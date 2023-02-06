@@ -27,6 +27,7 @@ public class BeaverUtilsClient implements ClientModInitializer {
     public AutoClicker autoClicker;
     public NoFall noFall;
     public Reach reach;
+    public ElytraSpeedControl elytraSpeedControl;
 
 
     @Override
@@ -46,6 +47,7 @@ public class BeaverUtilsClient implements ClientModInitializer {
         this.autoClicker = new AutoClicker(client, getInstance());
         this.noFall = new NoFall(client, getInstance());
         this.reach = new Reach(client, getInstance());
+        this.elytraSpeedControl = new ElytraSpeedControl(client, getInstance());
 
         //RaycastContext context = new RaycastContext();
 

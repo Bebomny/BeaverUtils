@@ -7,7 +7,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class AutoClicker extends Feature{
 
@@ -28,23 +28,25 @@ public class AutoClicker extends Feature{
 
     @Override
     protected void onUpdate(MinecraftClient client) {
-        if(isEnabled() && isActive()) {
-            if(ticksPast >= delay) {
-                switch (mode) {
-                    case ATTACK -> {
-                        ((IMinecraftClientInvoker) client).invokeDoAttack();
-                        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("AutoClicker Attacked"), new Color(0xFFFFFF), 30));
-                    }
+        if(!isEnabled() && !isActive())
+            return;
 
-                    case USE -> {
-                        ((IMinecraftClientInvoker) client).invokeDoItemUse();
-                        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("AutoClicker Used Item"), new Color(0xFFFFFF), 30));
-                    }
+        if(ticksPast >= delay) {
+            switch (mode) {
+                case ATTACK -> {
+                    ((IMinecraftClientInvoker) client).invokeDoAttack();
+                    modBeaverUtils.notifier.newNotification(new Notification(Text.literal("AutoClicker Attacked"), new Color(0xFFFFFF), 30));
                 }
-                ticksPast = 0;
+
+                case USE -> {
+                    ((IMinecraftClientInvoker) client).invokeDoItemUse();
+                    modBeaverUtils.notifier.newNotification(new Notification(Text.literal("AutoClicker Used Item"), new Color(0xFFFFFF), 30));
+                }
             }
-            ticksPast++;
+            ticksPast = 0;
         }
+        ticksPast++;
+
     }
 
     public void changeMode() {

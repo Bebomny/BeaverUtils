@@ -4,6 +4,9 @@ import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
 import dev.bebomny.beaver.beaverutils.helpers.Notification;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.text.Text;
 
@@ -28,6 +31,10 @@ public class NoFall extends Feature{
                 return;
 
             if (player.isFallFlying() && player.isSneaking() && !isFallingFastEnoughToCauseDamage(player))
+                return;
+
+            ItemStack chest = client.player.getEquippedStack(EquipmentSlot.CHEST);
+            if(player.isFallFlying() && chest.getItem() == Items.ELYTRA)
                 return;
 
             player.networkHandler.sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(true));
