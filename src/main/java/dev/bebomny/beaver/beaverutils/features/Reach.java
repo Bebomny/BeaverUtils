@@ -1,10 +1,13 @@
 package dev.bebomny.beaver.beaverutils.features;
 
 import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
+import dev.bebomny.beaver.beaverutils.helpers.Notification;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.glfw.GLFW;
+
+import java.awt.*;
 
 public class Reach extends Feature{
 
@@ -21,7 +24,7 @@ public class Reach extends Feature{
 
     public void onAttack() {
         if(isEnabled() && isActive()) {
-            modBeaverUtils.notifier.newNotification(Text.literal("Attacked"));
+            modBeaverUtils.notifier.newNotification(new Notification(Text.literal("Attacked")));
             assert client.player != null;
             Vec3d playerPos = client.player.getPos();
         }
@@ -41,12 +44,12 @@ public class Reach extends Feature{
 
     @Override
     public void onEnable() {
-        modBeaverUtils.notifier.newNotification(Text.literal("Reach Enabled"));
+        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("Reach Enabled"), new Color(0x00FF00)));
     }
 
     @Override
     public void onDisable() {
-        modBeaverUtils.notifier.newNotification(Text.literal("Reach Disabled"));
+        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("Reach Disabled"), new Color(0xFF0000)));
     }
 
 }

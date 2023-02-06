@@ -1,10 +1,13 @@
 package dev.bebomny.beaver.beaverutils.features;
 
 import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
+import dev.bebomny.beaver.beaverutils.helpers.Notification;
 import dev.bebomny.beaver.beaverutils.mixinterface.IMinecraftClientInvoker;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
+
+import java.awt.*;
 
 public class AutoClicker extends Feature{
 
@@ -26,7 +29,7 @@ public class AutoClicker extends Feature{
         if(isEnabled() && isActive()) {
             if(ticksPast >= delay) {
                 ((IMinecraftClientInvoker) client).invokeDoAttack();
-                modBeaverUtils.notifier.newNotificationWithCustomDuration(Text.literal("AutoClicker Attacked"), 30);
+                modBeaverUtils.notifier.newNotification(new Notification(Text.literal("AutoClicker Attacked"), new Color(0xFFFFFF), 30));
                 ticksPast = 0;
             }
             ticksPast++;
@@ -39,21 +42,21 @@ public class AutoClicker extends Feature{
 
     @Override
     public void onEnable() {
-        modBeaverUtils.notifier.newNotification(Text.literal("AutoClicker Enabled At " + delay + " tick intervals"));
+        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("AutoClicker Enabled At " + delay + " tick intervals"), new Color(0x00FF00)));
     }
 
     @Override
     public void onDisable() {
-        modBeaverUtils.notifier.newNotification(Text.literal("AutoClicker Disabled"));
+        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("AutoClicker Disabled"), new Color(0xFF0000)));
     }
 
     @Override
     public void onActivation() {
-        modBeaverUtils.notifier.newNotification(Text.literal("AutoClicker Activated At " + delay + " tick intervals"));
+        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("AutoClicker Activated At " + delay + " tick intervals"), new Color(0x00FF00)));
     }
 
     @Override
     public void onDeactivation() {
-        modBeaverUtils.notifier.newNotification(Text.literal("AutoClicker Deactivated"));
+        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("AutoClicker Deactivated"), new Color(0xFF0000)));
     }
 }

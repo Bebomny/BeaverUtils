@@ -1,9 +1,12 @@
 package dev.bebomny.beaver.beaverutils.features;
 
 import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
+import dev.bebomny.beaver.beaverutils.helpers.Notification;
 import dev.bebomny.beaver.beaverutils.mixinterface.ISimpleOption;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
+
+import java.awt.*;
 
 public class FullBright extends Feature{
 
@@ -26,12 +29,12 @@ public class FullBright extends Feature{
     @Override
     public void onEnable() {
         setGamma(16.0f);
-        modBeaverUtils.notifier.newNotification(Text.literal("FullBright Enabled"));
+        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("FullBright Enabled"), new Color(0x00FF00)));
     }
 
     @Override
     public void onDisable() {
         setGamma(1.0f);
-        modBeaverUtils.notifier.newNotification(Text.literal("FullBright Disabled"));
+        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("FullBright Disabled"), new Color(0xFF0000)));
     }
 }

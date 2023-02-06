@@ -1,10 +1,13 @@
 package dev.bebomny.beaver.beaverutils.features;
 
 import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
+import dev.bebomny.beaver.beaverutils.helpers.Notification;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.text.Text;
+
+import java.awt.*;
 
 public class NoFall extends Feature{
 
@@ -37,12 +40,12 @@ public class NoFall extends Feature{
 
     @Override
     public void onEnable() {
-        modBeaverUtils.notifier.newNotification(Text.literal("NoFall Enabled"));
+        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("NoFall Enabled"), new Color(0x00FF00)));
     }
 
     @Override
     public void onDisable() {
-        modBeaverUtils.notifier.newNotification(Text.literal("NoFall Disabled"));
+        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("NoFall Disabled"), new Color(0xFF0000)));
     }
 
 }

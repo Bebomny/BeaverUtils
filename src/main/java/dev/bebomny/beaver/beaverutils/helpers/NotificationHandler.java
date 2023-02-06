@@ -1,7 +1,5 @@
 package dev.bebomny.beaver.beaverutils.helpers;
 
-import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
-import dev.bebomny.beaver.beaverutils.mixins.InGameHudMixin;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;
@@ -25,23 +23,27 @@ public class NotificationHandler {
 
     public void onRenderInit(MatrixStack matrices, float partialTicks) {
         if(!(notificationQueue.isEmpty())) {
+            Notification notification = notificationQueue.get(0);
+
             //offset / x & y coordinates on the screen
-            float offset = notificationQueue.get(0).getOffset();
+            float offset = notification.getOffset();
             float x = (client.getWindow().getScaledWidth()/2f) - offset;
             float y = client.getWindow().getScaledHeight() - 60f;
 
             //color
-            Color color1 = new Color(0xFFFFFF);
-            int duration = notificationQueue.get(0).getDuration();
-            int color = ((color1.getRed() / duration) * decay) << 16 | ((color1.getGreen() / duration) * decay) << 8 | ((color1.getBlue() / duration) * decay);
+            Color color1 = notification.getColor();
+            //int duration = notification.getDuration();
+            //int color = ((color1.getRed() / duration) * decay) << 16 | ((color1.getGreen() / duration) * decay) << 8 | ((color1.getBlue() / duration) * decay);
+            int color = color1.getRed() << 16 | color1.getGreen() << 8 | color1.getBlue();
             int alpha = decay < 30 ? ((0xFF / 30) * decay) << 24 : 0xFF << 24;
 
 
-            client.inGameHud.getTextRenderer().drawWithShadow(matrices, notificationQueue.get(0).getText(), x, y, color | alpha);
+
+            client.inGameHud.getTextRenderer().drawWithShadow(matrices, notification.getText(), x, y, color | alpha);
 
         }
 
-        if(decay <= 0 && !notificationQueue.isEmpty())
+        if(decay <= 1 && !notificationQueue.isEmpty())
             notificationQueue.remove(0);
 
     }
@@ -51,20 +53,10 @@ public class NotificationHandler {
             decay--;
     }
 
-    public void newNotification(Text text) {
+    public void newNotification(Notification notification) {
         if(!(notificationQueue.isEmpty()))
             notificationQueue.remove(0);
 
-        Notification notification = new Notification(text);
-        notificationQueue.add(notification);
-        decay = notification.getDuration();
-    }
-
-    public void newNotificationWithCustomDuration(Text text, int duration) {
-        if(!(notificationQueue.isEmpty()))
-            notificationQueue.remove(0);
-
-        Notification notification = new Notification(text, duration);
         notificationQueue.add(notification);
         decay = notification.getDuration();
     }

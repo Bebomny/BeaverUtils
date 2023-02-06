@@ -1,6 +1,7 @@
 package dev.bebomny.beaver.beaverutils.features;
 
 import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
+import dev.bebomny.beaver.beaverutils.helpers.Notification;
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -15,6 +16,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,10 +84,10 @@ public class AutoPlant extends Feature{
     }
 
     protected void onEnable() {
-        modBeaverUtils.notifier.newNotification(Text.literal("AutoPlant Enabled"));
+        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("AutoPlant Enabled"), new Color(0x00FF00)));
     }
 
     protected void onDisable() {
-        modBeaverUtils.notifier.newNotification(Text.literal("AutoPlant Disabled"));
+        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("AutoPlant Disabled"), new Color(0xFF00000)));
     }
 }

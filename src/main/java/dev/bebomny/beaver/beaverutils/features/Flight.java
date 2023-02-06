@@ -1,14 +1,18 @@
 package dev.bebomny.beaver.beaverutils.features;
 
 import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
+import dev.bebomny.beaver.beaverutils.helpers.Notification;
 import dev.bebomny.beaver.beaverutils.helpers.PacketHelper;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.glfw.GLFW;
+
+import java.awt.*;
 
 public class Flight extends Feature{
 
@@ -29,7 +33,7 @@ public class Flight extends Feature{
         if(client.player == null)
             return;
 
-        if(isEnabled() && isActive())
+        if(isEnabled() && isActive() && !client.player.getAbilities().allowFlying)
             client.player.getAbilities().allowFlying = true;
 
         //paper fly check bypass
@@ -59,7 +63,7 @@ public class Flight extends Feature{
         assert client.player != null;
         client.player.getAbilities().allowFlying = true;
         oldPos = client.player.getPos();
-        modBeaverUtils.notifier.newNotification(Text.literal("Flight Enabled"));
+        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("Flight Enabled"), new Color(0x00FF00)));
     }
 
     @Override
@@ -67,7 +71,7 @@ public class Flight extends Feature{
         assert client.player != null;
         client.player.getAbilities().allowFlying = false;
         client.player.getAbilities().flying = false;
-        modBeaverUtils.notifier.newNotification(Text.literal("Flight Disabled"));
+        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("Flight Disabled"), new Color(0xFF0000)));
     }
 
     @Override
@@ -75,7 +79,7 @@ public class Flight extends Feature{
         assert client.player != null;
         client.player.getAbilities().allowFlying = true;
         client.player.sendMessage(Text.literal("Flight Activated"));
-        modBeaverUtils.notifier.newNotification(Text.literal("Flight Activated"));
+        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("Flight Activated"), new Color(0x00FF00)));
     }
 
     @Override
@@ -84,6 +88,6 @@ public class Flight extends Feature{
         client.player.getAbilities().flying = false;
         client.player.getAbilities().allowFlying = false;
         client.player.sendMessage(Text.literal("Flight Deactivated"));
-        modBeaverUtils.notifier.newNotification(Text.literal("Flight Deactivated"));
+        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("Flight Deactivated"), new Color(0xFF0000)));
     }
 }

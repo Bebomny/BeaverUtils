@@ -1,12 +1,14 @@
 package dev.bebomny.beaver.beaverutils.features;
 
 import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
+import dev.bebomny.beaver.beaverutils.helpers.Notification;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,25 +26,25 @@ public class XRay extends Feature{
 
     @Override
     public void onEnable() {
-        modBeaverUtils.notifier.newNotification(Text.literal("XRay Enabled"));
+        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("XRay Enabled"), new Color(0x00FF00)));
         modBeaverUtils.reloadRenderer();
     }
 
     @Override
     public void onDisable() {
-        modBeaverUtils.notifier.newNotification(Text.literal("XRay Disabled"));
+        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("XRay Disabled"), new Color(0xFF0000)));
         modBeaverUtils.reloadRenderer();
     }
 
     @Override
     public void onActivation() {
-        modBeaverUtils.notifier.newNotification(Text.literal("XRay Activated"));
+        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("XRay Activated"), new Color(0x00FF00)));
         modBeaverUtils.reloadRenderer();
     }
 
     @Override
     public void onDeactivation() {
-        modBeaverUtils.notifier.newNotification(Text.literal("XRay Deactivated"));
+        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("XRay Deactivated"), new Color(0xFF0000)));
         modBeaverUtils.reloadRenderer();
     }
 
