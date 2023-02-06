@@ -3,7 +3,6 @@ package dev.bebomny.beaver.beaverutils.helpers;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,10 +36,7 @@ public class NotificationHandler {
             int color = color1.getRed() << 16 | color1.getGreen() << 8 | color1.getBlue();
             int alpha = decay < 30 ? ((0xFF / 30) * decay) << 24 : 0xFF << 24;
 
-
-
             client.inGameHud.getTextRenderer().drawWithShadow(matrices, notification.getText(), x, y, color | alpha);
-
         }
 
         if(decay <= 1 && !notificationQueue.isEmpty())

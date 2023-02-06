@@ -2,6 +2,7 @@ package dev.bebomny.beaver.beaverutils.configuration;
 
 import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
 import dev.bebomny.beaver.beaverutils.features.Feature;
+import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.option.GameOptions;
@@ -15,6 +16,7 @@ public class ConfigurationMenu extends Screen {
     private final BeaverUtilsClient modBeaverUtils;
     private final GameOptions settings;
     private final int margin = (6 + 20);
+    private final int MARGIN = 4;
 
     public ConfigurationMenu(Screen parent, GameOptions options) {
         super(Text.literal("BeaverUtils Options"));
@@ -129,6 +131,17 @@ public class ConfigurationMenu extends Screen {
                 20
         ).build();
 
+        ButtonWidget autoClickerModeButton = ButtonWidget.builder(Text.literal(modBeaverUtils.autoClicker.getMode().toString()),
+                button -> {
+                    modBeaverUtils.autoClicker.changeMode();
+                    button.setMessage(Text.literal(modBeaverUtils.autoClicker.getMode().toString()));
+                }).dimensions(
+                (this.width/2) + 12 + 128 + 20 + 20 + 50 + 20,
+                (44 + 20) + (margin * 2),
+                55,
+                20
+        ).build();
+
         //reach
         ButtonWidget reachButton = ButtonWidget.builder(getText(modBeaverUtils.reach),
                 button -> {
@@ -198,6 +211,7 @@ public class ConfigurationMenu extends Screen {
         this.addDrawableChild(autoClickerPlusButton);
         this.addDrawableChild(autoClickerDisplayButton);
         this.addDrawableChild(autoClickerMinusButton);
+        this.addDrawableChild(autoClickerModeButton);
         //4 row
         //this.addDrawableChild(autoTotemButton);
         this.addDrawableChild(reachButton);
