@@ -78,7 +78,6 @@ public class Flight extends Feature{
     public void onActivation() {
         assert client.player != null;
         client.player.getAbilities().allowFlying = true;
-        client.player.sendMessage(Text.literal("Flight Activated"));
         modBeaverUtils.notifier.newNotification(new Notification(Text.literal("Flight Activated"), new Color(0x00FF00)));
     }
 
@@ -87,7 +86,6 @@ public class Flight extends Feature{
         assert client.player != null;
         client.player.getAbilities().flying = false;
         client.player.getAbilities().allowFlying = false;
-        client.player.sendMessage(Text.literal("Flight Deactivated"));
         modBeaverUtils.notifier.newNotification(new Notification(Text.literal("Flight Deactivated"), new Color(0xFF0000)));
     }
 }

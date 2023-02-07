@@ -16,45 +16,84 @@ public class AutoClicker extends Feature{
     public int delay;
     private int ticksPast;
     private Mode mode;
+    private Type type;
 
     public AutoClicker (MinecraftClient client, BeaverUtilsClient modBeaverUtils) {
         super("AutoClicker", GLFW.GLFW_KEY_N);
         this.client = client;
         this.modBeaverUtils = modBeaverUtils;
-        delay = 30;
-        ticksPast = 0;
-        mode = Mode.ATTACK;
+        this.delay = 30;
+        this.ticksPast = 0;
+        this.mode = Mode.ATTACK;
+        this.type = Type.CLICK;
     }
 
     @Override
     protected void onUpdate(MinecraftClient client) {
-        if(!isEnabled() && !isActive())
+        if(!isEnabled() || !isActive())
             return;
 
-        if(ticksPast >= delay) {
-            switch (mode) {
-                case ATTACK -> {
-                    ((IMinecraftClientInvoker) client).invokeDoAttack();
-                    modBeaverUtils.notifier.newNotification(new Notification(Text.literal("AutoClicker Attacked"), new Color(0xFFFFFF), 30));
-                }
+        switch (type) {
 
-                case USE -> {
-                    ((IMinecraftClientInvoker) client).invokeDoItemUse();
-                    modBeaverUtils.notifier.newNotification(new Notification(Text.literal("AutoClicker Used Item"), new Color(0xFFFFFF), 30));
+            case CLICK -> {
+                if(ticksPast >= delay) {
+                    switch (mode) {
+                        case ATTACK -> {
+                            ((IMinecraftClientInvoker) client).invokeDoAttack();
+                            modBeaverUtils.notifier.newNotification(new Notification(Text.literal("AutoClicker Attacked"), new Color(0xFFFFFF), 30));
+                        }
+
+                        case USE -> {
+                            ((IMinecraftClientInvoker) client).invokeDoItemUse();
+                            modBeaverUtils.notifier.newNotification(new Notification(Text.literal("AutoClicker Used Item"), new Color(0xFFFFFF), 30));
+                        }
+
+                        case BOTH -> {
+                            ((IMinecraftClientInvoker) client).invokeDoAttack();
+                            ((IMinecraftClientInvoker) client).invokeDoItemUse();
+                            modBeaverUtils.notifier.newNotification(new Notification(Text.literal("AutoClicker Attacked And Used Item"), new Color(0xFFFFFF), 30));
+                        }
+                    }
+                    ticksPast = 0;
+                }
+                ticksPast++;
+            }
+
+            case HOLD -> {
+                switch (mode) {
+                    case ATTACK -> {
+                        client.options.attackKey.setPressed(true);
+                        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("AutoClicker Holding Attack Button"), new Color(0xFFFFFF), 30));
+                    }
+                    case USE -> {
+                        client.options.useKey.setPressed(true);
+                        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("AutoClicker Holding Use Item Button"), new Color(0xFFFFFF), 30));
+                    }
+                    case BOTH -> {
+                        client.options.attackKey.setPressed(true);
+                        client.options.useKey.setPressed(true);
+                        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("AutoClicker Holding Attack And UseItem Buttons"), new Color(0xFFFFFF), 30));
+                    }
                 }
             }
-            ticksPast = 0;
         }
-        ticksPast++;
 
     }
 
     public void changeMode() {
-        mode = mode == Mode.ATTACK ? Mode.USE : Mode.ATTACK;
+        mode = mode == Mode.ATTACK ? Mode.USE : mode == Mode.BOTH ? Mode.ATTACK : Mode.BOTH;
+    }
+
+    public void changeType() {
+        type = type == Type.CLICK ? Type.HOLD : Type.CLICK;
     }
 
     public Mode getMode() {
         return mode;
+    }
+
+    public Type getType() {
+        return type;
     }
 
     public void setDelay(int n) {
@@ -79,11 +118,19 @@ public class AutoClicker extends Feature{
     @Override
     public void onDeactivation() {
         modBeaverUtils.notifier.newNotification(new Notification(Text.literal("AutoClicker Deactivated"), new Color(0xFF0000)));
+        client.options.attackKey.setPressed(false);
+        client.options.useKey.setPressed(false);
     }
 
     public enum Mode {
         USE,
-        ATTACK
+        ATTACK,
+        BOTH
+    }
+
+    public enum Type {
+        CLICK,
+        HOLD
     }
 
 }

@@ -138,7 +138,18 @@ public class ConfigurationMenu extends Screen {
                 }).dimensions(
                 (this.width/2) + 12 + 128 + 20 + 20 + 50 + 20,
                 (44 + 20) + (margin * 2),
-                55,
+                54,
+                20
+        ).build();
+
+        ButtonWidget autoClickerTypeButton = ButtonWidget.builder(Text.literal(modBeaverUtils.autoClicker.getType().toString()),
+                button -> {
+                    modBeaverUtils.autoClicker.changeType();
+                    button.setMessage(Text.literal(modBeaverUtils.autoClicker.getType().toString()));
+                }).dimensions(
+                (this.width/2) + 12 + 128 + 24 + 20 + 50 + 20 + 54,
+                (44 + 20) + (margin * 2),
+                40,
                 20
         ).build();
 
@@ -236,6 +247,7 @@ public class ConfigurationMenu extends Screen {
         this.addDrawableChild(autoClickerDisplayButton);
         this.addDrawableChild(autoClickerMinusButton);
         this.addDrawableChild(autoClickerModeButton);
+        this.addDrawableChild(autoClickerTypeButton);
         //4th row
         this.addDrawableChild(elytraSpeedControlButton);
         this.addDrawableChild(elytraSpeedControlInstantFlyButton);
