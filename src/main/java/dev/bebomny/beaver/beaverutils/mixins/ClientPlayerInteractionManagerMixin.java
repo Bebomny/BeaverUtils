@@ -25,7 +25,7 @@ public class ClientPlayerInteractionManagerMixin {
     public void hasExtendedReach(CallbackInfoReturnable<Boolean> cir) {
 
         BeaverUtilsClient modBeaverUtils = BeaverUtilsClient.getInstance();
-        if(!modBeaverUtils.reach.isEnabled() || !modBeaverUtils.reach.isActive())
+        if(!modBeaverUtils.reach.isEnabled())
             return;
 
         cir.setReturnValue(true);
