@@ -16,4 +16,10 @@ public class PacketHelper {
         Packet<ServerPlayPacketListener> packet = new PlayerMoveC2SPacket.PositionAndOnGround(pos.getX(), pos.getY(), pos.getZ(), false);
         connection.sendImmediately(packet, null);
     }
+
+    public static void sendPacketImmediately(Packet<?> packet) {
+        MinecraftClient client = BeaverUtilsClient.getInstance().client;
+        ClientConnectionAccessor connection = (ClientConnectionAccessor) client.player.networkHandler.getConnection();
+        connection.sendImmediately(packet, null);
+    }
 }

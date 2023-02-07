@@ -89,6 +89,9 @@ public abstract class Feature {
     }
 
     private void checkKeyBindPress(MinecraftClient client) {
+        if(!this.isEnabled())
+            return;
+
         while(activationKey.wasPressed()) {
             setActive(!active);
         }
