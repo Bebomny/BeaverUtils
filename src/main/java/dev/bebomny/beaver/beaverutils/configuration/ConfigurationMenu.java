@@ -202,7 +202,7 @@ public class ConfigurationMenu extends Screen {
         ButtonWidget reachPlusButton = ButtonWidget.builder(Text.literal("+"),
                 button -> {
                     modBeaverUtils.reach.setReachDistance(modBeaverUtils.reach.getReachDistance() + 1);
-                    reachDisplayButton.setMessage(Text.literal(modBeaverUtils.reach.getReachDistance() + " blocks"));
+                    reachDisplayButton.setMessage(Text.literal(modBeaverUtils.reach.getReachDistance() + " Blocks"));
                 }).dimensions(
                 (this.width/2) + 12 + 128 + 8,
                 (44 + 20) + (margin * 3),
@@ -213,13 +213,46 @@ public class ConfigurationMenu extends Screen {
         ButtonWidget reachMinusButton = ButtonWidget.builder(Text.literal("-"),
                 button -> {
                     modBeaverUtils.reach.setReachDistance(modBeaverUtils.reach.getReachDistance() - 1);
-                    reachDisplayButton.setMessage(Text.literal(modBeaverUtils.reach.getReachDistance() + " blocks"));
+                    reachDisplayButton.setMessage(Text.literal(modBeaverUtils.reach.getReachDistance() + " Blocks"));
                 }).dimensions(
                 (this.width/2) + 12 + 128 + 16 + 20 + 70,
                 (44 + 20) + (margin * 3),
                 20,
                 20
         ).build();
+
+        ButtonWidget extendedReachDisplayButton = ButtonWidget.builder(Text.literal(modBeaverUtils.reach.getMaxExtendedReachDistance() + " Blocks"),
+                button -> {
+                    button.setMessage(Text.literal(modBeaverUtils.reach.getMaxExtendedReachDistance() + " Blocks"));
+                }).dimensions(
+                (this.width/2) + 12 + 128 + 16 + 20 + 70 + 20 + 10 + 20 + 4,
+                (44 + 20) + (margin * 3) + 10,
+                90,
+                20
+        ).build();
+
+        ButtonWidget extendedReachPlusButton = ButtonWidget.builder(Text.literal("+"),
+                button -> {
+                    modBeaverUtils.reach.setMaxExtendedReachDistance(modBeaverUtils.reach.getMaxExtendedReachDistance() + 10);
+                    extendedReachDisplayButton.setMessage(Text.literal(modBeaverUtils.reach.getMaxExtendedReachDistance() + " Blocks"));
+                }).dimensions(
+                (this.width/2) + 12 + 128 + 16 + 20 + 20 + 70 + 10,
+                (44 + 20) + (margin * 3) + 10,
+                20,
+                20
+        ).build();
+
+        ButtonWidget extendedReachMinusButton = ButtonWidget.builder(Text.literal("-"),
+                button -> {
+                    modBeaverUtils.reach.setMaxExtendedReachDistance(modBeaverUtils.reach.getMaxExtendedReachDistance() - 10);
+                    extendedReachDisplayButton.setMessage(Text.literal(modBeaverUtils.reach.getMaxExtendedReachDistance() + " Blocks"));
+                }).dimensions(
+                (this.width/2) + 12 + 128 + 16 + 20 + 70 + 10 + 20 + 20 + 8 + 90,
+                (44 + 20) + (margin * 3) + 10,
+                20,
+                20
+        ).build();
+
 
 
         //"Done" button
@@ -255,6 +288,9 @@ public class ConfigurationMenu extends Screen {
         this.addDrawableChild(reachPlusButton);
         this.addDrawableChild(reachDisplayButton);
         this.addDrawableChild(reachMinusButton);
+        this.addDrawableChild(extendedReachPlusButton);
+        this.addDrawableChild(extendedReachDisplayButton);
+        this.addDrawableChild(extendedReachMinusButton);
         //5th row
         //this.addDrawableChild(autoTotemButton);
 
@@ -280,6 +316,11 @@ public class ConfigurationMenu extends Screen {
     public void render(final MatrixStack matrices, final int mouseX, final int mouseY, final float delta) {
         this.renderBackground(matrices);
         drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 20, 16777215);
+        drawCenteredTextWithShadow(
+                matrices, this.textRenderer,
+                Text.literal("MaxExtendedReachDistance").asOrderedText(),
+                (this.width/2) + 12 + 128 + 16 + 20 + 70 + 20 + 10 + 20 + 4 + 45,
+                (44 + 20) + (margin * 3) - 2, 16777215);
         super.render(matrices, mouseX, mouseY, delta);
     }
 }
