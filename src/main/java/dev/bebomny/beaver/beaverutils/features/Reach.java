@@ -143,7 +143,7 @@ public class Reach extends Feature{
             if(i % 4 == 0) {
                 try {
                     Thread.sleep((long)((1/20) * 1000));
-                    modBeaverUtils.LOGGER.atInfo().log("Sleep");
+                    //modBeaverUtils.LOGGER.atInfo().log("Sleep");
                 } catch (InterruptedException e) {
                     modBeaverUtils.LOGGER.atInfo().log("Sleep Failed");
                     //e.printStackTrace();
@@ -171,7 +171,7 @@ public class Reach extends Feature{
 
     public void correctPosition(Vec3d lastCorrectPlayerPos, Vec3d playerPos) {
         teleportFromTo(playerPos, lastCorrectPlayerPos);
-        modBeaverUtils.LOGGER.atInfo().log("Position Corrected");
+        //modBeaverUtils.LOGGER.atInfo().log("Position Corrected");
     }
 
     public int getMaxExtendedReachDistance() {
