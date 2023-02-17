@@ -7,7 +7,6 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.world.RaycastContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,8 +47,6 @@ public class BeaverUtilsClient implements ClientModInitializer {
         this.noFall = new NoFall(client, getInstance());
         this.reach = new Reach(client, getInstance());
         this.elytraSpeedControl = new ElytraSpeedControl(client, getInstance());
-
-        //RaycastContext context = new RaycastContext();
 
         //register tick events
 

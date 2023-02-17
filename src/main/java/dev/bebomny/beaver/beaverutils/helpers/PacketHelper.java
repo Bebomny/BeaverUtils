@@ -22,4 +22,11 @@ public class PacketHelper {
         ClientConnectionAccessor connection = (ClientConnectionAccessor) client.player.networkHandler.getConnection();
         connection.sendImmediately(packet, null);
     }
+
+    public static void sendInvalidPositionPacket() {
+        MinecraftClient client = BeaverUtilsClient.getInstance().client;
+        ClientConnectionAccessor connection = (ClientConnectionAccessor) client.player.networkHandler.getConnection();
+        Packet<ServerPlayPacketListener> packet = new PlayerMoveC2SPacket.PositionAndOnGround(Integer.MAX_VALUE, 500, Integer.MAX_VALUE, false);
+        client.getNetworkHandler().sendPacket(packet);
+    }
 }
