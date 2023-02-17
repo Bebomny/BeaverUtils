@@ -1,5 +1,7 @@
-# BeaverUtils ![Icon](src/main/resources/icon/icon.png)
+# BeaverUtils
 <p>A Simple Utility/QoL mod for minecraft.</p>
+
+![Icon](src/main/resources/icon/icon.png)
 
 ---
 
