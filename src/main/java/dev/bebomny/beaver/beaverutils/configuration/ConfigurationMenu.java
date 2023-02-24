@@ -266,7 +266,6 @@ public class ConfigurationMenu extends Screen {
                 20
         ).build();
 
-
         //1st row
         this.addDrawableChild(flightButton);
         this.addDrawableChild(fullBrightButton);

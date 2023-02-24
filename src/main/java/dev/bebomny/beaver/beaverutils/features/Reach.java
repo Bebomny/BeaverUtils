@@ -62,14 +62,20 @@ public class Reach extends Feature{
                             targets.add(entity);
                     }
 
-                    if(!targets.isEmpty()) {
-                        targets.sort((a, b) -> (int) (a.squaredDistanceTo(blockPos) - b.squaredDistanceTo(blockPos)));
-
-                        Entity target = targets.get(0);
-                        Vec3d targetPos = blockPos.add(0, 1, 0);
-
-                        executePathAndAttackTarget(client, modBeaverUtils, target, playerPos, targetPos);
+                    if(targets.isEmpty()) {
+                        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("Miss, No Targets Found, Hit Pos: "
+                                + "x: " + String.format("%.5g", hitResult.getPos().getX())
+                                + " y: " + String.format("%.5g", hitResult.getPos().getY())
+                                + " z: " + String.format("%.5g", hitResult.getPos().getZ()))));
+                        return;
                     }
+
+                    targets.sort((a, b) -> (int) (a.squaredDistanceTo(blockPos) - b.squaredDistanceTo(blockPos)));
+
+                    Entity target = targets.get(0);
+                    Vec3d targetPos = blockPos.add(0, 1, 0);
+
+                    executePathAndAttackTarget(client, modBeaverUtils, target, playerPos, targetPos);
                 }
 
                 case ENTITY -> {
@@ -101,9 +107,9 @@ public class Reach extends Feature{
 
                     } else {
                         modBeaverUtils.notifier.newNotification(new Notification(Text.literal("Miss, No Targets Found, Hit Pos: "
-                                + "x: " + hitResult.getPos().getX()
-                                + " y: " + hitResult.getPos().getY()
-                                + " z: " + hitResult.getPos().getZ())));
+                                + "x: " + String.format("%.5g", hitResult.getPos().getX())
+                                + " y: " + String.format("%.5g", hitResult.getPos().getY())
+                                + " z: " + String.format("%.5g", hitResult.getPos().getZ()))));
                     }
                 }
             }
@@ -114,7 +120,7 @@ public class Reach extends Feature{
         if(client.player == null || modBeaverUtils == null)
             return;
 
-        if(client.player.getAttackCooldownProgress(0.0f) > 0.9f) {
+        if(client.player.getAttackCooldownProgress(0.0f) > 0.6f) {
 
             lastCorrectPlayerPos = playerPos;
 
@@ -142,7 +148,7 @@ public class Reach extends Feature{
             PacketHelper.sendPosition(temp);
             if(i % 4 == 0) {
                 try {
-                    Thread.sleep((long)((1/20) * 1000));
+                    Thread.sleep((long)(1/20) * 1000);
                     //modBeaverUtils.LOGGER.atInfo().log("Sleep");
                 } catch (InterruptedException e) {
                     modBeaverUtils.LOGGER.atInfo().log("Sleep Failed");

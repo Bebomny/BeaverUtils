@@ -32,10 +32,10 @@ public class ElytraSpeedControl extends  Feature{
     @Override
     public void onUpdate(MinecraftClient client) {
 
-        if(!isEnabled())
+        if(client.player == null)
             return;
 
-        if(client.player == null)
+        if(!isEnabled())
             return;
 
         if(jumpTimer > 0)
@@ -59,7 +59,7 @@ public class ElytraSpeedControl extends  Feature{
 
             if(client.options.forwardKey.isPressed())
                 client.player.setVelocity(velocity.add(forward));
-            else if (client.options.forwardKey.isPressed()) {
+            else if (client.options.backKey.isPressed()) {
                 client.player.setVelocity(velocity.subtract(forward));
             }
             return;
@@ -85,8 +85,10 @@ public class ElytraSpeedControl extends  Feature{
         sendStartStopPacket();
     }
 
-    private void sendStartStopPacket()
-    {
+    private void sendStartStopPacket() {
+        if(client.player == null)
+            return;
+
         ClientCommandC2SPacket packet = new ClientCommandC2SPacket(client.player,
                 ClientCommandC2SPacket.Mode.START_FALL_FLYING);
         client.player.networkHandler.sendPacket(packet);
