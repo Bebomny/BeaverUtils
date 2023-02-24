@@ -253,6 +253,18 @@ public class ConfigurationMenu extends Screen {
                 20
         ).build();
 
+        //AutoTool
+        ButtonWidget autoToolButton = ButtonWidget.builder(getText(modBeaverUtils.autoTool),
+                button -> {
+                    modBeaverUtils.autoTool.setEnabled(!modBeaverUtils.autoTool.isEnabled());
+                    button.setMessage(getText(modBeaverUtils.autoTool));
+                }).dimensions(
+                (this.width/2) + 12,
+                (44 + 20) + (margin * 4),
+                128,
+                20
+        ).build();
+
 
 
         //"Done" button
@@ -269,9 +281,11 @@ public class ConfigurationMenu extends Screen {
         //1st row
         this.addDrawableChild(flightButton);
         this.addDrawableChild(fullBrightButton);
+
         //2nd row
         this.addDrawableChild(noFallButton);
         this.addDrawableChild(autoPlantButton);
+
         //3rd row
         this.addDrawableChild(xrayButton);
         this.addDrawableChild(autoClickerButton);
@@ -280,6 +294,7 @@ public class ConfigurationMenu extends Screen {
         this.addDrawableChild(autoClickerMinusButton);
         this.addDrawableChild(autoClickerModeButton);
         this.addDrawableChild(autoClickerTypeButton);
+
         //4th row
         this.addDrawableChild(elytraSpeedControlButton);
         this.addDrawableChild(elytraSpeedControlInstantFlyButton);
@@ -290,8 +305,9 @@ public class ConfigurationMenu extends Screen {
         this.addDrawableChild(extendedReachPlusButton);
         this.addDrawableChild(extendedReachDisplayButton);
         this.addDrawableChild(extendedReachMinusButton);
+
         //5th row
-        //this.addDrawableChild(autoTotemButton);
+        this.addDrawableChild(autoToolButton);
 
         //done button
         this.addDrawableChild(doneButton);

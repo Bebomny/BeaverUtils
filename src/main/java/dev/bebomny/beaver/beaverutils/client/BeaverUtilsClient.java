@@ -27,6 +27,7 @@ public class BeaverUtilsClient implements ClientModInitializer {
     public NoFall noFall;
     public Reach reach;
     public ElytraSpeedControl elytraSpeedControl;
+    public AutoTool autoTool;
 
 
     @Override
@@ -47,6 +48,7 @@ public class BeaverUtilsClient implements ClientModInitializer {
         this.noFall = new NoFall(client, getInstance());
         this.reach = new Reach(client, getInstance());
         this.elytraSpeedControl = new ElytraSpeedControl(client, getInstance());
+        this.autoTool = new AutoTool(client, getInstance());
 
         //register tick events
 
