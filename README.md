@@ -110,7 +110,7 @@
 <p>
 
 + Can hit entities really far away - Over 100 blocks
-+ Works by teleporting player near the mod, and then back
++ Works by teleporting player near the target, and then back
 + Failsafe Teleports you back to the initial position if the first teleport fails
 + Toggleable with a KeyBind(default 'g')
 + <b>[Source](src/main/java/dev/bebomny/beaver/beaverutils/features/Reach.java)</b>
