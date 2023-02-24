@@ -47,6 +47,15 @@
 </details>
 
 <details>
+<summary><b>AutoTool</b></summary>
+<p>
+
++ Automatically switches for the best tool in your inventory
++ <b>[Source](src/main/java/dev/bebomny/beaver/beaverutils/features/AutoTool.java)</b>
+</p>
+</details>
+
+<details>
 <summary><b>Elytra Speed Control</b></summary>
 <p>
 
