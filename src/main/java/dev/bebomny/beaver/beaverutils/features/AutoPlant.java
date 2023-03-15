@@ -28,7 +28,7 @@ public class AutoPlant extends Feature{
     List<Item> seeds = new ArrayList<>();
 
     public AutoPlant(MinecraftClient client, BeaverUtilsClient modBeaverUtils) {
-        super("AutoPlant");
+        super("AutoPlant", modBeaverUtils);
         this.client = client;
         this.modBeaverUtils = modBeaverUtils;
         initializeSeeds();
@@ -81,13 +81,5 @@ public class AutoPlant extends Feature{
         seeds.add(Items.CARROT);
         seeds.add(Items.MELON_SEEDS);
         seeds.add(Items.PUMPKIN_SEEDS);
-    }
-
-    protected void onEnable() {
-        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("AutoPlant Enabled"), new Color(0x00FF00)));
-    }
-
-    protected void onDisable() {
-        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("AutoPlant Disabled"), new Color(0xFF00000)));
     }
 }

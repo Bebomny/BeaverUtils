@@ -265,6 +265,17 @@ public class ConfigurationMenu extends Screen {
                 20
         ).build();
 
+        ButtonWidget inGameStatsButton = ButtonWidget.builder(getText(modBeaverUtils.inGameStats),
+                button -> {
+                    modBeaverUtils.inGameStats.setEnabled(!modBeaverUtils.inGameStats.isEnabled());
+                    button.setMessage(getText(modBeaverUtils.inGameStats));
+                }).dimensions(
+                (this.width/2) + 12,
+                (44 + 20) + (margin * 5),
+                128,
+                20
+        ).build();
+
 
 
         //"Done" button
@@ -308,6 +319,9 @@ public class ConfigurationMenu extends Screen {
 
         //5th row
         this.addDrawableChild(autoToolButton);
+
+        //6th row
+        this.addDrawableChild(inGameStatsButton);
 
         //done button
         this.addDrawableChild(doneButton);

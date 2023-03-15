@@ -22,7 +22,7 @@ public class ElytraSpeedControl extends  Feature{
     private int jumpTimer;
 
     public ElytraSpeedControl(MinecraftClient client, BeaverUtilsClient mod) {
-        super("ElytraSpeedCtrl");
+        super("ElytraSpeedCtrl", mod);
         this.client = client;
         this.modBeaverUtils = mod;
         this.instantFly = false;
@@ -92,16 +92,6 @@ public class ElytraSpeedControl extends  Feature{
         ClientCommandC2SPacket packet = new ClientCommandC2SPacket(client.player,
                 ClientCommandC2SPacket.Mode.START_FALL_FLYING);
         client.player.networkHandler.sendPacket(packet);
-    }
-
-    @Override
-    public void onEnable() {
-        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("ElytraSpeedControl Enabled"), new Color(0x00FF00)));
-    }
-
-    @Override
-    public void onDisable() {
-        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("ElytraSpeedControl Disabled"), new Color(0xFF0000)));
     }
 
     public void setInstantFly(boolean instantFly) {

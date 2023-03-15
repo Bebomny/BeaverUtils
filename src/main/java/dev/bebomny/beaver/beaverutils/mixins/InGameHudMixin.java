@@ -24,6 +24,7 @@ public abstract class InGameHudMixin{
     public void onRenderInit(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
         //this.getTextRenderer().drawWithShadow(matrices, Text.literal("duuuuuuuuuppppppppppppaaaaaaaaaaaaaa"), 200f, 200f, 255);
         BeaverUtilsClient.getInstance().notifier.onRenderInit(matrices, tickDelta);
+        BeaverUtilsClient.getInstance().inGameStats.onRenderInit(matrices, tickDelta);
     }
 
 }

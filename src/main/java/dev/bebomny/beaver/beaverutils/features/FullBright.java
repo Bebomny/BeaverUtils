@@ -14,7 +14,7 @@ public class FullBright extends Feature{
     private final BeaverUtilsClient modBeaverUtils;
 
     public FullBright(MinecraftClient client, BeaverUtilsClient modBeaverUtils) {
-        super("FullBright");
+        super("FullBright", modBeaverUtils);
         this.client = client;
         this.modBeaverUtils = modBeaverUtils;
     }
@@ -29,12 +29,12 @@ public class FullBright extends Feature{
     @Override
     public void onEnable() {
         setGamma(16.0f);
-        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("FullBright Enabled"), new Color(0x00FF00)));
+        super.onEnable();
     }
 
     @Override
     public void onDisable() {
         setGamma(1.0f);
-        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("FullBright Disabled"), new Color(0xFF0000)));
+        super.onDisable();
     }
 }

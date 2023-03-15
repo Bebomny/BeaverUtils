@@ -19,6 +19,7 @@ public class BeaverUtilsClient implements ClientModInitializer {
     public NotificationHandler notifier;
 
     //features
+    public InGameStats inGameStats;
     public Flight flight;
     public XRay xRay;
     public FullBright fullBright;
@@ -40,6 +41,7 @@ public class BeaverUtilsClient implements ClientModInitializer {
         ScreenEventHandler.register();
 
         //features
+        this.inGameStats = new InGameStats(client, getInstance());
         this.flight = new Flight(client, getInstance());
         this.xRay = new XRay(client, getInstance());
         this.fullBright = new FullBright(client, getInstance());

@@ -19,7 +19,7 @@ public class AutoTool extends Feature{
     private final BeaverUtilsClient modBeaverUtils;
 
     public AutoTool(MinecraftClient client, BeaverUtilsClient mod) {
-        super("AutoTool");
+        super("AutoTool", mod);
         this.client = client;
         this.modBeaverUtils = mod;
     }
@@ -82,13 +82,5 @@ public class AutoTool extends Feature{
         }
 
         return speed;
-    }
-
-    protected void onEnable() {
-        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("AutoTool Enabled"), new Color(0x00FF00)));
-    }
-
-    protected void onDisable() {
-        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("AutoTool Disabled"), new Color(0xFF00000)));
     }
 }

@@ -19,7 +19,7 @@ public class AutoClicker extends Feature{
     private Type type;
 
     public AutoClicker (MinecraftClient client, BeaverUtilsClient modBeaverUtils) {
-        super("AutoClicker", GLFW.GLFW_KEY_N);
+        super("AutoClicker", GLFW.GLFW_KEY_N, modBeaverUtils);
         this.client = client;
         this.modBeaverUtils = modBeaverUtils;
         this.delay = 30;

@@ -18,34 +18,10 @@ public class XRay extends Feature{
     private final MinecraftClient client;
     private final BeaverUtilsClient modBeaverUtils;
     public XRay(MinecraftClient client, BeaverUtilsClient modBeaverUtils) {
-        super("XRay", GLFW.GLFW_KEY_X);
+        super("XRay", GLFW.GLFW_KEY_X, modBeaverUtils);
         this.client = client;
         this.modBeaverUtils = modBeaverUtils;
         initializeInterestingBlocks();
-    }
-
-    @Override
-    public void onEnable() {
-        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("XRay Enabled"), new Color(0x00FF00)));
-        modBeaverUtils.reloadRenderer();
-    }
-
-    @Override
-    public void onDisable() {
-        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("XRay Disabled"), new Color(0xFF0000)));
-        modBeaverUtils.reloadRenderer();
-    }
-
-    @Override
-    public void onActivation() {
-        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("XRay Activated"), new Color(0x00FF00)));
-        modBeaverUtils.reloadRenderer();
-    }
-
-    @Override
-    public void onDeactivation() {
-        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("XRay Deactivated"), new Color(0xFF0000)));
-        modBeaverUtils.reloadRenderer();
     }
 
     public boolean isInterestingBlock(Block block) {
@@ -96,5 +72,29 @@ public class XRay extends Feature{
         interestingBlocks.add(Blocks.RAW_COPPER_BLOCK);
         interestingBlocks.add(Blocks.COPPER_ORE);
         interestingBlocks.add(Blocks.DEEPSLATE_COPPER_ORE);
+    }
+
+    @Override
+    public void onEnable() {
+        super.onEnable();
+        modBeaverUtils.reloadRenderer();
+    }
+
+    @Override
+    public void onDisable() {
+        super.onDisable();
+        modBeaverUtils.reloadRenderer();
+    }
+
+    @Override
+    public void onActivation() {
+        super.onActivation();
+        modBeaverUtils.reloadRenderer();
+    }
+
+    @Override
+    public void onDeactivation() {
+        super.onDeactivation();
+        modBeaverUtils.reloadRenderer();
     }
 }

@@ -29,7 +29,7 @@ public class Reach extends Feature{
     private int attackedTicksAgo;
 
     public Reach(MinecraftClient client, BeaverUtilsClient modBeaverUtils) {
-        super("Reach", GLFW.GLFW_KEY_G);
+        super("Reach", GLFW.GLFW_KEY_G, modBeaverUtils);
         this.client = client;
         this.modBeaverUtils = modBeaverUtils;
         this.reachDistance = 5;
@@ -124,14 +124,16 @@ public class Reach extends Feature{
 
             lastCorrectPlayerPos = playerPos;
 
-            teleportFromTo(playerPos, targetPos);
+            quickTeleportFromTo(playerPos, targetPos);
+            //teleportFromTo(playerPos, targetPos);
 
             PlayerInteractEntityC2SPacket attackPacket = PlayerInteractEntityC2SPacket.attack(target, false);
             PacketHelper.sendPacketImmediately(attackPacket);
             client.player.swingHand(Hand.MAIN_HAND);
             modBeaverUtils.notifier.newNotification(new Notification(Text.literal("Attacked Target " + target.getType().toString() + " At Distance " + target.distanceTo(client.player) + "m")));
 
-            teleportFromTo(targetPos, playerPos);
+            quickTeleportFromTo(targetPos, playerPos);
+            //teleportFromTo(targetPos, playerPos);
 
             client.player.setPosition(playerPos);
             modBeaverUtils.flight.forceFlyBypass(client);
@@ -145,7 +147,7 @@ public class Reach extends Feature{
         double targetDistance = Math.ceil(from.distanceTo(to) / distPerTp);
         for(int i = 1; i <= targetDistance; i++) {
             Vec3d temp = from.lerp(to, i / targetDistance);
-            PacketHelper.sendPosition(temp);
+            PacketHelper.sendPositionImmediately(temp);
             if(i % 4 == 0) {
                 try {
                     Thread.sleep((long)(1/20) * 1000);
@@ -158,11 +160,30 @@ public class Reach extends Feature{
         }
     }
 
+    public void quickTeleportFromTo(Vec3d from, Vec3d to) {
+        //bypass papers moved too fast check
+        //by sending a lot of packets really fast
+        //this somehow increases the max traveled distance
+        sendQuickPositionPackets(8, from);
+
+        //send position to teleport to
+        PacketHelper.sendPositionImmediately(to);
+    }
+
+    public void sendQuickPositionPackets(int amount, Vec3d pos) {
+        if(client.player == null)
+            return;
+
+        for(int i = 0; i < amount; i++) {
+            PacketHelper.sendPositionImmediately(pos);
+        }
+    }
+
     @Override
     protected void onUpdate(MinecraftClient client) {
         if(client.player == null)
             return;
-
+        /*
         if(attackedLastTick)
             if(lastCorrectPlayerPos.distanceTo(client.player.getPos()) >= 15) {
                 correctPosition(lastCorrectPlayerPos, client.player.getPos());
@@ -173,6 +194,8 @@ public class Reach extends Feature{
 
         if(attackedTicksAgo > 0)
             attackedTicksAgo--;
+
+         */
     }
 
     public void correctPosition(Vec3d lastCorrectPlayerPos, Vec3d playerPos) {
@@ -198,6 +221,7 @@ public class Reach extends Feature{
 
     @Override
     public void onEnable() {
+        super.onEnable();
         modBeaverUtils.notifier.newNotification(new Notification(Text.literal("Reach Enabled"), new Color(0x00FF00)));
     }
 

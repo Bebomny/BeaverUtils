@@ -18,7 +18,7 @@ public class NoFall extends Feature{
     private final BeaverUtilsClient modBeaverUtils;
 
     public NoFall(MinecraftClient client, BeaverUtilsClient modBeaverUtils) {
-        super("NoFall");
+        super("NoFall", modBeaverUtils);
         this.client = client;
         this.modBeaverUtils = modBeaverUtils;
     }
@@ -44,15 +44,4 @@ public class NoFall extends Feature{
     public boolean isFallingFastEnoughToCauseDamage(ClientPlayerEntity player) {
         return player.getVelocity().y < -0.5;
     }
-
-    @Override
-    public void onEnable() {
-        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("NoFall Enabled"), new Color(0x00FF00)));
-    }
-
-    @Override
-    public void onDisable() {
-        modBeaverUtils.notifier.newNotification(new Notification(Text.literal("NoFall Disabled"), new Color(0xFF0000)));
-    }
-
 }

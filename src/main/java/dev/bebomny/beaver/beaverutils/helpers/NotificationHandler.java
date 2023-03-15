@@ -27,7 +27,7 @@ public class NotificationHandler {
             //offset / x & y coordinates on the screen
             float offset = notification.getOffset();
             float x = (client.getWindow().getScaledWidth()/2f) - offset;
-            float y = client.getWindow().getScaledHeight() - 60f;
+            float y = client.getWindow().getScaledHeight() - 65f;
 
             //color
             Color color1 = notification.getColor();

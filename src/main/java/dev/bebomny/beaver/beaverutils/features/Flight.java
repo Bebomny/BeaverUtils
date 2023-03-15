@@ -3,8 +3,6 @@ package dev.bebomny.beaver.beaverutils.features;
 import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
 import dev.bebomny.beaver.beaverutils.helpers.Notification;
 import dev.bebomny.beaver.beaverutils.helpers.PacketHelper;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
@@ -23,7 +21,7 @@ public class Flight extends Feature{
     private Vec3d oldPos;
 
     public Flight(MinecraftClient client, BeaverUtilsClient mod) {
-        super("Flight", GLFW.GLFW_KEY_V);
+        super("Flight", GLFW.GLFW_KEY_V, mod);
         this.client = client;
         this.modBeaverUtils = mod;
     }
@@ -55,7 +53,7 @@ public class Flight extends Feature{
     public void forceFlyBypass(MinecraftClient client) {
         if(client.player == null)
             return;
-        PacketHelper.sendPosition(client.player.getPos().subtract(0.0, 0.0433d, 0.0));
+        PacketHelper.sendPositionImmediately(client.player.getPos().subtract(0.0, 0.0433d, 0.0));
     }
 
     @Override
