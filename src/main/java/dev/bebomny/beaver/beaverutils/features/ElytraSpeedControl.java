@@ -31,36 +31,35 @@ public class ElytraSpeedControl extends  Feature{
 
     @Override
     public void onUpdate(MinecraftClient client) {
-
         if(client.player == null)
             return;
 
-        if(!isEnabled())
+        if(!isEnabled()) //check if module enabled
             return;
 
-        if(jumpTimer > 0)
+        if(jumpTimer > 0) //instant fly jump delay
             jumpTimer--;
 
-        ItemStack chest = client.player.getEquippedStack(EquipmentSlot.CHEST);
-        if(chest.getItem() != Items.ELYTRA)
+        ItemStack chest = client.player.getEquippedStack(EquipmentSlot.CHEST); // get ItemStack from players chest EquipmentSlot
+        if(chest.getItem() != Items.ELYTRA) //if that item is not an elytra then skip this loop
             return;
 
-        if(client.player.isFallFlying()) {
+        if(client.player.isFallFlying()) { //check if player is flying on elytra right now
 
-            if(client.player.isTouchingWater()) {
-                sendStartStopPacket();
+            if(client.player.isTouchingWater()) { //if player is touching water then stop this module
+                sendStartStopPacket(); //send packet to the server that the player is stopping
                 return;
             }
 
-            float yaw = (float)Math.toRadians(client.player.getYaw());
-            Vec3d forward = new Vec3d(-MathHelper.sin(yaw) * 0.05, 0 , MathHelper.cos(yaw) * 0.05);
+            float yaw = (float)Math.toRadians(client.player.getYaw()); //get player yqw angle
+            Vec3d forward = new Vec3d(-MathHelper.sin(yaw) * 0.05, 0 , MathHelper.cos(yaw) * 0.05); // calculate forward vector based on the yaw of the player, so we can accelerate in more than one direction
 
-            Vec3d velocity = client.player.getVelocity();
+            Vec3d velocity = client.player.getVelocity(); // get player's velocity
 
-            if(client.options.forwardKey.isPressed())
-                client.player.setVelocity(velocity.add(forward));
-            else if (client.options.backKey.isPressed()) {
-                client.player.setVelocity(velocity.subtract(forward));
+            if(client.options.forwardKey.isPressed()) // if pressing forward button, ex. 'W'
+                client.player.setVelocity(velocity.add(forward)); // add forward vector to players velocity to accelerate
+            else if (client.options.backKey.isPressed()) { // if pressing backwards button, ex. 'S'
+                client.player.setVelocity(velocity.subtract(forward));// subtract forward vector from players velocity to decelerate
             }
             return;
         }
@@ -71,7 +70,6 @@ public class ElytraSpeedControl extends  Feature{
     }
 
     private void doInstantFly() {
-
         if(!instantFly)
             return;
 

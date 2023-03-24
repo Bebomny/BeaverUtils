@@ -32,6 +32,31 @@ public class XRay extends Feature{
         //chests
         interestingBlocks.add(Blocks.CHEST);
         interestingBlocks.add(Blocks.ENDER_CHEST);
+        interestingBlocks.add(Blocks.BARREL);
+        //furnaces
+        interestingBlocks.add(Blocks.FURNACE);
+        interestingBlocks.add(Blocks.BLAST_FURNACE);
+        interestingBlocks.add(Blocks.SMOKER);
+        //Other
+        interestingBlocks.add(Blocks.GRINDSTONE);
+        interestingBlocks.add(Blocks.ENCHANTING_TABLE);
+        interestingBlocks.add(Blocks.LOOM);
+        interestingBlocks.add(Blocks.SMITHING_TABLE);
+        interestingBlocks.add(Blocks.BEACON);
+        interestingBlocks.add(Blocks.DRAGON_EGG);
+        interestingBlocks.add(Blocks.END_PORTAL_FRAME);
+        interestingBlocks.add(Blocks.END_PORTAL);
+        //Redstone thingies
+        interestingBlocks.add(Blocks.HOPPER);
+        interestingBlocks.add(Blocks.COMPARATOR);
+        interestingBlocks.add(Blocks.REPEATER);
+        interestingBlocks.add(Blocks.PISTON);
+        interestingBlocks.add(Blocks.STICKY_PISTON);
+        interestingBlocks.add(Blocks.DISPENSER);
+        interestingBlocks.add(Blocks.DROPPER);
+        interestingBlocks.add(Blocks.JUKEBOX);
+        interestingBlocks.add(Blocks.NOTE_BLOCK);
+        interestingBlocks.add(Blocks.TNT);
         //netherite
         interestingBlocks.add(Blocks.ANCIENT_DEBRIS);
         interestingBlocks.add(Blocks.NETHERITE_BLOCK);

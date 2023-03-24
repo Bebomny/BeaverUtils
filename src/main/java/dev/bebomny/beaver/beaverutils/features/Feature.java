@@ -91,8 +91,6 @@ public abstract class Feature {
             //onDisable();
             onDeactivation();
         }
-
-
     }
 
     private void checkKeyBindPress(MinecraftClient client) {

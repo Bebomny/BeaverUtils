@@ -30,15 +30,21 @@ public class InGameStats extends Feature{
         if(client.player == null)
             return;
 
-        if(previousPosBuffer.size() >= 5) {
-            previousPosBuffer.add(client.player.getPos());
-            Vec3d previousPos = previousPosBuffer.remove(0);
+        previousPosBuffer.add(client.player.getPos());
 
-            this.playerSpeed = previousPos.distanceTo(client.player.getPos()) * 2;
+        if(previousPosBuffer.size() >= 5) {
+            /*
+            for(Vec3d pos : previousPosBuffer) {
+                this.playerSpeed += Math.abs(pos.distanceTo(client.player.getPos()));
+            }
+
+            this.playerSpeed = this.playerSpeed / previousPosBuffer.size();
+             */
+            Vec3d previousPos = previousPosBuffer.remove(0);
+            this.playerSpeed = Math.abs(previousPos.distanceTo(client.player.getPos()) * 2);
         }
 
-        if(previousPosBuffer.size() < 5)
-            previousPosBuffer.add(client.player.getPos());
+
 
     }
 
@@ -52,7 +58,7 @@ public class InGameStats extends Feature{
                 matrices,
                 Text.literal(String.format("%.3g", playerSpeed) + " m/s"),
                 (client.getWindow().getScaledWidth()/2f) + 100f,
-                client.getWindow().getScaledHeight() - 13f,
+                client.getWindow().getScaledHeight() - 14f,
                 0xFFFFFF0F);
     }
 }

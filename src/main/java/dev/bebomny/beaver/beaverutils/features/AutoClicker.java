@@ -34,7 +34,6 @@ public class AutoClicker extends Feature{
             return;
 
         switch (type) {
-
             case CLICK -> {
                 if(ticksPast >= delay) {
                     switch (mode) {

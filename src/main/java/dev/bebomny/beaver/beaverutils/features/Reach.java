@@ -3,6 +3,7 @@ package dev.bebomny.beaver.beaverutils.features;
 import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
 import dev.bebomny.beaver.beaverutils.helpers.Notification;
 import dev.bebomny.beaver.beaverutils.helpers.PacketHelper;
+import net.fabricmc.loader.impl.lib.sat4j.core.Vec;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -179,14 +180,19 @@ public class Reach extends Feature{
         }
     }
 
+    public void quickCorrectPlayerPosition(Vec3d lastCorrectPlayerPos, Vec3d playerPos) {
+        quickTeleportFromTo(playerPos, lastCorrectPlayerPos);
+    }
+
     @Override
     protected void onUpdate(MinecraftClient client) {
         if(client.player == null)
             return;
-        /*
+
         if(attackedLastTick)
             if(lastCorrectPlayerPos.distanceTo(client.player.getPos()) >= 15) {
-                correctPosition(lastCorrectPlayerPos, client.player.getPos());
+                //correctPosition(lastCorrectPlayerPos, client.player.getPos());
+                quickCorrectPlayerPosition(lastCorrectPlayerPos, client.player.getPos());
             }
 
         if(attackedTicksAgo <= 0 && attackedLastTick)
@@ -195,7 +201,7 @@ public class Reach extends Feature{
         if(attackedTicksAgo > 0)
             attackedTicksAgo--;
 
-         */
+
     }
 
     public void correctPosition(Vec3d lastCorrectPlayerPos, Vec3d playerPos) {
