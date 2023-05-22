@@ -1,3 +1,7 @@
+<p> Currently under a complete rewrite</p>
+
+---
+
 # BeaverUtils
 <p>A Simple Utility/QoL mod for minecraft.</p>
 
