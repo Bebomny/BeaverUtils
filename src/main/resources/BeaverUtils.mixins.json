@@ -6,14 +6,7 @@
   "mixins": [
   ],
   "client": [
-    "BlockMixin",
-    "BlockStateMixin",
-    "ClientConnectionAccessor",
-    "ClientPlayerInteractionManagerMixin",
-    "IGridWidgetAccessor",
-    "InGameHudMixin",
-    "MinecraftClientMixin",
-    "SimpleOptionMixin"
+    "InGameHudMixin"
   ],
   "injectors": {
     "defaultRequire": 1

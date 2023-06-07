@@ -11,20 +11,15 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InGameHud.class)
-public abstract class InGameHudMixin{
-
+public abstract class InGameHudMixin {
 
     @Shadow public abstract TextRenderer getTextRenderer();
-
     @Shadow private int scaledWidth;
-
     @Shadow private int scaledHeight;
 
     @Inject(method = "render", at = @At("HEAD"))
     public void onRenderInit(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
-        //this.getTextRenderer().drawWithShadow(matrices, Text.literal("duuuuuuuuuppppppppppppaaaaaaaaaaaaaa"), 200f, 200f, 255);
+        //Call the render function in NotificationHandler -- DONE (I think I want to call this directly not through getNotifier)
         BeaverUtilsClient.getInstance().notifier.onRenderInit(matrices, tickDelta);
-        BeaverUtilsClient.getInstance().inGameStats.onRenderInit(matrices, tickDelta);
     }
-
 }
