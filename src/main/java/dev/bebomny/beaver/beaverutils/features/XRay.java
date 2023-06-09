@@ -14,10 +14,10 @@ public class XRay extends Feature{
     //@Expose
     private final List<Block> interestingBlocks = new ArrayList<>();
     @Expose
-    private final Collection<Block> interestingBlocksAsCollection = new ArrayList<>();
+    private Collection<Block> interestingBlocksAsCollection = new ArrayList<>();
 
     public XRay() {
-        super("XRay", GLFW.GLFW_KEY_X);
+        super("XRay", GLFW.GLFW_KEY_X); //GLFW.GLFW_KEY_X
         if (interestingBlocksAsCollection.isEmpty())
             initializeInterestingBlocks(interestingBlocksAsCollection);
     }

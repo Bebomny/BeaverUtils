@@ -38,13 +38,20 @@ public class ConfigHandler {
             configDirectory.toFile().mkdirs();
         } catch (Exception ignored) {}
 
+        LOGGER.atInfo().log("Creating new config file");
         configFile = new File(configDirectory.toFile(), "config.json");
 
         if(configFile.exists()) {
+            LOGGER.atInfo().log("Entering main If Statement");
             try {
+                LOGGER.atInfo().log("Creating Input Stream Reader");
                 InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(configFile), StandardCharsets.UTF_8);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
+                if(beaverUtilsClient.features == null)
+                    LOGGER.atInfo().log("Features are equal to null");
+
+                LOGGER.atInfo().log("Loading from JSON");
                 beaverUtilsClient.features = gson.fromJson(
                         bufferedReader,
                         Features.class
@@ -66,12 +73,12 @@ public class ConfigHandler {
         }
     }
 
-    public  void saveConfig() {
+    public void saveConfig() {
         try {
             LOGGER.atInfo().log("Saving config file at: " + configFile.toPath());
             configFile.getParentFile().mkdirs();
             if (!configFile.createNewFile())
-                LOGGER.atError().log("Something went wrong when creating the Config File!");
+                LOGGER.atInfo().log("Something went wrong when creating the Config File OR the Config File already exists");
             BufferedWriter writer  = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(configFile), StandardCharsets.UTF_8));
             writer.write(gson.toJson(beaverUtilsClient.features));
             writer.close();

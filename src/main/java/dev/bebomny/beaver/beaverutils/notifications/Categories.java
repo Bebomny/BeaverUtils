@@ -5,5 +5,6 @@ public enum Categories {
     INFO,
     STATE,
     DEBUG,
-    CUSTOM
+    CUSTOM,
+    NONE
 }

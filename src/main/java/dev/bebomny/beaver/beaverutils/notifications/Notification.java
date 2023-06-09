@@ -4,24 +4,29 @@ import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 
 public class Notification {
-    private final Text text;
+    private final String text;
     private final int duration; //in ticks
-    private final float offset;
+    private int customXOffset;
     private Categories category;
     @Nullable
     private String customCategory;
     private String callerClassName;
 
-    public static Builder builder(Text text) {
+    public static Builder builder(String text) {
         return new Builder(text);
     }
 
-    protected Notification(Text text, int duration) {
+    protected Notification(String text, int duration) {
         this.text = text;
         this.duration = duration;
-        this.offset = BeaverUtilsClient.getInstance().client.advanceValidatingTextRenderer.getWidth(getText())/2f;
+    }
+
+    public void setCustomXOffset(int customXOffset) {
+        this.customXOffset = customXOffset;
     }
 
     public void setCategory(Categories category) {
@@ -36,16 +41,16 @@ public class Notification {
         this.callerClassName = callerClassName;
     }
 
-    public Text getText() {
-        return category == null ? text : getTextWithCategory();
-    }
+    public String getText() {
+        return text;
+    } //return category == null ? text : getTextWithCategory();
 
     public int getDuration() {
         return duration;
     }
 
-    public float getOffset() {
-        return offset;
+    public float getCustomXOffset() {
+        return customXOffset;
     }
 
     public Categories getCategory() {
@@ -60,23 +65,25 @@ public class Notification {
         return callerClassName;
     }
 
-    private Text getTextWithCategory() {
+    private Text getTextWithCategory() { //useless for now
         return category == Categories.CUSTOM ?
-                Text.literal("§6§l[" + customCategory +"§6§l]" + " " + text)
+                Text.of("§6§l[" + customCategory +"§6§l]" + " " + text)
                 :
-                Text.literal("§6§l[" + category +"§6§l]" + " " + text);
+                Text.of("§6§l[" + category +"§6§l]" + " " + text);
     }
 
     public static class Builder {
-        private final Text text;
+        private final String text;
         private int duration = 60; //in ticks // default - 60
+        private int customXOffset;
+        @Nullable
         private Categories category;
         private String callerClassName;
 
         @Nullable
         private String customCategory;
 
-        public Builder(Text text) {
+        public Builder(String text) {
             this.text = text;
         }
 
@@ -85,23 +92,36 @@ public class Notification {
             return this;
         }
 
-        public Builder category(Categories category) {
+        /**
+         * Allows to set a category for the notification, by default is set to {@code Categories.NONE}.
+         * The second parameter must be set if the category selected is {@code Categories.STATE} otherwise can be {@code null}
+         * @param category a category under which the notification will be displayed
+         * @param callerName The name to be displayed as the callerClassName
+         * @return {@code this}
+         */
+        public Builder category(Categories category, @Nullable String callerName) {
             this.category = category;
+            this.callerClassName = callerName;
             return this;
         }
 
-        public Builder setCustomCategory(String customCategory) {
+        public Builder customCategory(String customCategory) {
             this.category = Categories.CUSTOM;
             this.customCategory = customCategory;
             return this;
         }
 
+        public Builder customXOffset(int customXOffset) {
+            this.customXOffset = customXOffset;
+            return this;
+        }
 
         public Notification build() {
             Notification notification = new Notification(text, duration);
-            notification.setCategory(category);
+            notification.setCustomXOffset(customXOffset);
+            notification.setCategory(Objects.requireNonNullElse(category, Categories.NONE)); //this is cool
             notification.setCustomCategory(customCategory);
-            notification.setCallerClassName(Thread.currentThread().getStackTrace()[2].getClassName());
+            notification.setCallerClassName(callerClassName); //Thread.currentThread().getStackTrace()[2].getClassName() //TODO: get this as an argument - Getting from category builder
             return notification;
         }
 

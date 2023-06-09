@@ -4,6 +4,7 @@ package dev.bebomny.beaver.beaverutils.client;
 import dev.bebomny.beaver.beaverutils.configuration.ConfigHandler;
 import dev.bebomny.beaver.beaverutils.features.FeatureHandler;
 import dev.bebomny.beaver.beaverutils.features.Features;
+import dev.bebomny.beaver.beaverutils.helpers.KeyBindingHandler;
 import dev.bebomny.beaver.beaverutils.notifications.NotificationHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -11,11 +12,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeMap;
 
 @Environment(EnvType.CLIENT)
 public class BeaverUtilsClient implements ClientModInitializer {
@@ -25,6 +21,7 @@ public class BeaverUtilsClient implements ClientModInitializer {
     public Logger LOGGER = LoggerFactory.getLogger("BeaverUtils");
     public NotificationHandler notifier;
     public FeatureHandler featureHandler;
+    public KeyBindingHandler keyBindingHandler;
 
     //Configuration
     public ConfigHandler configHandler;
@@ -32,7 +29,9 @@ public class BeaverUtilsClient implements ClientModInitializer {
     //Features
     public Features features;
 
-    /* Add a possibility to add blocks to xray list through a command
+    /* TODO: PRIORITY LEVEL HIGHEST!!! fix notificationHandler(Maybe convert to <String> types from <Text>?, should work fine(I think?)) and rewrite config to external
+    TODO: PRIORITY!!! Get configuration Menu up and running
+    TODO: Add a possibility to add blocks to xray list through a command
      */
 
     @Override
@@ -69,13 +68,16 @@ public class BeaverUtilsClient implements ClientModInitializer {
         // ehhhh, its not working
         // make a completely external config and access needed data directly
         // this will eliminate this bullshit
-        // todo!
+        // todo! hell nah I am doing it in a completely different way anyway
+
 
         //handlers
+        this.keyBindingHandler = new KeyBindingHandler();
+        this.notifier = new NotificationHandler(client);
+
         this.configHandler = new ConfigHandler();
         configHandler.loadConfig(); //should be called before initializing Features(This initializes them)
 
-        this.notifier = new NotificationHandler(client);
         this.featureHandler = new FeatureHandler();
 
         features.xRay.printsmh();
@@ -83,9 +85,8 @@ public class BeaverUtilsClient implements ClientModInitializer {
         Runtime.getRuntime().addShutdownHook(new Thread(configHandler::saveConfig));
 
         //Initialization End
-        long endTime = System.currentTimeMillis();
-        long elapsedTime = endTime - startTime;
-        LOGGER.atInfo().log("Initialized in "+ elapsedTime + "ms" + "Have a nice kitty Game! ~ BeaverUtils");
+        long elapsedTime = System.currentTimeMillis() - startTime;
+        LOGGER.atInfo().log("Initialized in "+ elapsedTime + "ms " + "Have a nice kitty Game! ~ BeaverUtils");
     }
 
     public static BeaverUtilsClient getInstance() {

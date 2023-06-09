@@ -2,6 +2,7 @@ package dev.bebomny.beaver.beaverutils.features;
 
 import com.google.gson.annotations.Expose;
 import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
+import dev.bebomny.beaver.beaverutils.helpers.KeyBindingHandler;
 import dev.bebomny.beaver.beaverutils.notifications.Categories;
 import dev.bebomny.beaver.beaverutils.notifications.Notification;
 import dev.bebomny.beaver.beaverutils.notifications.NotificationHandler;
@@ -38,7 +39,6 @@ public abstract class Feature {
         this.activationKey = null;
 
         //register events
-        ClientTickEvents.END_CLIENT_TICK.register(this::checkKeyBindPress);
     }
 
     public Feature(String name, int key) {
@@ -52,7 +52,9 @@ public abstract class Feature {
 
 
         //register events
-        KeyBindingHelper.registerKeyBinding(activationKey);
+        beaverUtilsClient.keyBindingHandler.registerKeyBinding(activationKey);
+        //KeyBindingHelper.registerKeyBinding(activationKey);
+        ClientTickEvents.END_CLIENT_TICK.register(this::checkKeyBindPress);
     }
 
     private void checkKeyBindPress(MinecraftClient client) {
@@ -64,14 +66,18 @@ public abstract class Feature {
 
     protected void onEnable() {
         notifier.newNotification(Notification.builder(
-                Text.literal("§l§a" + getName() + " §l§aEnabled"))
-                .category(Categories.STATE).build());
+                "§l§a" + getName() + " §l§aEnabled")
+                .category(Categories.STATE, getName())
+                .build());
+        logger.atInfo().log("XRay Enabled");
     }
 
     protected void onDisable() {
         notifier.newNotification(Notification.builder(
-                Text.literal("§l§c" + getName() + " §l§cDisabled"))
-                .category(Categories.STATE).build());
+                "§l§c" + getName() + " §l§cDisabled")
+                .category(Categories.STATE, getName())
+                .build());
+        logger.atInfo().log("XRay Disabled");
     }
 
     public String getName() {
