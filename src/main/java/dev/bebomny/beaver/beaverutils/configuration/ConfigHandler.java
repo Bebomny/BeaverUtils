@@ -33,23 +33,17 @@ public class ConfigHandler {
     }
 
     public void loadConfig() {
-
         try {
+            LOGGER.atInfo().log("Creating a config directory");
             configDirectory.toFile().mkdirs();
         } catch (Exception ignored) {}
 
-        LOGGER.atInfo().log("Creating new config file");
         configFile = new File(configDirectory.toFile(), "config.json");
 
         if(configFile.exists()) {
-            LOGGER.atInfo().log("Entering main If Statement");
             try {
-                LOGGER.atInfo().log("Creating Input Stream Reader");
                 InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(configFile), StandardCharsets.UTF_8);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-
-                if(beaverUtilsClient.features == null)
-                    LOGGER.atInfo().log("Features are equal to null");
 
                 LOGGER.atInfo().log("Loading from JSON");
                 beaverUtilsClient.features = gson.fromJson(
@@ -57,7 +51,8 @@ public class ConfigHandler {
                         Features.class
                 );
 
-                LOGGER.atInfo().log("Loaded Config from file");
+                if(beaverUtilsClient.features != null)
+                    LOGGER.atInfo().log("Loaded Config from file");
             } catch (IOException e) {
                 LOGGER.atError().log("Error at Config load");
                 e.printStackTrace();
@@ -77,8 +72,10 @@ public class ConfigHandler {
         try {
             LOGGER.atInfo().log("Saving config file at: " + configFile.toPath());
             configFile.getParentFile().mkdirs();
+
             if (!configFile.createNewFile())
-                LOGGER.atInfo().log("Something went wrong when creating the Config File OR the Config File already exists");
+                LOGGER.atInfo().log("Config File already exists");
+
             BufferedWriter writer  = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(configFile), StandardCharsets.UTF_8));
             writer.write(gson.toJson(beaverUtilsClient.features));
             writer.close();

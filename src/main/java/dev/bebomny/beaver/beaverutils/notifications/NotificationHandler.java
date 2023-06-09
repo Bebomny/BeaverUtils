@@ -48,27 +48,6 @@ public class NotificationHandler {
                 default -> "§c§l[YOU SHOULD NOT SEE THIS, SOMETHING WENT HORRIBLY WRONG]" + "§r ";
             };
 
-
-            /* Using <Text> Type
-            Text textPrefix = Text.of(switch (category) {
-
-                case WARN -> "§6§l[" + "§eWARN" +"§6§l]" + "§r ";
-
-                case INFO -> "§6§l[" + "§fINFO" +"§6§l]" + "§r ";
-
-                case STATE -> "§6§l[" + "§aSTATE - " + notification.getCallerClassName() +"§6§l]" + "§r ";
-
-                case DEBUG -> "§6§l[" + "§9DEBUG" +"§6§l]" + "§r ";
-
-                case CUSTOM -> "§6§l[" + customCategory +"§6§l]" + "§r ";
-            }); */
-
-            /*
-            color -- OLD
-            int duration = notification.getDuration();
-            int color = ((color1.getRed() / duration) * decay) << 16 | ((color1.getGreen() / duration) * decay) << 8 | ((color1.getBlue() / duration) * decay);
-            */
-
             Color stockColor = new Color(255, 255, 255);
             int color = decay < 20 ?
                     ((stockColor.getRed() / 30) * decay) << 16 | ((stockColor.getGreen() / 30) * decay) << 8 | ((stockColor.getBlue() / 30) * decay)
@@ -80,19 +59,13 @@ public class NotificationHandler {
             //Whole message text assembly
             String text = textPrefix + notification.getText();
 
-            //Using <Text> Type
-            //Text text = Text.of(textPrefix + "" + notification.getText());
-
-            //TODO: Calculate the offset correctly HERE
             //offset / x & y coordinates on the screen
             float offset = BeaverUtilsClient.getInstance().client.advanceValidatingTextRenderer.getWidth(text)/2f;
             float x = (client.getWindow().getScaledWidth()/2f) - offset;
             float y = client.getWindow().getScaledHeight() - 65f;
 
-
-
+            //Drawing to the screen using the inGameHud Object
             client.inGameHud.getTextRenderer().drawWithShadow(matrices, text, x, y, color | alpha);
-
         }
 
         if(decay <= 1 && !notificationQueue.isEmpty())

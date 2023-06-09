@@ -98,6 +98,6 @@ public class BeaverUtilsClient implements ClientModInitializer {
     }
 
     public Logger getLogger(String name) {
-        return LoggerFactory.getLogger("BeaverUtils." + name);
+        return LoggerFactory.getLogger("BeaverUtils/" + name);
     }
 }

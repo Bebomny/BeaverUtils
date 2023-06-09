@@ -25,7 +25,6 @@ public abstract class Feature {
     //Feature specific
     public final String name;
     protected KeyBinding activationKey;
-
     @Expose
     protected boolean enabled;
 
@@ -53,14 +52,12 @@ public abstract class Feature {
 
         //register events
         beaverUtilsClient.keyBindingHandler.registerKeyBinding(activationKey);
-        //KeyBindingHelper.registerKeyBinding(activationKey);
         ClientTickEvents.END_CLIENT_TICK.register(this::checkKeyBindPress);
     }
 
     private void checkKeyBindPress(MinecraftClient client) {
         while(activationKey.wasPressed()) {
             setEnabled(!isEnabled());
-            logger.atInfo().log(getName() + " button pressed");
         }
     }
 
