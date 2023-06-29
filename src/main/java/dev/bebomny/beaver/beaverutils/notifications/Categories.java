@@ -6,5 +6,8 @@ public enum Categories {
     STATE,
     DEBUG,
     CUSTOM,
+    COMMAND,
+    CONFIG_UPDATE,
+    FEATURE,
     NONE
 }

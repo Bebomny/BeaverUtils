@@ -1,36 +1,66 @@
-package dev.bebomny.beaver.beaverutils.features;
+package dev.bebomny.beaver.beaverutils.features.features;
 
-import com.google.gson.annotations.Expose;
+import dev.bebomny.beaver.beaverutils.configuration.config.XRayConfig;
+import dev.bebomny.beaver.beaverutils.features.KeyOnOffFeature;
+import dev.bebomny.beaver.beaverutils.helpers.BlockUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
-public class XRay extends Feature{
+public class XRay extends KeyOnOffFeature {
 
-    //@Expose
-    private final List<Block> interestingBlocks = new ArrayList<>();
-    @Expose
-    private Collection<Block> interestingBlocksAsCollection = new ArrayList<>();
+    private final XRayConfig xRayConfig = config.xRayConfig;
 
     public XRay() {
-        super("XRay", GLFW.GLFW_KEY_X); //GLFW.GLFW_KEY_X
-        if (interestingBlocksAsCollection.isEmpty())
-            initializeInterestingBlocks(interestingBlocksAsCollection);
+        super("XRay"); //GLFW.GLFW_KEY_X
+
+        addActivationKeybinding(GLFW.GLFW_KEY_X); //88
+
+        //load config values?
+        //if (config.generalConfig.autoEnable)
+        //    setEnabled(xRayConfig.enable);
+
+        //load interesting blocks
+        if (xRayConfig.interestingBlocksAsCollection.isEmpty())
+            xRayConfig.interestingBlocksAsCollection = populateInterestingBlocksWithStrings();
+
+        LOGGER.atInfo().log("XRAY PRESENT!!! Is IRON_ORE Interesting?(Should be? Yes) but is it? " + isInterestingBlock(Blocks.IRON_ORE));
     }
 
     public boolean isInterestingBlock(Block block) {
-        return interestingBlocksAsCollection.contains(block);
+        return xRayConfig.interestingBlocksAsCollection.contains(BlockUtils.getBlockName(block));
     }
 
-    public void printsmh() {
-        logger.atInfo().log("[XRay] I am hereeeeeeeeeeeeeeeeeeeee!!!!!!!!!!11!11!!1!11111!!1!1!!!!!111111");
+    @Override
+    protected void onEnable() {
+        super.onEnable();
+        reloadRenderer();
     }
 
-    private void initializeInterestingBlocks(Collection<Block> collection) {
+    @Override
+    protected void onDisable() {
+        super.onDisable();
+        reloadRenderer();
+    }
+
+    private void reloadRenderer() {
+        client.worldRenderer.reload();
+    }
+
+    private Collection<String> populateInterestingBlocksWithStrings() {
+        Collection<String> collection = new ArrayList<>();
+
+        for (Block block : getDefaultInterestingBlocks())
+            collection.add(BlockUtils.getBlockName(block));
+
+        return collection;
+    }
+
+    private Collection<Block> getDefaultInterestingBlocks() {
+        Collection<Block> collection = new ArrayList<>();
         //chests
         collection.add(Blocks.CHEST);
         collection.add(Blocks.ENDER_CHEST);
@@ -99,5 +129,9 @@ public class XRay extends Feature{
         collection.add(Blocks.RAW_COPPER_BLOCK);
         collection.add(Blocks.COPPER_ORE);
         collection.add(Blocks.DEEPSLATE_COPPER_ORE);
+        //other
+        collection.add(Blocks.SPAWNER);
+
+        return collection;
     }
 }

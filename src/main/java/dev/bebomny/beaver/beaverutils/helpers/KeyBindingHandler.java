@@ -21,13 +21,16 @@ public class KeyBindingHandler {
         this.LOGGER = beaverUtilsClient.getLogger("KeyBindHandler");
     }
 
-    public boolean registerKeyBinding(KeyBinding keyBinding) {
+    public boolean registerKeyBinding(String name, KeyBinding keyBinding) {
         try {
             KeyBindingHelper.registerKeyBinding(keyBinding);
-            keyBindings.put(keyBinding.getTranslationKey(), keyBinding);
+            keyBindings.put(keyBinding.toString(), keyBinding);
             return true;
-        } catch (Exception ignored) {
-            LOGGER.atWarn().log("Couldn't register a keybinding with id: " + keyBinding.getDefaultKey().toString());
+        } catch (Exception e) {
+            if(e instanceof NullPointerException)
+                LOGGER.atWarn().log("Keybinding is null, probably this method doesnt require a keybinding");
+            else
+                LOGGER.atWarn().log("Couldn't register a keybinding with name: " + name);
             return false;
         }
     }

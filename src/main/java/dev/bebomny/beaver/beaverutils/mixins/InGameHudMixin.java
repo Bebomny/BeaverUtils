@@ -21,5 +21,6 @@ public abstract class InGameHudMixin {
     public void onRenderInit(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
         //Call the render function in NotificationHandler -- DONE (I think I want to call this directly not through getNotifier)
         BeaverUtilsClient.getInstance().notifier.onRenderInit(matrices, tickDelta);
+        BeaverUtilsClient.getInstance().features.inGameStats.onRenderInit(matrices, tickDelta);
     }
 }

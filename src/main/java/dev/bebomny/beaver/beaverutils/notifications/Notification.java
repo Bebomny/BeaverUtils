@@ -121,7 +121,7 @@ public class Notification {
             notification.setCustomXOffset(customXOffset);
             notification.setCategory(Objects.requireNonNullElse(category, Categories.NONE)); //this is cool
             notification.setCustomCategory(customCategory);
-            notification.setCallerClassName(callerClassName); //Thread.currentThread().getStackTrace()[2].getClassName() //TODO: get this as an argument - Getting from category builder
+            notification.setCallerClassName(callerClassName); //Thread.currentThread().getStackTrace()[2].getClassName()
             return notification;
         }
 

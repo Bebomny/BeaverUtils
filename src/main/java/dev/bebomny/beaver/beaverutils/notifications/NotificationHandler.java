@@ -25,6 +25,12 @@ public class NotificationHandler {
         if(!notificationQueue.isEmpty()) {
             Notification notification = notificationQueue.get(0);
 
+            //ADD
+            //importance
+            //if above certain  level it will add it to the stack and display a new notificationb under
+            //with a certain max
+
+
             //Color logic using Category property - Maybe move it to the notification class?
             //the styling of the main notification text is handled directly in the text String
             //here I am only handling the Category/Prefix text
@@ -42,6 +48,12 @@ public class NotificationHandler {
                 case DEBUG -> "§6§l[" + "§3DEBUG" +"§6§l]" + "§r ";
 
                 case CUSTOM -> "§6§l[" + customCategory +"§6§l]" + "§r ";
+
+                case COMMAND -> "§6§l[" + "§5COMMAND" +"§6§l]" + "§r ";
+
+                case CONFIG_UPDATE -> "§6§l[" + "§1CONFIG UPDATED" +"§6§l]" + "§r ";
+
+                case FEATURE -> "§6§l[" + "§1FEATURE" +"§6§l]" + "§r ";
 
                 case NONE -> "";
 
@@ -80,7 +92,7 @@ public class NotificationHandler {
     public void newNotification(Notification notification) {
         //Check if it's a debug category notification and if debug notifications are enabled
         //If they are disabled skip this notification completely
-        if(notification.getCategory() == Categories.DEBUG && !BeaverUtilsClient.getInstance().features.general.debug)
+        if(notification.getCategory() == Categories.DEBUG && !BeaverUtilsClient.getInstance().getConfig().generalConfig.debug)
             return;
 
         if(!(notificationQueue.isEmpty()))

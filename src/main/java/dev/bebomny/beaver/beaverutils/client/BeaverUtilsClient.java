@@ -1,10 +1,13 @@
 package dev.bebomny.beaver.beaverutils.client;
 
 
+import dev.bebomny.beaver.beaverutils.commands.CommandHandler;
+import dev.bebomny.beaver.beaverutils.configuration.Config;
 import dev.bebomny.beaver.beaverutils.configuration.ConfigHandler;
 import dev.bebomny.beaver.beaverutils.features.FeatureHandler;
 import dev.bebomny.beaver.beaverutils.features.Features;
 import dev.bebomny.beaver.beaverutils.helpers.KeyBindingHandler;
+import dev.bebomny.beaver.beaverutils.helpers.ScreenEventHandler;
 import dev.bebomny.beaver.beaverutils.notifications.NotificationHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -25,13 +28,29 @@ public class BeaverUtilsClient implements ClientModInitializer {
 
     //Configuration
     public ConfigHandler configHandler;
+    public Config config;
 
     //Features
     public Features features;
 
-    /* TODO: PRIORITY LEVEL HIGHEST!!! fix notificationHandler(Maybe convert to <String> types from <Text>?, should work fine(I think?)) and rewrite config to external
-    TODO: PRIORITY!!! Get configuration Menu up and running
-    TODO: Add a possibility to add blocks to xray list through a command
+    //Commands
+    public CommandHandler commandHandler;
+
+    /* TODO: PRIORITY LEVEL HIGHEST!!! fix notificationHandler(Maybe convert to <String> types from <Text>?, should work fine(I think?)) and rewrite config to external //DONE
+    TODO: PRIORITY!!! Get configuration Menu up and running //DONE
+    TODO: Add a possibility to add blocks to xray list through a command //DONE
+     Maybe Add categories to configuration menu someday? //Nah
+     make a method in <Feature> class that gives the ability to add keybindings/settings etc and delete the constructor overload and keep one //I think I can do it //DONE(50/50)
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     !!!!!!!!!!CONVERT CONFIG TO EXTERNAL I GUESS XDD IT HAS MUCH MORE BENEFITS AND SHOULD BE EASIER TO WORK WITH!!!!!!!!!! //DONE
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     Features are not initialized anywhere yet!!!! FIX! FeatureHandler class? new Features class? //DONE
+     .
+     Maybe add tooltips to buttons in configurationMenu and explain briefly what they do? //MAybe?
+     tunnel macro? auto pickaxe switch? for deepslate
+     antiafk
+     autoplant lookat optiopn
+     esp?
      */
 
     @Override
@@ -71,22 +90,33 @@ public class BeaverUtilsClient implements ClientModInitializer {
         // todo! hell nah I am doing it in a completely different way anyway
 
 
-        //handlers
+        //handlers random
         this.keyBindingHandler = new KeyBindingHandler();
         this.notifier = new NotificationHandler(client);
 
+
+        //config load
         this.configHandler = new ConfigHandler();
-        configHandler.loadConfig(); //should be called before initializing Features(This initializes them)
+        configHandler.loadConfig();
 
+        //feature load
         this.featureHandler = new FeatureHandler();
+        this.features = new Features();
 
-        features.xRay.printsmh();
+
+        //command load
+        this.commandHandler = new CommandHandler();
+
+        //handlers random pt2
+        ScreenEventHandler.register();
+
+        //features.xRay.printsmh();
 
         Runtime.getRuntime().addShutdownHook(new Thread(configHandler::saveConfig));
 
         //Initialization End
         long elapsedTime = System.currentTimeMillis() - startTime;
-        LOGGER.atInfo().log("Initialized in "+ elapsedTime + "ms " + "Have a nice kitty Game! ~ BeaverUtils");
+        LOGGER.atInfo().log("Initialized in "+ elapsedTime + "ms " + "Have a nice Game! ~ BeaverUtils");
     }
 
     public static BeaverUtilsClient getInstance() {
@@ -95,6 +125,10 @@ public class BeaverUtilsClient implements ClientModInitializer {
 
     public NotificationHandler getNotifier() {
         return notifier;
+    }
+
+    public Config getConfig() {
+        return config;
     }
 
     public Logger getLogger(String name) {

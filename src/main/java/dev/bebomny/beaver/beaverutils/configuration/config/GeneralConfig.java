@@ -1,4 +1,4 @@
-package dev.bebomny.beaver.beaverutils.configuration;
+package dev.bebomny.beaver.beaverutils.configuration.config;
 
 import com.google.gson.annotations.Expose;
 

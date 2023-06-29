@@ -4,9 +4,16 @@
   "package": "dev.bebomny.beaver.beaverutils.mixins",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "ClientConnectionAccessor"
   ],
   "client": [
-    "InGameHudMixin"
+    "BlockMixin",
+    "BlockStateMixin",
+    "ClientPlayerInteractionManagerMixin",
+    "IGridWidgetAccessor",
+    "InGameHudMixin",
+    "MinecraftClientMixin",
+    "SimpleOptionMixin"
   ],
   "injectors": {
     "defaultRequire": 1
