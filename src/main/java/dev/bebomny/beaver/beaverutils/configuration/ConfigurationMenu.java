@@ -1,355 +1,130 @@
 package dev.bebomny.beaver.beaverutils.configuration;
 
 import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
-import dev.bebomny.beaver.beaverutils.features.Feature;
-import net.minecraft.client.gui.screen.GameMenuScreen;
+import dev.bebomny.beaver.beaverutils.configuration.config.GeneralConfig;
+import dev.bebomny.beaver.beaverutils.configuration.gui.buttons.*;
+import dev.bebomny.beaver.beaverutils.helpers.TextUtils;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.option.GameOptions;
+import net.minecraft.client.gui.tooltip.Tooltip;
+import net.minecraft.client.gui.widget.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 
-public class ConfigurationMenu extends Screen {
+public class ConfigurationMenu extends Screen{
 
     private final Screen parent;
-    private final BeaverUtilsClient modBeaverUtils;
-    private final GameOptions settings;
-    private final int margin = (6 + 20);
-    private final int MARGIN = 4;
+    private final BeaverUtilsClient beaverUtilsClient;
+    private final Config config;
+    private final GeneralConfig generalConfig;
 
-    public ConfigurationMenu(Screen parent, GameOptions options) {
-        super(Text.literal("BeaverUtils Options"));
+    public ConfigurationMenu(Screen parent) {
+        super(Text.of("BeaverUtils Options"));
         this.parent = parent;
-        this.settings = options;
-        this.modBeaverUtils = BeaverUtilsClient.getInstance();
+        this.beaverUtilsClient = BeaverUtilsClient.getInstance();
+        this.config = beaverUtilsClient.getConfig();
+        this.generalConfig = config.generalConfig;
     }
 
+    @Override
     protected void init() {
+        //Create a grid widget and configure it appropriately
+        GridWidget gridWidget = new GridWidget();
+        gridWidget.getMainPositioner().marginX(5).marginBottom(4).alignHorizontalCenter();
+        //Create an adder to add buttons to the grid
+        GridWidget.Adder adder = gridWidget.createAdder(2);
 
-        //flight button
-        ButtonWidget flightButton = ButtonWidget.builder(getText(modBeaverUtils.flight),
+        //Empty space first(Tp here later or maybe now?) // tp added but not functional
+        //adder.add(EmptyWidget.ofHeight(20));
+        adder.add(new QuickTeleportButton()); //now make it work
+
+        //Fullbright button
+        adder.add(new FullBrightButton());
+
+        //XrayButton
+        adder.add(new XRayButton());
+
+        //AutoClicker buttons
+        adder.add(new AutoClickerButton());
+
+        //Empty
+        adder.add(EmptyWidget.ofWidth(128));
+
+        //Reach buttons
+        adder.add(new ReachButton());
+
+        //Empty
+        adder.add(EmptyWidget.ofWidth(128));
+
+        //InGameStats
+        adder.add(new InGameStatsButton());
+
+        //Add a DONE button
+        adder.add(
+                ButtonWidget.builder(
+                    ScreenTexts.DONE,
+                    button -> {
+                        this.client.setScreen(this.parent);
+                        beaverUtilsClient.configHandler.saveConfig();
+                    }
+                ).width(200).build(),
+                2, adder.copyPositioner().marginTop(6)
+        );
+
+        //IDK it was in the Minecraft options Class, so it's probably needed xd //ooooh I know what it does now, pretty cool
+        gridWidget.recalculateDimensions();
+
+        //setting the grid in screen space
+        SimplePositioningWidget.setPos(
+                gridWidget,
+                0, this.height / 6 - 12,
+                this.width, this.height,
+                0.5f, 0.05f
+        );
+
+        //Adding the grid to the screen
+        this.addDrawableChild(gridWidget);
+
+        Tooltip autoEnableTooltip = Tooltip.of(Text.of("Enables enabled features on config load"));
+
+        ButtonWidget autoEnableButton = ButtonWidget.builder(
+                TextUtils.getEnabledDisabledText("AutoEnable", generalConfig.autoEnable),
                 button -> {
-                    modBeaverUtils.flight.setEnabled(!modBeaverUtils.flight.isEnabled());
-                    button.setMessage(getText(modBeaverUtils.flight));
-                }).dimensions(
-                (this.width/2) - 12 - 128,
-                20 + (24 + 20),
-                128,
-                20
-        ).build();
+                    generalConfig.autoEnable = !generalConfig.autoEnable;
+                    button.setMessage(TextUtils.getEnabledDisabledText("AutoEnable", generalConfig.autoEnable));
+                }
+        ).dimensions(20, height - 30, 119, 20).tooltip(autoEnableTooltip).build();
 
-        //fullbright button
-        ButtonWidget fullBrightButton = ButtonWidget.builder(getText(modBeaverUtils.fullBright),
+        Tooltip debugTooltip = Tooltip.of(Text.of("§l§a§kSGH §l§aDEBUG §l§a§kSGH §l§adebug §l§aDebug §l§a§kSGH §l§adEbUg §l§a§kSGH §l§fdoesnt do anything xd"));
+
+        ButtonWidget debugButton = ButtonWidget.builder(
+                TextUtils.getEnabledDisabledText("Debug", generalConfig.debug),
                 button -> {
-                    modBeaverUtils.fullBright.setEnabled(!modBeaverUtils.fullBright.isEnabled());
-                    button.setMessage(getText(modBeaverUtils.fullBright));
-                }).dimensions(
-                (this.width/2) + 12,
-                20 + (24 + 20),
-                128,
-                20
-        ).build();
+                    generalConfig.debug = !generalConfig.debug;
+                    button.setMessage(TextUtils.getEnabledDisabledText("Debug", generalConfig.debug));
+                }
+        ).dimensions(20, height - 30 - 4 - 20, 90, 20).tooltip(debugTooltip).build();
 
-        //nofall button
-        ButtonWidget noFallButton = ButtonWidget.builder(getText(modBeaverUtils.noFall),
-                button -> {
-                    modBeaverUtils.noFall.setEnabled(!modBeaverUtils.noFall.isEnabled());
-                    button.setMessage(getText(modBeaverUtils.noFall));
-                }).dimensions(
-                (this.width/2) - 12 - 128,
-                (44 + 20) + (margin * 1),
-                128,
-                20
-        ).build();
-
-        //autoplant button
-        ButtonWidget autoPlantButton = ButtonWidget.builder(getText(modBeaverUtils.autoPlant),
-                button -> {
-                    modBeaverUtils.autoPlant.setEnabled(!modBeaverUtils.autoPlant.isEnabled());
-                    button.setMessage(getText(modBeaverUtils.autoPlant));
-                }).dimensions(
-                (this.width/2) + 12,
-                (44 + 20) + (margin * 1),
-                128,
-                20
-        ).build();
-
-        //xray button
-        ButtonWidget xrayButton = ButtonWidget.builder(getText(modBeaverUtils.xRay),
-                button -> {
-                    modBeaverUtils.xRay.setEnabled(!modBeaverUtils.xRay.isEnabled());
-                    button.setMessage(getText(modBeaverUtils.xRay));
-                }).dimensions(
-                (this.width/2) - 12 - 128,
-                (44 + 20) + (margin * 2),
-                128,
-                20
-        ).build();
-
-        //AutoClicker button
-        ButtonWidget autoClickerButton = ButtonWidget.builder(getText(modBeaverUtils.autoClicker),
-                button -> {
-                    modBeaverUtils.autoClicker.setEnabled(!modBeaverUtils.autoClicker.isEnabled());
-                    button.setMessage(getText(modBeaverUtils.autoClicker));
-                }).dimensions(
-                (this.width/2) + 12,
-                (44 + 20) + (margin * 2),
-                128,
-                20
-        ).build();
-
-        ButtonWidget autoClickerDisplayButton = ButtonWidget.builder(Text.literal(modBeaverUtils.autoClicker.delay + " ticks"),
-                button -> {
-
-                }).dimensions(
-                (this.width/2) + 12 + 128 + 12 + 20,
-                (44 + 20) + (margin * 2),
-                50,
-                20
-        ).build();
-
-        ButtonWidget autoClickerPlusButton = ButtonWidget.builder(Text.literal("+"),
-                button -> {
-                    modBeaverUtils.autoClicker.setDelay(modBeaverUtils.autoClicker.delay + 1);
-                    autoClickerDisplayButton.setMessage(Text.literal(modBeaverUtils.autoClicker.delay + " ticks"));
-                }).dimensions(
-                (this.width/2) + 12 + 128 + 8,
-                (44 + 20) + (margin * 2),
-                20,
-                20
-        ).build();
-
-        ButtonWidget autoClickerMinusButton = ButtonWidget.builder(Text.literal("-"),
-                button -> {
-                    modBeaverUtils.autoClicker.setDelay(modBeaverUtils.autoClicker.delay - 1);
-                    autoClickerDisplayButton.setMessage(Text.literal(modBeaverUtils.autoClicker.delay + " ticks"));
-                }).dimensions(
-                (this.width/2) + 12 + 128 + 16 + 20 + 50,
-                (44 + 20) + (margin * 2),
-                20,
-                20
-        ).build();
-
-        ButtonWidget autoClickerModeButton = ButtonWidget.builder(Text.literal(modBeaverUtils.autoClicker.getMode().toString()),
-                button -> {
-                    modBeaverUtils.autoClicker.changeMode();
-                    button.setMessage(Text.literal(modBeaverUtils.autoClicker.getMode().toString()));
-                }).dimensions(
-                (this.width/2) + 12 + 128 + 20 + 20 + 50 + 20,
-                (44 + 20) + (margin * 2),
-                54,
-                20
-        ).build();
-
-        ButtonWidget autoClickerTypeButton = ButtonWidget.builder(Text.literal(modBeaverUtils.autoClicker.getType().toString()),
-                button -> {
-                    modBeaverUtils.autoClicker.changeType();
-                    button.setMessage(Text.literal(modBeaverUtils.autoClicker.getType().toString()));
-                }).dimensions(
-                (this.width/2) + 12 + 128 + 24 + 20 + 50 + 20 + 54,
-                (44 + 20) + (margin * 2),
-                40,
-                20
-        ).build();
-
-        //elytraSpeedControl
-        ButtonWidget elytraSpeedControlButton = ButtonWidget.builder(getText(modBeaverUtils.elytraSpeedControl),
-                button -> {
-                    modBeaverUtils.elytraSpeedControl.setEnabled(!modBeaverUtils.elytraSpeedControl.isEnabled());
-                    button.setMessage(getText(modBeaverUtils.elytraSpeedControl));
-                }).dimensions(
-                (this.width/2) - 12 - 128,
-                (44 + 20) + (margin * 3),
-                128,
-                20
-        ).build();
-
-        //elytraSpeedControl instantFly
-        ButtonWidget elytraSpeedControlInstantFlyButton = ButtonWidget.builder(getTextOnOff("InstantFly", modBeaverUtils.elytraSpeedControl.instantFly),
-                button -> {
-                    modBeaverUtils.elytraSpeedControl.setInstantFly(!modBeaverUtils.elytraSpeedControl.instantFly);
-                    button.setMessage(getTextOnOff("InstantFly", modBeaverUtils.elytraSpeedControl.instantFly));
-                }).dimensions(
-                (this.width/2) - 12 - 128 - 4 - 80,
-                (44 + 20) + (margin * 3),
-                80,
-                20
-        ).build();
-
-        //reach
-        ButtonWidget reachButton = ButtonWidget.builder(getText(modBeaverUtils.reach),
-                button -> {
-                    modBeaverUtils.reach.setEnabled(!modBeaverUtils.reach.isEnabled());
-                    button.setMessage(getText(modBeaverUtils.reach));
-                }).dimensions(
-                (this.width/2) + 12,
-                (44 + 20) + (margin * 3),
-                128,
-                20
-        ).build();
-
-        ButtonWidget reachDisplayButton = ButtonWidget.builder(Text.literal(modBeaverUtils.reach.getReachDistance() + " blocks"),
-                button -> {
-
-                }).dimensions(
-                (this.width/2) + 12 + 128 + 12 + 20,
-                (44 + 20) + (margin * 3),
-                70,
-                20
-        ).build();
-
-        ButtonWidget reachPlusButton = ButtonWidget.builder(Text.literal("+"),
-                button -> {
-                    modBeaverUtils.reach.setReachDistance(modBeaverUtils.reach.getReachDistance() + 1);
-                    reachDisplayButton.setMessage(Text.literal(modBeaverUtils.reach.getReachDistance() + " Blocks"));
-                }).dimensions(
-                (this.width/2) + 12 + 128 + 8,
-                (44 + 20) + (margin * 3),
-                20,
-                20
-        ).build();
-
-        ButtonWidget reachMinusButton = ButtonWidget.builder(Text.literal("-"),
-                button -> {
-                    modBeaverUtils.reach.setReachDistance(modBeaverUtils.reach.getReachDistance() - 1);
-                    reachDisplayButton.setMessage(Text.literal(modBeaverUtils.reach.getReachDistance() + " Blocks"));
-                }).dimensions(
-                (this.width/2) + 12 + 128 + 16 + 20 + 70,
-                (44 + 20) + (margin * 3),
-                20,
-                20
-        ).build();
-
-        ButtonWidget extendedReachDisplayButton = ButtonWidget.builder(Text.literal(modBeaverUtils.reach.getMaxExtendedReachDistance() + " Blocks"),
-                button -> {
-                    button.setMessage(Text.literal(modBeaverUtils.reach.getMaxExtendedReachDistance() + " Blocks"));
-                }).dimensions(
-                (this.width/2) + 12 + 128 + 16 + 20 + 70 + 20 + 10 + 20 + 4,
-                (44 + 20) + (margin * 3) + 10,
-                90,
-                20
-        ).build();
-
-        ButtonWidget extendedReachPlusButton = ButtonWidget.builder(Text.literal("+"),
-                button -> {
-                    modBeaverUtils.reach.setMaxExtendedReachDistance(modBeaverUtils.reach.getMaxExtendedReachDistance() + 10);
-                    extendedReachDisplayButton.setMessage(Text.literal(modBeaverUtils.reach.getMaxExtendedReachDistance() + " Blocks"));
-                }).dimensions(
-                (this.width/2) + 12 + 128 + 16 + 20 + 20 + 70 + 10,
-                (44 + 20) + (margin * 3) + 10,
-                20,
-                20
-        ).build();
-
-        ButtonWidget extendedReachMinusButton = ButtonWidget.builder(Text.literal("-"),
-                button -> {
-                    modBeaverUtils.reach.setMaxExtendedReachDistance(modBeaverUtils.reach.getMaxExtendedReachDistance() - 10);
-                    extendedReachDisplayButton.setMessage(Text.literal(modBeaverUtils.reach.getMaxExtendedReachDistance() + " Blocks"));
-                }).dimensions(
-                (this.width/2) + 12 + 128 + 16 + 20 + 70 + 10 + 20 + 20 + 8 + 90,
-                (44 + 20) + (margin * 3) + 10,
-                20,
-                20
-        ).build();
-
-        //AutoTool
-        ButtonWidget autoToolButton = ButtonWidget.builder(getText(modBeaverUtils.autoTool),
-                button -> {
-                    modBeaverUtils.autoTool.setEnabled(!modBeaverUtils.autoTool.isEnabled());
-                    button.setMessage(getText(modBeaverUtils.autoTool));
-                }).dimensions(
-                (this.width/2) + 12,
-                (44 + 20) + (margin * 4),
-                128,
-                20
-        ).build();
-
-        ButtonWidget inGameStatsButton = ButtonWidget.builder(getText(modBeaverUtils.inGameStats),
-                button -> {
-                    modBeaverUtils.inGameStats.setEnabled(!modBeaverUtils.inGameStats.isEnabled());
-                    button.setMessage(getText(modBeaverUtils.inGameStats));
-                }).dimensions(
-                (this.width/2) + 12,
-                (44 + 20) + (margin * 5),
-                128,
-                20
-        ).build();
-
-
-
-        //"Done" button
-        ButtonWidget doneButton = ButtonWidget.builder(ScreenTexts.DONE,
-                button -> {
-                    this.client.setScreen(this.parent);
-                }).dimensions(
-                (this.width/2) - 140,
-                this.height - 50,
-                280,
-                20
-        ).build();
-
-        //1st row
-        this.addDrawableChild(flightButton);
-        this.addDrawableChild(fullBrightButton);
-
-        //2nd row
-        this.addDrawableChild(noFallButton);
-        this.addDrawableChild(autoPlantButton);
-
-        //3rd row
-        this.addDrawableChild(xrayButton);
-        this.addDrawableChild(autoClickerButton);
-        this.addDrawableChild(autoClickerPlusButton);
-        this.addDrawableChild(autoClickerDisplayButton);
-        this.addDrawableChild(autoClickerMinusButton);
-        this.addDrawableChild(autoClickerModeButton);
-        this.addDrawableChild(autoClickerTypeButton);
-
-        //4th row
-        this.addDrawableChild(elytraSpeedControlButton);
-        this.addDrawableChild(elytraSpeedControlInstantFlyButton);
-        this.addDrawableChild(reachButton);
-        this.addDrawableChild(reachPlusButton);
-        this.addDrawableChild(reachDisplayButton);
-        this.addDrawableChild(reachMinusButton);
-        this.addDrawableChild(extendedReachPlusButton);
-        this.addDrawableChild(extendedReachDisplayButton);
-        this.addDrawableChild(extendedReachMinusButton);
-
-        //5th row
-        this.addDrawableChild(autoToolButton);
-
-        //6th row
-        this.addDrawableChild(inGameStatsButton);
-
-        //done button
-        this.addDrawableChild(doneButton);
-    }
-
-    private Text getText(Feature feature) {
-        return Text.literal(feature.getName() + (feature.isEnabled() ? " Enabled" : " Disabled"));
-    }
-
-    private Text getTextOnOff(String name, boolean enabled) {
-        return Text.literal(name + (enabled ? " ON" : " OFF"));
+        this.addDrawableChild(autoEnableButton);
+        this.addDrawableChild(debugButton);
     }
 
     @Override
     public void close() {
-        assert client != null;
-        client.setScreen(this.parent);
+        if (client != null)
+            client.setScreen(parent);
+        else
+            super.close();
     }
 
     @Override
     public void render(final MatrixStack matrices, final int mouseX, final int mouseY, final float delta) {
+        //Render the dimmed background
         this.renderBackground(matrices);
+
+        //Add tittle
         drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 20, 16777215);
-        drawCenteredTextWithShadow(
-                matrices, this.textRenderer,
-                Text.literal("MaxExtendedReachDistance").asOrderedText(),
-                (this.width/2) + 12 + 128 + 16 + 20 + 70 + 20 + 10 + 20 + 4 + 45,
-                (44 + 20) + (margin * 3) - 2, 16777215);
+
         super.render(matrices, mouseX, mouseY, delta);
     }
 }

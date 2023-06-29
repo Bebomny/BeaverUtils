@@ -12,33 +12,29 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ClientPlayerInteractionManager.class)
 public class ClientPlayerInteractionManagerMixin {
 
-
     @Inject(at = {@At(value = "INVOKE",
             target = "Lnet/minecraft/client/network/ClientPlayerEntity;getId()I",
             ordinal = 0)},
             method = {"updateBlockBreakingProgress(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/Direction;)Z"})
     private void onPlayerDamageBlock(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> cir) {
-        BeaverUtilsClient.getInstance().autoTool.onBlockBreakingEvent(pos, direction);
+        //Autotool
     }
 
-    @Inject(method = "getReachDistance()F", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "getReachDistance", at = @At("HEAD"), cancellable = true)
     public void onGetReachDistance(CallbackInfoReturnable<Float> cir) {
-
-        BeaverUtilsClient modBeaverUtils = BeaverUtilsClient.getInstance();
-        if(!modBeaverUtils.reach.isEnabled())
+        if(!BeaverUtilsClient.getInstance().features.reach.isEnabled()) {
             return;
+        }
 
-        cir.setReturnValue(modBeaverUtils.reach.getReachDistance());
+        cir.setReturnValue(BeaverUtilsClient.getInstance().features.reach.getDistance());
     }
 
-    @Inject(method = "hasExtendedReach()Z", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "hasExtendedReach", at = @At("HEAD"), cancellable = true)
     public void hasExtendedReach(CallbackInfoReturnable<Boolean> cir) {
-
-        BeaverUtilsClient modBeaverUtils = BeaverUtilsClient.getInstance();
-        if(!modBeaverUtils.reach.isEnabled())
+        if(!BeaverUtilsClient.getInstance().features.reach.isEnabled()) {
             return;
+        }
 
         cir.setReturnValue(true);
     }
-
 }

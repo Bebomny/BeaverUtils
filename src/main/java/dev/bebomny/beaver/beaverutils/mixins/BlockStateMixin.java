@@ -1,8 +1,9 @@
 package dev.bebomny.beaver.beaverutils.mixins;
 
 import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
-import net.minecraft.block.AbstractBlock.AbstractBlockState;
+import dev.bebomny.beaver.beaverutils.features.features.XRay;
 import net.minecraft.block.Block;
+import net.minecraft.block.AbstractBlock.AbstractBlockState;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SideShapeType;
 import net.minecraft.util.math.BlockPos;
@@ -22,8 +23,9 @@ public abstract class BlockStateMixin {
 
     @Inject(at = @At("HEAD"), method = "isSideInvisible", cancellable = true)
     public void isSideInvisible(BlockState state, Direction direction, CallbackInfoReturnable<Boolean> cir) {
-        if(BeaverUtilsClient.getInstance().xRay.isEnabled() && BeaverUtilsClient.getInstance().xRay.isActive()) {
-            if(BeaverUtilsClient.getInstance().xRay.isInterestingBlock(this.getBlock())) {
+        XRay xRay = BeaverUtilsClient.getInstance().features.xRay;
+        if(xRay.isEnabled()) {
+            if(xRay.isInterestingBlock(this.getBlock())) {
                 cir.setReturnValue(false);
                 return;
             }
@@ -34,8 +36,9 @@ public abstract class BlockStateMixin {
 
     @Inject(at = @At("HEAD"), method = "isSideSolid", cancellable = true)
     public void isSideSolid(BlockView world, BlockPos pos, Direction direction, SideShapeType shapeType, CallbackInfoReturnable<Boolean> cir) {
-        if(BeaverUtilsClient.getInstance().xRay.isEnabled() && BeaverUtilsClient.getInstance().xRay.isActive()) {
-            if(BeaverUtilsClient.getInstance().xRay.isInterestingBlock(this.getBlock())) {
+        XRay xRay = BeaverUtilsClient.getInstance().features.xRay;
+        if(xRay.isEnabled()) {
+            if(xRay.isInterestingBlock(this.getBlock())) {
                 cir.setReturnValue(true);
                 return;
             }
@@ -46,8 +49,9 @@ public abstract class BlockStateMixin {
 
     @Inject(at = @At("HEAD"), method = "getLuminance", cancellable = true)
     public void getLuminance(CallbackInfoReturnable<Integer> cir) {
-        if(BeaverUtilsClient.getInstance().xRay.isEnabled() && BeaverUtilsClient.getInstance().xRay.isActive()) {
-            if(BeaverUtilsClient.getInstance().xRay.isInterestingBlock(this.getBlock())) {
+        XRay xRay = BeaverUtilsClient.getInstance().features.xRay;
+        if(xRay.isEnabled()) {
+            if(xRay.isInterestingBlock(this.getBlock())) {
                 cir.setReturnValue(12);
                 return;
             }
@@ -57,8 +61,9 @@ public abstract class BlockStateMixin {
 
     @Inject(at = @At("HEAD"), method = "getAmbientOcclusionLightLevel", cancellable = true)
     public void getAmbientOcclusionLightLevel(BlockView world, BlockPos pos, CallbackInfoReturnable<Float> cir) {
-        if(BeaverUtilsClient.getInstance().xRay.isEnabled() && BeaverUtilsClient.getInstance().xRay.isActive()) {
-            if(BeaverUtilsClient.getInstance().xRay.isInterestingBlock(this.getBlock())) {
+        XRay xRay = BeaverUtilsClient.getInstance().features.xRay;
+        if(xRay.isEnabled()) {
+            if(xRay.isInterestingBlock(this.getBlock())) {
                 cir.setReturnValue(1.0f);
                 return;
             }
@@ -69,8 +74,9 @@ public abstract class BlockStateMixin {
 
     @Inject(at = @At("HEAD"), method = "getCullingFace", cancellable = true)
     public void getCullingFace(BlockView world, BlockPos pos, Direction direction, CallbackInfoReturnable<VoxelShape> cir) {
-        if(BeaverUtilsClient.getInstance().xRay.isEnabled() && BeaverUtilsClient.getInstance().xRay.isActive()) {
-            if(BeaverUtilsClient.getInstance().xRay.isInterestingBlock(this.getBlock())) {
+        XRay xRay = BeaverUtilsClient.getInstance().features.xRay;
+        if(xRay.isEnabled()) {
+            if(xRay.isInterestingBlock(this.getBlock())) {
                 cir.setReturnValue(VoxelShapes.fullCube());
                 return;
             }
@@ -78,4 +84,5 @@ public abstract class BlockStateMixin {
             return;
         }
     }
+
 }

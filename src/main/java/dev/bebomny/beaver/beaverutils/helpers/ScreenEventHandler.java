@@ -15,14 +15,12 @@ import java.util.List;
 public class ScreenEventHandler {
 
     public static void register() {
-
         ScreenEvents.AFTER_INIT.register(ScreenEventHandler::afterScreenInit);
     }
 
     private static void afterScreenInit(MinecraftClient client, Screen screen, int i, int i1) {
         if (screen instanceof GameMenuScreen)
             afterGameScreenInit(screen);
-
     }
 
     private static void afterGameScreenInit(Screen screen) {
@@ -32,6 +30,4 @@ public class ScreenEventHandler {
             buttons.add(new BeaverUtilsOptionsButtonWidget(screen));
         }
     }
-
-
 }

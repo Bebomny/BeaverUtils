@@ -1,125 +1,35 @@
 package dev.bebomny.beaver.beaverutils.features;
 
-import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
-import dev.bebomny.beaver.beaverutils.helpers.Notification;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.text.Text;
 
-import java.awt.*;
+import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
+import dev.bebomny.beaver.beaverutils.configuration.Config;
+import dev.bebomny.beaver.beaverutils.notifications.NotificationHandler;
+import net.minecraft.client.MinecraftClient;
+import org.slf4j.Logger;
 
 public abstract class Feature {
 
-    private final String name;
-    private boolean enabled = false;
-    private boolean active = false;
-    private final boolean useActivationKeyBind;
-    private final KeyBinding activationKey;
-    private final BeaverUtilsClient modBeaverUtils;
+    protected final MinecraftClient client;
+    protected final BeaverUtilsClient beaverUtilsClient;
+    protected final NotificationHandler notifier;
+    protected final Config config;
+    protected final Logger LOGGER;
 
-    public Feature(String name, int key, BeaverUtilsClient mod) {
+    //Feature specific
+    public final String name;
+
+    public Feature(String name) {
+        this.client = MinecraftClient.getInstance();
+        this.beaverUtilsClient = BeaverUtilsClient.getInstance();
+        this.notifier = beaverUtilsClient.getNotifier();
+        this.config = beaverUtilsClient.getConfig();
+        this.LOGGER = beaverUtilsClient.getLogger(name);
         this.name = name;
-        this.useActivationKeyBind = true;
-        this.activationKey = new KeyBinding(name, key, "BeaverUtils");
-        this.modBeaverUtils = mod;
-        //register
-        ClientTickEvents.END_CLIENT_TICK.register(this::checkKeyBindPress);
-        ClientTickEvents.END_CLIENT_TICK.register(this::onUpdate);
-        KeyBindingHelper.registerKeyBinding(activationKey);
     }
 
-    public Feature(String name, BeaverUtilsClient mod) {
-        this.name = name;
-        this.useActivationKeyBind = false;
-        this.activationKey = null;
-        this.modBeaverUtils = mod;
-        //register
-        ClientTickEvents.END_CLIENT_TICK.register(this::onUpdate);
-    }
-
-    public final boolean isEnabled() {
-        return enabled;
-    }
-
-    public final boolean isActive() {
-        return active;
-    }
-
-    public final String getName() {
+    public String getName() {
         return name;
     }
 
-    public void setEnabled(boolean enabled) {
-        if(this.enabled == enabled) {
-            return;
-        }
-
-        this.enabled = enabled;
-
-        if(enabled) {
-            onEnable();
-        } else {
-            setActive(false);
-            onDisable();
-        }
-
-        /*
-        if((!useActivationKeyBind) && enabled)
-            onEnable();
-
-        if(!enabled) {
-            setActive(false);
-            onDisable();
-        }
-        */
-
-    }
-
-    public void setActive(boolean active) {
-        if(this.active == active)
-            return;
-
-        this.active = active;
-
-        if(active && isEnabled()) {
-            //onEnable();
-            onActivation();
-        }
-        else if(!active && isEnabled()) {
-            //onDisable();
-            onDeactivation();
-        }
-    }
-
-    private void checkKeyBindPress(MinecraftClient client) {
-        if(!this.isEnabled())
-            return;
-
-        while(activationKey.wasPressed()) {
-            setActive(!active);
-        }
-    }
-
-    protected void onUpdate(MinecraftClient client) {
-
-    }
-
-    protected void onEnable() {
-        modBeaverUtils.notifier.newNotification(new Notification(Text.literal(getName() + " Enabled"), new Color(0x00FF00)));
-    }
-
-    protected void onDisable() {
-        modBeaverUtils.notifier.newNotification(new Notification(Text.literal(getName() + " Disabled"), new Color(0xFF00000)));
-    }
-
-    protected void onActivation() {
-        modBeaverUtils.notifier.newNotification(new Notification(Text.literal(getName() + " Activated"), new Color(0x00FF00)));
-    }
-
-    protected void onDeactivation() {
-        modBeaverUtils.notifier.newNotification(new Notification(Text.literal(getName() + " Deactivated"), new Color(0xFF00000)));
-    }
 
 }

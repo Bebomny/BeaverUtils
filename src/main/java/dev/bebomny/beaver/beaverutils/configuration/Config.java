@@ -1,7 +1,33 @@
 package dev.bebomny.beaver.beaverutils.configuration;
 
+import com.google.gson.annotations.Expose;
+import dev.bebomny.beaver.beaverutils.configuration.config.*;
+
 public class Config {
 
-    public boolean flightEnable = false;
-    public boolean flightActive = false;
+    //General config options
+    @Expose
+    public GeneralConfig generalConfig = new GeneralConfig();
+
+    @Expose
+    public QuickTeleportConfig quickTeleportConfig = new QuickTeleportConfig();
+
+    @Expose
+    public FullBrightConfig fullBrightConfig = new FullBrightConfig();
+
+    @Expose
+    public AutoClickerConfig autoClickerConfig = new AutoClickerConfig();
+
+    @Expose
+    public ReachConfig reachConfig = new ReachConfig();
+
+    @Expose
+    public XRayConfig xRayConfig = new XRayConfig();
+
+    @Expose
+    public InGameStatsConfig inGameStatsConfig = new InGameStatsConfig();
+
+    public Config() {
+
+    }
 }
