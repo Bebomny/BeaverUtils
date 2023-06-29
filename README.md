@@ -1,4 +1,4 @@
-<p> Currently rewriting</p>
+<p> README needs an update</p>
 
 ---
 
