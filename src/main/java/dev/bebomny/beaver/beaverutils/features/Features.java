@@ -13,6 +13,9 @@ public class Features {
     public Reach reach;
     public AutoClicker autoClicker;
     public InGameStats inGameStats;
+    public Flight flight;
+    public NoFallDmg noFallDmg;
+    public AutoPlant autoPlant;
 
     public Features() {
         this.beaverUtilsClient = BeaverUtilsClient.getInstance();
@@ -32,6 +35,15 @@ public class Features {
 
         this.reach = new Reach();
         beaverUtilsClient.featureHandler.addFeature(reach);
+
+        this.flight = new Flight();
+        beaverUtilsClient.featureHandler.addFeature(flight);
+
+        this.noFallDmg = new NoFallDmg();
+        beaverUtilsClient.featureHandler.addFeature(noFallDmg);
+
+        this.autoPlant = new AutoPlant();
+        beaverUtilsClient.featureHandler.addFeature(autoPlant);
 
         this.inGameStats = new InGameStats();
         beaverUtilsClient.featureHandler.addFeature(inGameStats);
