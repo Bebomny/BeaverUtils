@@ -35,13 +35,16 @@ public class AutoPlantButton extends AxisGridWidget {
                 }
         ).dimensions( -2 - 90, 0, 90, 20).tooltip(plantRadiusTooltip).build();
 
+        //TODO: To fix
+        Tooltip notImplementedTooltip = Tooltip.of(Text.of("§cNot Implemented Yet!!!"));
+
         ButtonWidget modeButton = ButtonWidget.builder(
                 Text.of("Mode: " + autoPlant.getMode()),
                 button -> {
                     autoPlant.changeMode();
                     button.setMessage(Text.of("Mode: " + autoPlant.getMode()));
                 }
-        ).dimensions(-164 - 2 - 2 - 90, 0, 164, 20).build();
+        ).dimensions(-164 - 2 - 2 - 90, 0, 164, 20).tooltip(notImplementedTooltip).build();
 
         this.add(mainButton);
         this.add(plantRadiusButton);
