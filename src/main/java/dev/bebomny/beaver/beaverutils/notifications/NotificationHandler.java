@@ -53,7 +53,10 @@ public class NotificationHandler {
 
                 case CONFIG_UPDATE -> "§6§l[" + "§1CONFIG UPDATED" +"§6§l]" + "§r ";
 
-                case FEATURE -> "§6§l[" + "§1FEATURE" +"§6§l]" + "§r ";
+                case FEATURE -> notification.getCallerClassName() == null ?
+                        "§6§l[" + "§1FEATURE" +"§6§l]" + "§r "
+                        : "§6§l[" + "§1FEATURE " + "§0-" + " §2" + notification.getCallerClassName() +"§6§l]" + "§r ";
+
 
                 case NONE -> "";
 

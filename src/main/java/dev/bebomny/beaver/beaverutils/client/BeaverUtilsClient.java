@@ -110,8 +110,6 @@ public class BeaverUtilsClient implements ClientModInitializer {
         //handlers random pt2
         ScreenEventHandler.register();
 
-        //features.xRay.printsmh();
-
         Runtime.getRuntime().addShutdownHook(new Thread(configHandler::saveConfig));
 
         //Initialization End

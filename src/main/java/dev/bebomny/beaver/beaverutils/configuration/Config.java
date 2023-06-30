@@ -22,6 +22,15 @@ public class Config {
     public ReachConfig reachConfig = new ReachConfig();
 
     @Expose
+    public FlightConfig flightConfig = new FlightConfig();
+
+    @Expose
+    public NoFallDmgConfig noFallDmgConfig = new NoFallDmgConfig();
+
+    @Expose
+    public AutoPlantConfig autoPlantConfig = new AutoPlantConfig();
+
+    @Expose
     public XRayConfig xRayConfig = new XRayConfig();
 
     @Expose

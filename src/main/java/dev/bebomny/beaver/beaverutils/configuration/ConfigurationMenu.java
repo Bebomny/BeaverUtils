@@ -47,17 +47,20 @@ public class ConfigurationMenu extends Screen{
         //AutoClicker buttons
         adder.add(new AutoClickerButton());
 
-        //Empty
-        adder.add(EmptyWidget.ofWidth(128));
+        //Flight buttons
+        adder.add(new FlightButton());
 
         //Reach buttons
         adder.add(new ReachButton());
 
-        //Empty
-        adder.add(EmptyWidget.ofWidth(128));
+        //NoFallDamage
+        adder.add(new NoFallDmgButton());
 
         //InGameStats
         adder.add(new InGameStatsButton());
+
+        //AutoPlant Buttons
+        adder.add(new AutoPlantButton());
 
         //Add a DONE button
         adder.add(
