@@ -8,7 +8,7 @@ import net.minecraft.text.Text;
 
 public class XRayButton extends ButtonWidget {
 
-    public XRayButton() {
+    public XRayButton(int x, int y) {
         super(
                 0, 0,
                 128, 20,
@@ -27,5 +27,6 @@ public class XRayButton extends ButtonWidget {
                 },
                 DEFAULT_NARRATION_SUPPLIER
         );
+        this.setPosition(x, y);
     }
 }

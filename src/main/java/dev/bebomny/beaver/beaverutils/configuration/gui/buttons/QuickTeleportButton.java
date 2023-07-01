@@ -12,7 +12,7 @@ public class QuickTeleportButton extends AxisGridWidget {
 
     private QuickTeleport quickTeleport = BeaverUtilsClient.getInstance().features.quickTeleport;
 
-    public QuickTeleportButton() {
+    public QuickTeleportButton(int x, int y) {
         super(128, 20 ,DisplayAxis.HORIZONTAL);
         this.getMainPositioner().alignRight(); //maybe chnage this? //.marginX(2)
 
@@ -49,5 +49,6 @@ public class QuickTeleportButton extends AxisGridWidget {
         this.add(teleportPlusButton);
         this.add(teleportMinusButton);
         this.refreshPositions();
+        this.setPosition(x, y);
     }
 }

@@ -14,7 +14,7 @@ public class FlightButton extends AxisGridWidget {
     private Flight flight = BeaverUtilsClient.getInstance().features.flight;
     private FlightConfig flightConfig = BeaverUtilsClient.getInstance().getConfig().flightConfig;
 
-    public FlightButton() {
+    public FlightButton(int x, int y) {
         super(128, 20, DisplayAxis.HORIZONTAL);
 
         ButtonWidget flightButton = ButtonWidget.builder(
@@ -40,5 +40,6 @@ public class FlightButton extends AxisGridWidget {
         this.add(flightMode);
 
         this.getMainPositioner().alignRight();
+        this.setPosition(x, y);
     }
 }

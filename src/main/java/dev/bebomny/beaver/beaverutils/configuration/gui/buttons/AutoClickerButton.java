@@ -14,7 +14,7 @@ public class AutoClickerButton extends AxisGridWidget {
 
     private AutoClicker autoClicker = BeaverUtilsClient.getInstance().features.autoClicker;
 
-    public AutoClickerButton() {
+    public AutoClickerButton(int x, int y) {
         super(128, 20, DisplayAxis.HORIZONTAL);
         //this.getMainPositioner().alignLeft();
 
@@ -75,5 +75,6 @@ public class AutoClickerButton extends AxisGridWidget {
         //this.getMainPositioner().alignLeft();
         //SimplePositioningWidget.setPos(this, 0, 0, 128 + 2 + 65 + 2 + 20 + 2 + 20 + 2 + 80 + 2 + 65, 20);
         //OptionsScreen
+        this.setPosition(x, y);
     }
 }

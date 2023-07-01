@@ -7,9 +7,9 @@ import net.minecraft.text.Text;
 
 public class FullBrightButton extends ButtonWidget {
 
-    public FullBrightButton() {
+    public FullBrightButton(int x, int y) {
         super(
-                0,0,
+                0, 0,
                 128, 20,
                 TextUtils.getEnabledDisabledText(BeaverUtilsClient.getInstance().features.fullBright.getName(), BeaverUtilsClient.getInstance().features.fullBright.isEnabled()),
                 button -> {
@@ -18,5 +18,6 @@ public class FullBrightButton extends ButtonWidget {
                 },
                 DEFAULT_NARRATION_SUPPLIER
         );
+        this.setPosition(x, y);
     }
 }

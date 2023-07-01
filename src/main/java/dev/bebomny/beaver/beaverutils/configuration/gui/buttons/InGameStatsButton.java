@@ -6,7 +6,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 
 public class InGameStatsButton extends ButtonWidget {
 
-    public InGameStatsButton() {
+    public InGameStatsButton(int x, int y) {
         super(
                 0,0,
                 128, 20,
@@ -17,5 +17,6 @@ public class InGameStatsButton extends ButtonWidget {
                 },
                 DEFAULT_NARRATION_SUPPLIER
         );
+        this.setPosition(x, y);
     }
 }

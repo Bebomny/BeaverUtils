@@ -14,7 +14,7 @@ public class AutoPlantButton extends AxisGridWidget {
     private AutoPlantConfig autoPlantConfig = BeaverUtilsClient.getInstance().getConfig().autoPlantConfig;
     private AutoPlant autoPlant = BeaverUtilsClient.getInstance().features.autoPlant;
 
-    public AutoPlantButton() {
+    public AutoPlantButton(int x, int y) {
         super(128, 20 , DisplayAxis.HORIZONTAL);
 
         ButtonWidget mainButton = ButtonWidget.builder(
@@ -51,5 +51,6 @@ public class AutoPlantButton extends AxisGridWidget {
         this.add(modeButton);
 
         this.getMainPositioner().alignRight();
+        this.setPosition(x, y);
     }
 }

@@ -7,7 +7,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 
 public class NoFallDmgButton extends ButtonWidget {
 
-    public NoFallDmgButton() {
+    public NoFallDmgButton(int x, int y) {
         super(
                 0, 0,
                 128, 20,
@@ -25,5 +25,6 @@ public class NoFallDmgButton extends ButtonWidget {
                 },
                 DEFAULT_NARRATION_SUPPLIER
         );
+        this.setPosition(x, y);
     }
 }

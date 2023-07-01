@@ -11,7 +11,7 @@ public class ReachButton extends AxisGridWidget {
 
     private Reach reach = BeaverUtilsClient.getInstance().features.reach;
 
-    public ReachButton() {
+    public ReachButton(int x, int y) {
         super(128, 20, DisplayAxis.HORIZONTAL);//219
         this.getMainPositioner().alignLeft();
 
@@ -55,5 +55,6 @@ public class ReachButton extends AxisGridWidget {
         this.add(reachMinus);
 
         this.getMainPositioner().alignLeft();
+        this.setPosition(x, y);
     }
 }

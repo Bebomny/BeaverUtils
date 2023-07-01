@@ -6,12 +6,11 @@ import dev.bebomny.beaver.beaverutils.configuration.gui.buttons.*;
 import dev.bebomny.beaver.beaverutils.helpers.TextUtils;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.option.OptionsScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.*;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.MathHelper;
 
 public class ConfigurationMenu extends Screen{
 
@@ -19,6 +18,11 @@ public class ConfigurationMenu extends Screen{
     private final BeaverUtilsClient beaverUtilsClient;
     private final Config config;
     private final GeneralConfig generalConfig;
+
+    final int BUTTON_HEIGHT = 20;
+    final int SPACING = 4;
+
+    private float rowCounter;
 
     public ConfigurationMenu(Screen parent) {
         super(Text.of("BeaverUtils Options"));
@@ -38,31 +42,31 @@ public class ConfigurationMenu extends Screen{
 
         //Empty space first(Tp here later or maybe now?) // tp added but not functional
         //adder.add(EmptyWidget.ofHeight(20));
-        adder.add(new QuickTeleportButton()); //now make it work
+        adder.add(new QuickTeleportButton(-(128 + 4), calculateYPosition(0))); //now make it work
 
         //Fullbright button
-        adder.add(new FullBrightButton());
+        adder.add(new FullBrightButton(0, calculateYPosition(0)));
 
         //XrayButton
-        adder.add(new XRayButton());
+        adder.add(new XRayButton(-(128 + 4), calculateYPosition(1)));
 
         //AutoClicker buttons
-        adder.add(new AutoClickerButton());
+        adder.add(new AutoClickerButton(0, calculateYPosition(1)));
 
         //Flight buttons
-        adder.add(new FlightButton());
+        adder.add(new FlightButton(-(128 + 4), calculateYPosition(2)));
 
         //Reach buttons
-        adder.add(new ReachButton());
+        adder.add(new ReachButton(0, calculateYPosition(2)));
 
         //NoFallDamage
-        adder.add(new NoFallDmgButton());
+        adder.add(new NoFallDmgButton(-(128 + 4), calculateYPosition(3)));
 
         //InGameStats
-        adder.add(new InGameStatsButton());
+        adder.add(new InGameStatsButton(0, calculateYPosition(3)));
 
         //AutoPlant Buttons
-        adder.add(new AutoPlantButton());
+        adder.add(new AutoPlantButton(-(128 + 4), calculateYPosition(4)));
 
         //Add a DONE button
         adder.add(
@@ -72,12 +76,12 @@ public class ConfigurationMenu extends Screen{
                         this.client.setScreen(this.parent);
                         beaverUtilsClient.configHandler.saveConfig();
                     }
-                ).width(200).build(),
+                ).width(200).position(-102, calculateYPosition(6) + 14).build(),
                 2, adder.copyPositioner().marginTop(6)
         );
 
-        //IDK it was in the Minecraft options Class, so it's probably needed xd //ooooh I know what it does now, pretty cool
-        gridWidget.refreshPositions();
+        //IDK it was in the Minecraft options Class, so it's probably needed xd //ooooh I know what it does now, pretty cool //it is fucked up in this version(1.20.1), not recommended
+        //gridWidget.refreshPositions();
 
         //setting the grid in screen space
         SimplePositioningWidget.setPos(
@@ -86,6 +90,11 @@ public class ConfigurationMenu extends Screen{
                 this.width, this.height,
                 0.5f, 0.05f
         );
+
+        //
+        //rowCounter = 0;
+        //gridWidget.forEachElement(clickableWidget -> clickableWidget.setY(getNextYPosition()));
+        //gridWidget.forEachElement(widget -> widget.setX(widget.getX()));
 
         //Adding the grid to the screen
         gridWidget.forEachChild(this::addDrawableChild);
@@ -112,6 +121,15 @@ public class ConfigurationMenu extends Screen{
 
         this.addDrawableChild(autoEnableButton);
         this.addDrawableChild(debugButton);
+    }
+
+    private int getNextYPosition() {
+        rowCounter += 0.5;
+        return calculateYPosition(MathHelper.floor(rowCounter));
+    }
+
+    private int calculateYPosition(int row) {
+        return row * (BUTTON_HEIGHT + SPACING);
     }
 
     @Override
