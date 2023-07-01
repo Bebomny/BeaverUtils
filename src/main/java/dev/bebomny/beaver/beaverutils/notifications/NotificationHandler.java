@@ -3,7 +3,11 @@ package dev.bebomny.beaver.beaverutils.notifications;
 import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 
 import java.awt.*;
@@ -21,7 +25,7 @@ public class NotificationHandler {
         ClientTickEvents.END_CLIENT_TICK.register(this::onUpdate);
     }
 
-    public void onRenderInit(MatrixStack matrices, float partialTicks) {
+    public void onRenderInit(DrawContext context, float partialTicks) {
         if(!notificationQueue.isEmpty()) {
             Notification notification = notificationQueue.get(0);
 
@@ -80,7 +84,9 @@ public class NotificationHandler {
             float y = client.getWindow().getScaledHeight() - 65f;
 
             //Drawing to the screen using the inGameHud Object
-            client.inGameHud.getTextRenderer().drawWithShadow(matrices, text, x, y, color | alpha);
+                //client.inGameHud.getTextRenderer().drawWithShadow(matrices, text, x, y, color | alpha); //FROM 1.19.3!!!
+            context.drawTextWithShadow(client.textRenderer, text, (int) x, (int) y, color | alpha);
+            //TODO: FIXX HERE
         }
 
         if(decay <= 1 && !notificationQueue.isEmpty())

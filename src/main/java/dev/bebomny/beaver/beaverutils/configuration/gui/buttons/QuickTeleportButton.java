@@ -48,6 +48,6 @@ public class QuickTeleportButton extends AxisGridWidget {
         this.add(teleportDisplayButton);
         this.add(teleportPlusButton);
         this.add(teleportMinusButton);
-        this.recalculateDimensions();
+        this.refreshPositions();
     }
 }

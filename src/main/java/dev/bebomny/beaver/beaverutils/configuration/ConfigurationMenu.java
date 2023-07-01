@@ -4,7 +4,9 @@ import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
 import dev.bebomny.beaver.beaverutils.configuration.config.GeneralConfig;
 import dev.bebomny.beaver.beaverutils.configuration.gui.buttons.*;
 import dev.bebomny.beaver.beaverutils.helpers.TextUtils;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.option.OptionsScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.client.util.math.MatrixStack;
@@ -75,7 +77,7 @@ public class ConfigurationMenu extends Screen{
         );
 
         //IDK it was in the Minecraft options Class, so it's probably needed xd //ooooh I know what it does now, pretty cool
-        gridWidget.recalculateDimensions();
+        gridWidget.refreshPositions();
 
         //setting the grid in screen space
         SimplePositioningWidget.setPos(
@@ -86,7 +88,7 @@ public class ConfigurationMenu extends Screen{
         );
 
         //Adding the grid to the screen
-        this.addDrawableChild(gridWidget);
+        gridWidget.forEachChild(this::addDrawableChild);
 
         Tooltip autoEnableTooltip = Tooltip.of(Text.of("Enables enabled features on config load"));
 
@@ -121,13 +123,13 @@ public class ConfigurationMenu extends Screen{
     }
 
     @Override
-    public void render(final MatrixStack matrices, final int mouseX, final int mouseY, final float delta) {
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         //Render the dimmed background
-        this.renderBackground(matrices);
+        this.renderBackground(context);
 
         //Add tittle
-        drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 20, 16777215);
+        context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 15, 16777215);
 
-        super.render(matrices, mouseX, mouseY, delta);
+        super.render(context, mouseX, mouseY, delta);
     }
 }

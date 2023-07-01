@@ -8,6 +8,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import org.lwjgl.glfw.GLFW;
 
 public class Flight extends KeyOnOffFeature {
@@ -43,8 +44,10 @@ public class Flight extends KeyOnOffFeature {
                     this.oldPos = client.player.getPos();
 
                     if(tickCounter >= flightConfig.floatingTickLimit) {
-                        if((client.player.world.getBlockState(new BlockPos(client.player.getPos().subtract(0.0, 0.0433D, 0.0))).isAir())
-                                || (client.player.world.getBlockState(new BlockPos(client.player.getPos().subtract(0.0, 0.0433D, 0.0))).getBlock().equals(Blocks.WATER)))
+                        BlockPos blockOneDownPos = client.player.getBlockPos().subtract(new Vec3i(0, 1, 0));
+
+                        if((client.player.getWorld().getBlockState(blockOneDownPos).isAir())
+                                || (client.player.getWorld().getBlockState(blockOneDownPos).getBlock().equals(Blocks.WATER)))
                             forceFlyBypass(client);
                         tickCounter = 0;
                     }

@@ -2,6 +2,7 @@ package dev.bebomny.beaver.beaverutils.mixins;
 
 import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,9 +19,9 @@ public abstract class InGameHudMixin {
     @Shadow private int scaledHeight;
 
     @Inject(method = "render", at = @At("HEAD"))
-    public void onRenderInit(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
+    public void onRenderInit(DrawContext context, float tickDelta, CallbackInfo ci) {
         //Call the render function in NotificationHandler -- DONE (I think I want to call this directly not through getNotifier)
-        BeaverUtilsClient.getInstance().notifier.onRenderInit(matrices, tickDelta);
-        BeaverUtilsClient.getInstance().features.inGameStats.onRenderInit(matrices, tickDelta);
+        BeaverUtilsClient.getInstance().notifier.onRenderInit(context, tickDelta);
+        BeaverUtilsClient.getInstance().features.inGameStats.onRenderInit(context, tickDelta);
     }
 }

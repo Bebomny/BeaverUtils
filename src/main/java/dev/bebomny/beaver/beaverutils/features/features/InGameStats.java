@@ -4,6 +4,7 @@ import dev.bebomny.beaver.beaverutils.configuration.config.InGameStatsConfig;
 import dev.bebomny.beaver.beaverutils.features.SimpleOnOffFeature;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
@@ -55,15 +56,15 @@ public class InGameStats extends SimpleOnOffFeature {
     }
 
 
-    public void onRenderInit(MatrixStack matrices, float tickDelta) {
+    public void onRenderInit(DrawContext context, float tickDelta) {
         if(!isEnabled())
             return;
-
-        client.inGameHud.getTextRenderer().drawWithShadow(
-                matrices,
+        //TODO: Fix here
+        context.drawTextWithShadow(
+                client.textRenderer,
                 Text.of(String.format("%.3g", playerSpeed) + " m/s"),
-                client.getWindow().getScaledWidth()/2.0f + 100.0f,
-                client.getWindow().getScaledHeight() - 14.0f,
+                (int) (client.getWindow().getScaledWidth()/2.0f + 100.0f),
+                (int) (client.getWindow().getScaledHeight() - 14.0f),
                 0xFFFFFF0F
         );
     }

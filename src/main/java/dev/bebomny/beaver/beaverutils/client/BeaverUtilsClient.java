@@ -7,7 +7,6 @@ import dev.bebomny.beaver.beaverutils.configuration.ConfigHandler;
 import dev.bebomny.beaver.beaverutils.features.FeatureHandler;
 import dev.bebomny.beaver.beaverutils.features.Features;
 import dev.bebomny.beaver.beaverutils.helpers.KeyBindingHandler;
-import dev.bebomny.beaver.beaverutils.helpers.ScreenEventHandler;
 import dev.bebomny.beaver.beaverutils.notifications.NotificationHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -106,9 +105,6 @@ public class BeaverUtilsClient implements ClientModInitializer {
 
         //command load
         this.commandHandler = new CommandHandler();
-
-        //handlers random pt2
-        ScreenEventHandler.register();
 
         Runtime.getRuntime().addShutdownHook(new Thread(configHandler::saveConfig));
 

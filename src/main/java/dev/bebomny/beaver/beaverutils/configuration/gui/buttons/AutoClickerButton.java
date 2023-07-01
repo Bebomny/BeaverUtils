@@ -3,9 +3,11 @@ package dev.bebomny.beaver.beaverutils.configuration.gui.buttons;
 import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
 import dev.bebomny.beaver.beaverutils.features.features.AutoClicker;
 import dev.bebomny.beaver.beaverutils.helpers.TextUtils;
+import net.minecraft.client.gui.screen.option.OptionsScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.AxisGridWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.SimplePositioningWidget;
 import net.minecraft.text.Text;
 
 public class AutoClickerButton extends AxisGridWidget {
@@ -14,7 +16,7 @@ public class AutoClickerButton extends AxisGridWidget {
 
     public AutoClickerButton() {
         super(128, 20, DisplayAxis.HORIZONTAL);
-        this.getMainPositioner().alignLeft();
+        //this.getMainPositioner().alignLeft();
 
         ButtonWidget autoClickerEnable = ButtonWidget.builder(
                 TextUtils.getEnabledDisabledText(autoClicker.getName(), autoClicker.isEnabled()),
@@ -70,6 +72,8 @@ public class AutoClickerButton extends AxisGridWidget {
         this.add(autoClickerModeCycleButton);
         this.add(autoClickerTypeCycleButton);
 
-        this.getMainPositioner().alignLeft();
+        //this.getMainPositioner().alignLeft();
+        //SimplePositioningWidget.setPos(this, 0, 0, 128 + 2 + 65 + 2 + 20 + 2 + 20 + 2 + 80 + 2 + 65, 20);
+        //OptionsScreen
     }
 }
