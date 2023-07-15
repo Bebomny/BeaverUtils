@@ -1,13 +1,16 @@
 package dev.bebomny.beaver.beaverutils.features;
 
 import dev.bebomny.beaver.beaverutils.configuration.config.EnableConfigOption;
+import dev.bebomny.beaver.beaverutils.configuration.gui.menus.OptionsMenu;
 import dev.bebomny.beaver.beaverutils.notifications.Categories;
 import dev.bebomny.beaver.beaverutils.notifications.Notification;
+import net.minecraft.client.gui.screen.Screen;
 
 public abstract class SimpleOnOffFeature extends Feature{
 
     protected boolean enabled;
     protected EnableConfigOption enableConfig;
+    protected OptionsMenu optionsMenu;
 
     public SimpleOnOffFeature(String name) {
         super(name);
@@ -35,6 +38,15 @@ public abstract class SimpleOnOffFeature extends Feature{
 
     protected void setEnableConfig(EnableConfigOption enableConfig) {
         this.enableConfig = enableConfig;
+    }
+
+    protected void setOptionsMenu(OptionsMenu optionsMenu) {
+        this.optionsMenu = optionsMenu;
+    }
+
+    public OptionsMenu getOptionsMenu(Screen parent) {
+        optionsMenu.setParent(parent);
+        return optionsMenu;
     }
 
     public void setEnabled(boolean enabled) {

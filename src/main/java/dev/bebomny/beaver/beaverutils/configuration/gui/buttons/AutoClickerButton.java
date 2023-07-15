@@ -15,7 +15,7 @@ public class AutoClickerButton extends AxisGridWidget {
     private AutoClicker autoClicker = BeaverUtilsClient.getInstance().features.autoClicker;
 
     public AutoClickerButton(int x, int y) {
-        super(128, 20, DisplayAxis.HORIZONTAL);
+        super(150, 20, DisplayAxis.HORIZONTAL);
         //this.getMainPositioner().alignLeft();
 
         ButtonWidget autoClickerEnable = ButtonWidget.builder(
@@ -24,14 +24,14 @@ public class AutoClickerButton extends AxisGridWidget {
                     autoClicker.setEnabled(!autoClicker.isEnabled());
                     button.setMessage(TextUtils.getEnabledDisabledText(autoClicker.getName(), autoClicker.isEnabled()));
                 }
-        ).dimensions(0, 0, 128, 20).build();
+        ).dimensions(0, 0, 150, 20).build();
 
         ButtonWidget autoClickerDelayDisplay = ButtonWidget.builder(
                 Text.of(autoClicker.getDelay() + " ticks"),
                 button -> {
                     //doesnt do shit, its just a display
                 }
-        ).dimensions(128 + 2, 0, 65, 20).build();
+        ).dimensions(150 + 2, 0, 65, 20).build();
 
         ButtonWidget autoClickerPlusButton = ButtonWidget.builder(
                 Text.of("§l+"),
@@ -39,7 +39,7 @@ public class AutoClickerButton extends AxisGridWidget {
                     autoClicker.setDelay(autoClicker.getDelay() + 1);
                     autoClickerDelayDisplay.setMessage(Text.of(autoClicker.getDelay() + " ticks"));
                 }
-        ).size(20, 20).position(128 + 2 + 65 + 2, 0).build();
+        ).size(20, 20).position(150 + 2 + 65 + 2, 0).build();
 
         ButtonWidget autoClickerMinusButton = ButtonWidget.builder(
                 Text.of("§l-"),
@@ -47,7 +47,7 @@ public class AutoClickerButton extends AxisGridWidget {
                     autoClicker.setDelay(autoClicker.getDelay() - 1);
                     autoClickerDelayDisplay.setMessage(Text.of(autoClicker.getDelay() + " ticks"));
                 }
-        ).size(20, 20).position(128 + 2 + 65 + 2 + 20 + 2, 0).build();
+        ).size(20, 20).position(150 + 2 + 65 + 2 + 20 + 2, 0).build();
 
         ButtonWidget autoClickerModeCycleButton = ButtonWidget.builder(
                 Text.of("Mode: " + autoClicker.getMode()),
@@ -55,7 +55,7 @@ public class AutoClickerButton extends AxisGridWidget {
                     autoClicker.changeMode();
                     button.setMessage(Text.of("Mode: " + autoClicker.getMode()));
                 }
-        ).size(80, 20).position(128 + 2 + 65 + 2 + 20 + 2 + 20 + 2, 0).build();
+        ).size(80, 20).position(150 + 2 + 65 + 2 + 20 + 2 + 20 + 2, 0).build();
 
         ButtonWidget autoClickerTypeCycleButton = ButtonWidget.builder(
                 Text.of("Type: " + autoClicker.getType()),
@@ -63,7 +63,7 @@ public class AutoClickerButton extends AxisGridWidget {
                     autoClicker.changeType();
                     button.setMessage(Text.of("Type: " + autoClicker.getType()));
                 }
-        ).size(65, 20).position(128 + 2 + 65 + 2 + 20 + 2 + 20 + 2 + 80 + 2, 0).build();
+        ).size(65, 20).position(150 + 2 + 65 + 2 + 20 + 2 + 20 + 2 + 80 + 2, 0).build();
 
         this.add(autoClickerEnable);
         this.add(autoClickerDelayDisplay);

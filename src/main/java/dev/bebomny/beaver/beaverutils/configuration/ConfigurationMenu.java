@@ -3,14 +3,17 @@ package dev.bebomny.beaver.beaverutils.configuration;
 import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
 import dev.bebomny.beaver.beaverutils.configuration.config.GeneralConfig;
 import dev.bebomny.beaver.beaverutils.configuration.gui.buttons.*;
+import dev.bebomny.beaver.beaverutils.features.SimpleOnOffFeature;
 import dev.bebomny.beaver.beaverutils.helpers.TextUtils;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.option.SoundOptionsScreen;
+import net.minecraft.client.gui.screen.option.VideoOptionsScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
-import net.minecraft.util.math.MathHelper;
 
 public class ConfigurationMenu extends Screen{
 
@@ -19,10 +22,10 @@ public class ConfigurationMenu extends Screen{
     private final Config config;
     private final GeneralConfig generalConfig;
 
-    final int BUTTON_HEIGHT = 20;
-    final int SPACING = 4;
-
-    private float rowCounter;
+    public static final int STANDARD_HEIGHT = 20;
+    public static final int STANDARD_WIDTH = 150;
+    public static final int WIDTH_SPACING = 2;
+    public static final int SPACING = 4;
 
     public ConfigurationMenu(Screen parent) {
         super(Text.of("BeaverUtils Options"));
@@ -42,41 +45,49 @@ public class ConfigurationMenu extends Screen{
 
         //Empty space first(Tp here later or maybe now?) // tp added but not functional
         //adder.add(EmptyWidget.ofHeight(20));
-        adder.add(new QuickTeleportButton(-(128 + 4), calculateYPosition(0))); //now make it work
+        adder.add(new QuickTeleportButton(-(STANDARD_WIDTH + WIDTH_SPACING), getYPosition(0))); //now make it work
 
-        //Fullbright button
-        adder.add(new FullBrightButton(0, calculateYPosition(0)));
+        //FullBright button
+        adder.add(this.createEnableButton(beaverUtilsClient.getFeatures().fullBright, WIDTH_SPACING, getYPosition(0)));
+        //adder.add(new FullBrightButton(2, calculateYPosition(0)));
 
-        //XrayButton
-        adder.add(new XRayButton(-(128 + 4), calculateYPosition(1)));
+        //XRayButton
+        adder.add(this.createCombinedButtons(beaverUtilsClient.getFeatures().xRay, -(STANDARD_WIDTH + WIDTH_SPACING), getYPosition(1)));
+        //adder.add(new XRayButton(-(STANDARD_WIDTH + WIDTH_SPACING), calculateYPosition(1)));
 
         //AutoClicker buttons
-        adder.add(new AutoClickerButton(0, calculateYPosition(1)));
+        adder.add(new AutoClickerButton(WIDTH_SPACING, getYPosition(1))); //For now, it stays
 
         //Flight buttons
-        adder.add(new FlightButton(-(128 + 4), calculateYPosition(2)));
+        adder.add(this.createCombinedButtons(beaverUtilsClient.getFeatures().flight, -(STANDARD_WIDTH + WIDTH_SPACING), getYPosition(2)));
+        //adder.add(new FlightButton(-(STANDARD_WIDTH + WIDTH_SPACING), calculateYPosition(2)));
 
         //Reach buttons
-        adder.add(new ReachButton(0, calculateYPosition(2)));
+        adder.add(new ReachButton(WIDTH_SPACING, getYPosition(2))); //For now, it stays
 
         //NoFallDamage
-        adder.add(new NoFallDmgButton(-(128 + 4), calculateYPosition(3)));
+        adder.add(this.createEnableButton(beaverUtilsClient.getFeatures().noFallDmg, -(STANDARD_WIDTH + WIDTH_SPACING), getYPosition(3)));
+        //adder.add(new NoFallDmgButton(-(STANDARD_WIDTH + WIDTH_SPACING), calculateYPosition(3)));
 
         //InGameStats
-        adder.add(new InGameStatsButton(0, calculateYPosition(3)));
+        adder.add(this.createEnableButton(beaverUtilsClient.getFeatures().inGameStats, WIDTH_SPACING, getYPosition(3)));
+        //adder.add(new InGameStatsButton(2, calculateYPosition(3)));
 
         //AutoPlant Buttons
-        adder.add(new AutoPlantButton(-(128 + 4), calculateYPosition(4)));
+        adder.add(this.createCombinedButtons(beaverUtilsClient.getFeatures().autoPlant, -(STANDARD_WIDTH + WIDTH_SPACING), getYPosition(4)));
+        //adder.add(new AutoPlantButton(-(128 + 4), calculateYPosition(4)));
 
+        //Elytra Speed Control Buttons
+        adder.add(this.createCombinedButtons(beaverUtilsClient.getFeatures().elytraSpeedControl, -(STANDARD_WIDTH + WIDTH_SPACING), getYPosition(5)));
         //Add a DONE button
         adder.add(
                 ButtonWidget.builder(
                     ScreenTexts.DONE,
                     button -> {
-                        this.client.setScreen(this.parent);
+                        this.close();
                         beaverUtilsClient.configHandler.saveConfig();
                     }
-                ).width(200).position(-102, calculateYPosition(6) + 14).build(),
+                ).width(200).position(-102, getYPosition(6) + 14).build(),
                 2, adder.copyPositioner().marginTop(6)
         );
 
@@ -123,17 +134,14 @@ public class ConfigurationMenu extends Screen{
         this.addDrawableChild(debugButton);
     }
 
-    private int getNextYPosition() {
-        rowCounter += 0.5;
-        return calculateYPosition(MathHelper.floor(rowCounter));
-    }
-
-    private int calculateYPosition(int row) {
-        return row * (BUTTON_HEIGHT + SPACING);
+    public static int getYPosition(int row) {
+        return row * (STANDARD_HEIGHT + SPACING);
     }
 
     @Override
     public void close() {
+        beaverUtilsClient.configHandler.saveConfig();
+
         if (client != null)
             client.setScreen(parent);
         else
@@ -149,5 +157,31 @@ public class ConfigurationMenu extends Screen{
         context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 15, 16777215);
 
         super.render(context, mouseX, mouseY, delta);
+    }
+
+    private AxisGridWidget createCombinedButtons(SimpleOnOffFeature feature, int x, int y) {
+        ButtonWidget mainButton = createEnableButton(feature, 0, 0);
+        mainButton.setWidth(STANDARD_WIDTH - WIDTH_SPACING - 20);
+
+        FeatureOptionsButtonWidget optionsButton = new FeatureOptionsButtonWidget(0, 0, button -> {
+            this.client.setScreen(feature.getOptionsMenu(this));
+        });
+
+        AxisGridWidget axisGridWidget = new AxisGridWidget(STANDARD_WIDTH, STANDARD_HEIGHT, AxisGridWidget.DisplayAxis.HORIZONTAL);
+        axisGridWidget.add(optionsButton);
+        axisGridWidget.add(mainButton);
+        axisGridWidget.refreshPositions();
+        axisGridWidget.setPosition(x, y);
+        return axisGridWidget;
+    }
+
+    private ButtonWidget createEnableButton(SimpleOnOffFeature feature, int x, int y) {
+        return ButtonWidget.builder(
+                TextUtils.getEnabledDisabledText(feature.getName(), feature.isEnabled()),
+                button -> {
+                    feature.setEnabled(!feature.isEnabled());
+                    button.setMessage(TextUtils.getEnabledDisabledText(feature.getName(), feature.isEnabled()));
+                }
+        ).position(x, y).tooltip(feature.getMainToolTip()).build();
     }
 }

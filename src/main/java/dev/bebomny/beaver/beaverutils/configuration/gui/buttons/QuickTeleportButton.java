@@ -1,6 +1,7 @@
 package dev.bebomny.beaver.beaverutils.configuration.gui.buttons;
 
 import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
+import dev.bebomny.beaver.beaverutils.configuration.ConfigurationMenu;
 import dev.bebomny.beaver.beaverutils.features.TriggerFeature;
 import dev.bebomny.beaver.beaverutils.features.features.QuickTeleport;
 import net.minecraft.client.gui.tooltip.Tooltip;
@@ -13,7 +14,7 @@ public class QuickTeleportButton extends AxisGridWidget {
     private QuickTeleport quickTeleport = BeaverUtilsClient.getInstance().features.quickTeleport;
 
     public QuickTeleportButton(int x, int y) {
-        super(128, 20 ,DisplayAxis.HORIZONTAL);
+        super(ConfigurationMenu.STANDARD_WIDTH, ConfigurationMenu.STANDARD_HEIGHT ,DisplayAxis.HORIZONTAL);
         this.getMainPositioner().alignRight(); //maybe chnage this? //.marginX(2)
 
         Tooltip tooltip = Tooltip.of(Text.of("§l§c(NOT YET IMPLEMENTED) §r Teleports you in the direction you are facing!"));
@@ -23,7 +24,7 @@ public class QuickTeleportButton extends AxisGridWidget {
                 button -> {
                     quickTeleport.fire(TriggerFeature.FiredBy.MENU);
                 }
-        ).width(84).tooltip(tooltip).build();
+        ).width(106).tooltip(tooltip).build();
 
         ButtonWidget teleportPlusButton = ButtonWidget.builder(
                 Text.of("§l+"),

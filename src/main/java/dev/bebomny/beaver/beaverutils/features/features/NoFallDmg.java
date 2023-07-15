@@ -30,6 +30,8 @@ public class NoFallDmg extends SimpleOnOffFeature {
     private void onUpdate(MinecraftClient client) {
         if(!isEnabled() || client.player == null) return;
 
+        //TODO: FIX!
+
         ClientPlayerEntity playerEntity = client.player;
 
         if (playerEntity.fallDistance <= (playerEntity.isFallFlying() ? 1 : 2))

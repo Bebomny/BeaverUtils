@@ -12,7 +12,7 @@ public class ReachButton extends AxisGridWidget {
     private Reach reach = BeaverUtilsClient.getInstance().features.reach;
 
     public ReachButton(int x, int y) {
-        super(128, 20, DisplayAxis.HORIZONTAL);//219
+        super(150, 20, DisplayAxis.HORIZONTAL);//219
         this.getMainPositioner().alignLeft();
 
         ButtonWidget reachEnable = ButtonWidget.builder(
@@ -21,7 +21,7 @@ public class ReachButton extends AxisGridWidget {
                     reach.setEnabled(!reach.isEnabled());
                     button.setMessage(TextUtils.getEnabledDisabledText(reach.getName(), reach.isEnabled()));
                 }
-        ).width(108).build();
+        ).width(130).build();
 
         ButtonWidget reachDisplay = ButtonWidget.builder(
                 Text.of(reach.getDistance() + " Blocks"),
@@ -30,7 +30,7 @@ public class ReachButton extends AxisGridWidget {
                     reach.setDistance(5.0f);
                     button.setMessage(Text.of(reach.getDistance() + " Blocks"));
                 }
-        ).size(65, 20).position(108 + 2, 0).build();
+        ).size(65, 20).position(130 + 2, 0).build();
 
         ButtonWidget reachPlus = ButtonWidget.builder(
                 Text.of("§l+"),
@@ -39,7 +39,7 @@ public class ReachButton extends AxisGridWidget {
                     reach.setDistance(reach.getDistance() + 0.5f);
                     reachDisplay.setMessage(Text.of(reach.getDistance() + " Blocks"));
                 }
-        ).size(20, 20).position(108 + 2 + 65 + 2, 0).build();
+        ).size(20, 20).position(130 + 2 + 65 + 2, 0).build();
 
         ButtonWidget reachMinus = ButtonWidget.builder(
                 Text.of("§l-"),
@@ -47,7 +47,7 @@ public class ReachButton extends AxisGridWidget {
                     reach.setDistance(reach.getDistance() - 0.5f);
                     reachDisplay.setMessage(Text.of(reach.getDistance() + " Blocks"));
                 }
-        ).size(20, 20).position(108 + 2 + 65 + 2 + 20 + 2, 0).build();
+        ).size(20, 20).position(130 + 2 + 65 + 2 + 20 + 2, 0).build();
 
         this.add(reachEnable);
         this.add(reachDisplay);

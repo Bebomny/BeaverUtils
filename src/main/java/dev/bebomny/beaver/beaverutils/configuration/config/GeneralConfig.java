@@ -8,5 +8,5 @@ public class GeneralConfig {
     public boolean debug = true;
 
     @Expose
-    public boolean autoEnable = false;
+    public boolean autoEnable = true;
 }

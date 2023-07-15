@@ -16,6 +16,7 @@ public class Features {
     public Flight flight;
     public NoFallDmg noFallDmg;
     public AutoPlant autoPlant;
+    public ElytraSpeedControl elytraSpeedControl;
 
     public Features() {
         this.beaverUtilsClient = BeaverUtilsClient.getInstance();
@@ -47,5 +48,8 @@ public class Features {
 
         this.inGameStats = new InGameStats();
         beaverUtilsClient.featureHandler.addFeature(inGameStats);
+
+        this.elytraSpeedControl = new ElytraSpeedControl();
+        beaverUtilsClient.featureHandler.addFeature(elytraSpeedControl);
     }
 }

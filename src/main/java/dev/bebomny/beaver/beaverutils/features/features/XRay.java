@@ -1,6 +1,7 @@
 package dev.bebomny.beaver.beaverutils.features.features;
 
 import dev.bebomny.beaver.beaverutils.configuration.config.XRayConfig;
+import dev.bebomny.beaver.beaverutils.configuration.gui.menus.XRayMenu;
 import dev.bebomny.beaver.beaverutils.features.KeyOnOffFeature;
 import dev.bebomny.beaver.beaverutils.helpers.BlockUtils;
 import net.minecraft.block.Block;
@@ -18,6 +19,7 @@ public class XRay extends KeyOnOffFeature {
         super("XRay"); //GLFW.GLFW_KEY_X
 
         addActivationKeybinding(GLFW.GLFW_KEY_X); //88
+        setOptionsMenu(new XRayMenu());
 
         //load config values?
         //if (config.generalConfig.autoEnable)

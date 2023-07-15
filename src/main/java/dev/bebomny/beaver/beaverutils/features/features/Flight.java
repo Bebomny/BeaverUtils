@@ -1,6 +1,7 @@
 package dev.bebomny.beaver.beaverutils.features.features;
 
 import dev.bebomny.beaver.beaverutils.configuration.config.FlightConfig;
+import dev.bebomny.beaver.beaverutils.configuration.gui.menus.FlightMenu;
 import dev.bebomny.beaver.beaverutils.features.KeyOnOffFeature;
 import dev.bebomny.beaver.beaverutils.helpers.PacketHelper;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -24,6 +25,10 @@ public class Flight extends KeyOnOffFeature {
 
         addActivationKeybinding(GLFW.GLFW_KEY_V);
         setEnableConfig(flightConfig);
+        setOptionsMenu(new FlightMenu());
+
+        if(config.generalConfig.autoEnable)
+            setEnabled(enableConfig.enabled);
 
         this.oldPos = new Vec3d(0.0d,100.0d,0.0d);
 
@@ -32,6 +37,8 @@ public class Flight extends KeyOnOffFeature {
 
     private void onUpdate(MinecraftClient client) {
         if(client.player == null) return;
+
+        //TODO: FIX!
 
         if(isEnabled()) {
             switch (flightConfig.flightMode) {

@@ -121,6 +121,10 @@ public class BeaverUtilsClient implements ClientModInitializer {
         return notifier;
     }
 
+    public Features getFeatures() {
+        return features;
+    }
+
     public Config getConfig() {
         return config;
     }

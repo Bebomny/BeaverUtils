@@ -169,26 +169,26 @@ public class XRayCommand extends ClientCommand {
 
                                     return 0;
                                 })
-                        ).then(ClientCommandManager.literal("list")
-                                .executes(ctx -> {
-                                    if (beaverUtilsClient.getConfig().xRayConfig.interestingBlocksAsCollection.isEmpty()) {
-                                        ctx.getSource().sendFeedback(
-                                                Text.of("§c§lXRay's interesting blocks List is Empty!" + '\n' + "&9To add blocks to the list use: " + "§l§a/beaverutils xray add [Block]")
-                                        );
-                                        return 0;
-                                    }
-
-                                    StringBuilder list = new StringBuilder();
-                                    for (String s : beaverUtilsClient.getConfig().xRayConfig.interestingBlocksAsCollection) {
-                                        list.append(s).append(", ");
-                                    }
-
-                                    ctx.getSource().sendFeedback(
-                                            Text.of("§fXray's Interesting Blocks List: " + "§r " + '\n' + list)
-                                    );
-                                    return 0;
-                                })
                         )
+                ).then(ClientCommandManager.literal("list")
+                        .executes(ctx -> {
+                            if (beaverUtilsClient.getConfig().xRayConfig.interestingBlocksAsCollection.isEmpty()) {
+                                ctx.getSource().sendFeedback(
+                                        Text.of("§c§lXRay's interesting blocks List is Empty!" + '\n' + "&9To add blocks to the list use: " + "§l§a/beaverutils xray add [Block]")
+                                );
+                                return 0;
+                            }
+
+                            StringBuilder list = new StringBuilder();
+                            for (String s : beaverUtilsClient.getConfig().xRayConfig.interestingBlocksAsCollection) {
+                                list.append(s).append(", ");
+                            }
+
+                            ctx.getSource().sendFeedback(
+                                    Text.of("§fXray's Interesting Blocks List: " + "§r " + '\n' + list)
+                            );
+                            return 0;
+                        })
                 )
         );
     }

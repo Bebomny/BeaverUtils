@@ -8,15 +8,12 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 
-public abstract class KeyOnOffFeature extends Feature{
+public abstract class KeyOnOffFeature extends SimpleOnOffFeature{
 
     //Allows for keybinding On/Off states
-
-    protected boolean enabled;
     protected KeyBinding activationKey;
     protected int keybindingKey;
     private boolean keyPressListenerRegistered = false; //ym idk
-    protected EnableConfigOption enableConfig;
 
     public KeyOnOffFeature(String name) {
         super(name);
@@ -40,46 +37,6 @@ public abstract class KeyOnOffFeature extends Feature{
             setEnabled(!isEnabled());
             this.keybindingKey = KeyBindingHelper.getBoundKeyOf(activationKey).getCode();
         }
-    }
-
-    protected void onEnable() {
-        notifier.newNotification(Notification.builder(
-                        "§l§a" + getName() + " §l§aEnabled")
-                .category(Categories.STATE, getName())
-                .build());
-
-        if(enableConfig != null)
-            enableConfig.enabled = true;
-    }
-
-    protected void onDisable() {
-        notifier.newNotification(Notification.builder(
-                        "§l§c" + getName() + " §l§cDisabled")
-                .category(Categories.STATE, getName())
-                .build());
-
-        if(enableConfig != null)
-            enableConfig.enabled = false;
-    }
-
-    protected void setEnableConfig(EnableConfigOption enableConfig) {
-        this.enableConfig = enableConfig;
-    }
-
-    public void setEnabled(boolean enabled) {
-        if(this.enabled == enabled)
-            return;
-
-        this.enabled = enabled;
-
-        if(enabled)
-            onEnable();
-        else
-            onDisable();
-    }
-
-    public boolean isEnabled() {
-        return enabled;
     }
 
 }

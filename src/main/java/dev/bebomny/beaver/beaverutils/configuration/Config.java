@@ -31,10 +31,17 @@ public class Config {
     public AutoPlantConfig autoPlantConfig = new AutoPlantConfig();
 
     @Expose
-    public XRayConfig xRayConfig = new XRayConfig();
+    public InGameStatsConfig inGameStatsConfig = new InGameStatsConfig();
 
     @Expose
-    public InGameStatsConfig inGameStatsConfig = new InGameStatsConfig();
+    public ElytraSpeedControlConfig elytraSpeedControlConfig = new ElytraSpeedControlConfig();
+
+    @Expose
+    public XRayConfig xRayConfig = new XRayConfig();
+
+
+
+
 
     public Config() {
 

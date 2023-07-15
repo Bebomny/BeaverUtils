@@ -33,8 +33,8 @@ public class ConfigHandler {
 
     public void loadConfig() {
         try {
-            LOGGER.atInfo().log("Creating a config directory");
-            configDirectory.toFile().mkdirs();
+            if (configDirectory.toFile().mkdirs())
+                LOGGER.atInfo().log("Creating a config directory");
         } catch (Exception ignored) {}
 
         configFile = new File(configDirectory.toFile(), "config.json");
