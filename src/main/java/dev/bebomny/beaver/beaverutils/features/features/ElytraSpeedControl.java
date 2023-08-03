@@ -25,8 +25,8 @@ public class ElytraSpeedControl extends SimpleOnOffFeature {
         setOptionsMenu(new ElytraSpeedControlMenu());
         setMainToolTip(Tooltip.of(Text.of("Elytra Speed Control - Control your elytra's speed with 'w' and 's' keys! No need for fireworks!")));
 
-        if(config.generalConfig.autoEnable)
-            setEnabled(enableConfig.enabled);
+//        if(config.generalConfig.autoEnable)
+//            setEnabled(enableConfig.enabled);
 
         ClientTickEvents.END_CLIENT_TICK.register(this::onUpdate);
     }

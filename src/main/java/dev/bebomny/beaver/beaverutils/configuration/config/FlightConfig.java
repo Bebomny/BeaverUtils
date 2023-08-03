@@ -11,6 +11,9 @@ public class FlightConfig extends EnableConfigOption{
     @Expose
     public int floatingTickLimit = 30;
 
+    @Expose
+    public float flightSpeed = 0.05f;
+
     public FlightConfig() {
 
     }

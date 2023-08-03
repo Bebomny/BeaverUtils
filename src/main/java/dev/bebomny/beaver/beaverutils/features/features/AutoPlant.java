@@ -45,8 +45,8 @@ public class AutoPlant extends KeyOnOffFeature {
         setEnableConfig(autoPlantConfig);
         setOptionsMenu(new AutoPlantMenu());
 
-        if(config.generalConfig.autoEnable)
-            setEnabled(autoPlantConfig.enabled);
+//        if(config.generalConfig.autoEnable)
+//            setEnabled(autoPlantConfig.enabled);
 
         initializeSeeds();
 

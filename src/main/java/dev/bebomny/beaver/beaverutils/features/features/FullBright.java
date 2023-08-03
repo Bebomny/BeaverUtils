@@ -17,8 +17,8 @@ public class FullBright extends SimpleOnOffFeature {
 
         setEnableConfig(fullBrightConfig);
 
-        if(config.generalConfig.autoEnable)
-            setEnabled(fullBrightConfig.enabled);
+//        if(config.generalConfig.autoEnable)
+//            setEnabled(fullBrightConfig.enabled);
 
         ClientTickEvents.START_CLIENT_TICK.register(this::tryUpdateGamma);
     }

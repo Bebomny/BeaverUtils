@@ -26,8 +26,8 @@ public class InGameStats extends SimpleOnOffFeature {
         this.prevPos = new Vec3d(0, 0, 0);
         setEnableConfig(inGameStatsConfig);
 
-        if(config.generalConfig.autoEnable)
-            setEnabled(inGameStatsConfig.enabled);
+//        if(config.generalConfig.autoEnable)
+//            setEnabled(inGameStatsConfig.enabled);
 
         ClientTickEvents.END_CLIENT_TICK.register(this::onUpdate);
     }

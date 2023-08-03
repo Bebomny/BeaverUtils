@@ -12,8 +12,8 @@ public class Reach extends SimpleOnOffFeature {
 
         setEnableConfig(reachConfig);
 
-        if(config.generalConfig.autoEnable)
-            setEnabled(reachConfig.enabled);
+//        if(config.generalConfig.autoEnable)
+//            setEnabled(reachConfig.enabled);
 
         //distance is accessed directly from the config so no need to load it here
     }

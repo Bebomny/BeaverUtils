@@ -7,6 +7,7 @@ import dev.bebomny.beaver.beaverutils.helpers.PacketHelper;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.player.PlayerAbilities;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
@@ -18,6 +19,7 @@ public class Flight extends KeyOnOffFeature {
 
     private int tickCounter;
     //private final static int TICKLIMIT = 30; //in ticks, max 80 should work on most paper servers // now set in config
+    private boolean scheduledEnableDisableCheck;
     private Vec3d oldPos;
 
     public Flight() {
@@ -27,9 +29,6 @@ public class Flight extends KeyOnOffFeature {
         setEnableConfig(flightConfig);
         setOptionsMenu(new FlightMenu());
 
-        if(config.generalConfig.autoEnable)
-            setEnabled(enableConfig.enabled);
-
         this.oldPos = new Vec3d(0.0d,100.0d,0.0d);
 
         ClientTickEvents.START_CLIENT_TICK.register(this::onUpdate);
@@ -38,15 +37,37 @@ public class Flight extends KeyOnOffFeature {
     private void onUpdate(MinecraftClient client) {
         if(client.player == null) return;
 
-        //TODO: FIX!
+        PlayerAbilities abilities = client.player.getAbilities();
+
+        if(this.scheduledEnableDisableCheck) {
+            if(isEnabled()) {
+                abilities.allowFlying = true;
+                oldPos = client.player.getPos();
+            } else {
+                abilities.allowFlying = false;
+                abilities.flying = false;
+            }
+            this.scheduledEnableDisableCheck = false;
+        }
+
+        //TODO: FIX! somethign is not right
 
         if(isEnabled()) {
+
+            abilities.setFlySpeed(getFlightSpeed());
+
             switch (flightConfig.flightMode) {
                 case Creative -> {
-                    if(!client.player.getAbilities().allowFlying)
-                        client.player.getAbilities().allowFlying = true;
 
-                    if(!client.player.getAbilities().flying) return;
+                    //Something is wrong here //maybe fixed? needs checking
+
+                    if(!abilities.allowFlying)
+                        abilities.allowFlying = true;
+
+                    if(!abilities.flying) return;
+
+                    if(client.player.getPos().getY() >= oldPos.getY() - 0.0433D)
+                        tickCounter++;
 
                     this.oldPos = client.player.getPos();
 
@@ -59,7 +80,7 @@ public class Flight extends KeyOnOffFeature {
                         tickCounter = 0;
                     }
 
-                    tickCounter++;
+
                 }
 
                 case Position -> {
@@ -82,6 +103,14 @@ public class Flight extends KeyOnOffFeature {
         flightConfig.flightMode = newMode;
     }
 
+    public void setFlightSpeed(float newSpeed) {
+        flightConfig.flightSpeed = newSpeed;
+    }
+
+    public float getFlightSpeed() {
+        return flightConfig.flightSpeed;
+    }
+
     public Mode getMode() {
         return flightConfig.flightMode;
     }
@@ -89,15 +118,13 @@ public class Flight extends KeyOnOffFeature {
     @Override
     protected void onEnable() {
         super.onEnable();
-        client.player.getAbilities().allowFlying = true;
-        oldPos = client.player.getPos();
+        this.scheduledEnableDisableCheck = true;
     }
 
     @Override
     protected void onDisable() {
         super.onDisable();
-        client.player.getAbilities().allowFlying = false;
-        client.player.getAbilities().flying = false;
+        this.scheduledEnableDisableCheck = true;
     }
 
     public enum Mode {

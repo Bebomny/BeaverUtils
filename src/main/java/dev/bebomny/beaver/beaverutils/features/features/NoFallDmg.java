@@ -19,8 +19,8 @@ public class NoFallDmg extends SimpleOnOffFeature {
 
         setEnableConfig(noFallDmgConfig);
 
-        if(config.generalConfig.autoEnable)
-            setEnabled(enableConfig.enabled);
+//        if(config.generalConfig.autoEnable)
+//            setEnabled(enableConfig.enabled);
 
         //TODO: Add modes(onground, itp)
 

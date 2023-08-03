@@ -6,10 +6,7 @@ import dev.bebomny.beaver.beaverutils.configuration.gui.buttons.*;
 import dev.bebomny.beaver.beaverutils.features.SimpleOnOffFeature;
 import dev.bebomny.beaver.beaverutils.helpers.TextUtils;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.option.SoundOptionsScreen;
-import net.minecraft.client.gui.screen.option.VideoOptionsScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.screen.ScreenTexts;
@@ -83,15 +80,13 @@ public class ConfigurationMenu extends Screen{
         adder.add(
                 ButtonWidget.builder(
                     ScreenTexts.DONE,
-                    button -> {
-                        this.close();
-                        beaverUtilsClient.configHandler.saveConfig();
-                    }
+                    button -> this.close()
                 ).width(200).position(-102, getYPosition(6) + 14).build(),
                 2, adder.copyPositioner().marginTop(6)
         );
 
-        //IDK it was in the Minecraft options Class, so it's probably needed xd //ooooh I know what it does now, pretty cool //it is fucked up in this version(1.20.1), not recommended
+        //IDK it was in the Minecraft options Class, so it's probably needed xd //ooh I know what it does now, pretty cool //it is fucked up in this version(1.20.1), not recommended
+        //its working as intended but, I used it a bit differently, so it's not working as I would like it to, but I found a way around this
         //gridWidget.refreshPositions();
 
         //setting the grid in screen space
@@ -163,9 +158,10 @@ public class ConfigurationMenu extends Screen{
         ButtonWidget mainButton = createEnableButton(feature, 0, 0);
         mainButton.setWidth(STANDARD_WIDTH - WIDTH_SPACING - 20);
 
-        FeatureOptionsButtonWidget optionsButton = new FeatureOptionsButtonWidget(0, 0, button -> {
-            this.client.setScreen(feature.getOptionsMenu(this));
-        });
+        FeatureOptionsButtonWidget optionsButton = new FeatureOptionsButtonWidget(
+                0, 0,
+                button -> this.client.setScreen(feature.getOptionsMenu(this))
+        );
 
         AxisGridWidget axisGridWidget = new AxisGridWidget(STANDARD_WIDTH, STANDARD_HEIGHT, AxisGridWidget.DisplayAxis.HORIZONTAL);
         axisGridWidget.add(optionsButton);

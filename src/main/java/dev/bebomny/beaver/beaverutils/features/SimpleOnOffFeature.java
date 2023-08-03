@@ -38,6 +38,9 @@ public abstract class SimpleOnOffFeature extends Feature{
 
     protected void setEnableConfig(EnableConfigOption enableConfig) {
         this.enableConfig = enableConfig;
+
+        if(this.enableConfig != null && config.generalConfig.autoEnable)
+            setEnabled(this.enableConfig.enabled);
     }
 
     protected void setOptionsMenu(OptionsMenu optionsMenu) {
