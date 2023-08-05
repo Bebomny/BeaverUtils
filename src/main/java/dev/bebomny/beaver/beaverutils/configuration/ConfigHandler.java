@@ -33,7 +33,7 @@ public class ConfigHandler {
 
     public void loadConfig() {
         try {
-            LOGGER.atInfo().log("Creating a config directory");
+            LOGGER.info("Creating a config directory");
             configDirectory.toFile().mkdirs();
         } catch (Exception ignored) {}
 
@@ -44,24 +44,24 @@ public class ConfigHandler {
                 InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(configFile), StandardCharsets.UTF_8);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
-                LOGGER.atInfo().log("Loading from JSON");
+                LOGGER.info("Loading from JSON");
                 beaverUtilsClient.config = gson.fromJson(
                         bufferedReader,
                         Config.class//Features.class
                 );
 
                 if(beaverUtilsClient.config != null)
-                    LOGGER.atInfo().log("Loaded Config from file");
+                    LOGGER.info("Loaded Config from file");
             } catch (IOException e) {
-                LOGGER.atError().log("Error at Config load");
+                LOGGER.error("Error at Config load");
                 e.printStackTrace();
-                LOGGER.atError().log("Exception while reading " + configFile.getName() + ". Will load blank config");
+                LOGGER.error("Exception while reading " + configFile.getName() + ". Will load blank config");
             }
         }
 
         if(beaverUtilsClient.config == null) {
             // If the config does not exist, generate the default one
-            LOGGER.atInfo().log("Creating blank config and saving to file at " + configFile.getPath());
+            LOGGER.info("Creating blank config and saving to file at " + configFile.getPath());
             //beaverUtilsClient.features = new Features();
             beaverUtilsClient.config = new Config();
             saveConfig();
@@ -73,20 +73,20 @@ public class ConfigHandler {
             configFile.getParentFile().mkdirs();
 
             if (!configFile.createNewFile())
-                LOGGER.atInfo().log("Config File already exists");
+                LOGGER.info("Config File already exists");
 
-            LOGGER.atInfo().log("Saving config file at: " + configFile.toPath());
+            LOGGER.info("Saving config file at: " + configFile.toPath());
             BufferedWriter writer  = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(configFile), StandardCharsets.UTF_8));
             writer.write(gson.toJson(beaverUtilsClient.config));
             writer.close();
         } catch (IOException e) {
-            LOGGER.atError().log("Could not save config file to " + configFile.getPath(), e);
+            LOGGER.error("Could not save config file to " + configFile.getPath(), e);
             e.printStackTrace();
         }
     }
 
     public void resetConfig() {
-        LOGGER.atWarn().log("Resetting Config to defaults");
+        LOGGER.warn("Resetting Config to defaults");
         //beaverUtilsClient.features = new Features();
         beaverUtilsClient.config = new Config();
         saveConfig();

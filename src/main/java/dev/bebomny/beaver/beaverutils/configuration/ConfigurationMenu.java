@@ -5,7 +5,7 @@ import dev.bebomny.beaver.beaverutils.configuration.config.GeneralConfig;
 import dev.bebomny.beaver.beaverutils.configuration.gui.buttons.*;
 import dev.bebomny.beaver.beaverutils.helpers.TextUtils;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.tooltip.Tooltip;
+import net.minecraft.client.gui.screen.option.OptionsScreen;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.screen.ScreenTexts;

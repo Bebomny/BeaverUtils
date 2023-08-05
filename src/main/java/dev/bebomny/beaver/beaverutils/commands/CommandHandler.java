@@ -23,7 +23,7 @@ public class CommandHandler {
 
         registerClientside(new XRayCommand());
 
-        beaverUtilsClient.LOGGER.atInfo().log("Registered " + clientCommands.size() + " commands!");
+        beaverUtilsClient.LOGGER.info("Registered " + clientCommands.size() + " commands!");
     }
 
     public static void registerClientside(ClientCommand command) {

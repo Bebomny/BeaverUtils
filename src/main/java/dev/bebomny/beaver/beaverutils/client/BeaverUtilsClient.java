@@ -114,7 +114,8 @@ public class BeaverUtilsClient implements ClientModInitializer {
 
         //Initialization End
         long elapsedTime = System.currentTimeMillis() - startTime;
-        LOGGER.atInfo().log("Initialized in "+ elapsedTime + "ms " + "Have a nice Game! ~ BeaverUtils");
+        LOGGER.info("Initialized in "+ elapsedTime + "ms " + "Have a nice Game! ~ BeaverUtils");
+
     }
 
     public static BeaverUtilsClient getInstance() {
