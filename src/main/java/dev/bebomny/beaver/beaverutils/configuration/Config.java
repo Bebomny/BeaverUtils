@@ -37,6 +37,9 @@ public class Config {
     public ElytraSpeedControlConfig elytraSpeedControlConfig = new ElytraSpeedControlConfig();
 
     @Expose
+    public TunnelBoreConfig tunnelBoreConfig = new TunnelBoreConfig();
+
+    @Expose
     public XRayConfig xRayConfig = new XRayConfig();
 
 
