@@ -7,9 +7,9 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 
 public class NoFallDmgButton extends ButtonWidget {
 
-    public NoFallDmgButton() {
+    public NoFallDmgButton(int x, int y) {
         super(
-                0, 0,
+                x, y,
                 128, 20,
                 TextUtils.getEnabledDisabledText(
                         BeaverUtilsClient.getInstance().features.noFallDmg.getName(),
@@ -22,8 +22,7 @@ public class NoFallDmgButton extends ButtonWidget {
                             noFallDmg.getName(),
                             noFallDmg.isEnabled()
                     ));
-                },
-                DEFAULT_NARRATION_SUPPLIER
+                }
         );
     }
 }

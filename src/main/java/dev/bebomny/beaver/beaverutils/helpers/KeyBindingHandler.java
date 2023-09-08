@@ -28,9 +28,9 @@ public class KeyBindingHandler {
             return true;
         } catch (Exception e) {
             if(e instanceof NullPointerException)
-                LOGGER.atWarn().log("Keybinding is null, probably this method doesnt require a keybinding");
+                LOGGER.warn("Keybinding is null, probably this method doesnt require a keybinding");
             else
-                LOGGER.atWarn().log("Couldn't register a keybinding with name: " + name);
+                LOGGER.warn("Couldn't register a keybinding with name: " + name);
             return false;
         }
     }

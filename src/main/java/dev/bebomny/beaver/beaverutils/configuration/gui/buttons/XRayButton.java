@@ -8,9 +8,9 @@ import net.minecraft.text.Text;
 
 public class XRayButton extends ButtonWidget {
 
-    public XRayButton() {
+    public XRayButton(int x, int y) {
         super(
-                0, 0,
+                x, y,
                 128, 20,
                 TextUtils.getEnabledDisabledText(
                         BeaverUtilsClient.getInstance().features.xRay.getName(),
@@ -24,8 +24,7 @@ public class XRayButton extends ButtonWidget {
                                     BeaverUtilsClient.getInstance().features.xRay.getName(),
                                     BeaverUtilsClient.getInstance().features.xRay.isEnabled())
                     );
-                },
-                DEFAULT_NARRATION_SUPPLIER
+                }
         );
     }
 }

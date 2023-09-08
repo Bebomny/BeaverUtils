@@ -17,7 +17,7 @@ public class FeatureHandler {
 
     public void addFeature(Feature feature) {
         if (featureList.contains(feature)) {
-            beaverUtilsClient.LOGGER.atWarn().log("Feature Already Present: " + feature.getName() + ", Skipping!");
+            beaverUtilsClient.LOGGER.warn("Feature Already Present: " + feature.getName() + ", Skipping!");
             return;
         }
 

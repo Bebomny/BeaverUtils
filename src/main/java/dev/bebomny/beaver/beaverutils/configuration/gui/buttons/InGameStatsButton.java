@@ -6,16 +6,15 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 
 public class InGameStatsButton extends ButtonWidget {
 
-    public InGameStatsButton() {
+    public InGameStatsButton(int x, int y) {
         super(
-                0,0,
+                x, y,
                 128, 20,
                 TextUtils.getEnabledDisabledText(BeaverUtilsClient.getInstance().features.inGameStats.getName(), BeaverUtilsClient.getInstance().features.inGameStats.isEnabled()),
                 button -> {
                     BeaverUtilsClient.getInstance().features.inGameStats.setEnabled(!BeaverUtilsClient.getInstance().features.inGameStats.isEnabled());
                     button.setMessage(TextUtils.getEnabledDisabledText(BeaverUtilsClient.getInstance().features.inGameStats.getName(), BeaverUtilsClient.getInstance().features.inGameStats.isEnabled()));
-                },
-                DEFAULT_NARRATION_SUPPLIER
+                }
         );
     }
 }

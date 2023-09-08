@@ -10,7 +10,6 @@
     "BlockMixin",
     "BlockStateMixin",
     "ClientPlayerInteractionManagerMixin",
-    "IGridWidgetAccessor",
     "InGameHudMixin",
     "MinecraftClientMixin",
     "SimpleOptionMixin"

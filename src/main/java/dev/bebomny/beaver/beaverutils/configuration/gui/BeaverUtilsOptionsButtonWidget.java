@@ -15,8 +15,8 @@ public class BeaverUtilsOptionsButtonWidget extends ButtonWidget {
                 Text.of("BeaverUtils Options"),
                 button -> {
                     BeaverUtilsClient.getInstance().client.setScreen(new ConfigurationMenu(screen));
-                    BeaverUtilsClient.getInstance().LOGGER.atInfo().log("Opening BeaverUtils Options Screen");
-                },
-                ButtonWidget.DEFAULT_NARRATION_SUPPLIER);
+                    BeaverUtilsClient.getInstance().LOGGER.info("Opening BeaverUtils Options Screen");
+                }
+        );
     }
 }

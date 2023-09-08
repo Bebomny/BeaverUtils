@@ -27,7 +27,7 @@ public class XRay extends KeyOnOffFeature {
         if (xRayConfig.interestingBlocksAsCollection.isEmpty())
             xRayConfig.interestingBlocksAsCollection = populateInterestingBlocksWithStrings();
 
-        LOGGER.atInfo().log("XRAY PRESENT!!! Is IRON_ORE Interesting?(Should be? Yes) but is it? " + isInterestingBlock(Blocks.IRON_ORE));
+        LOGGER.info("XRAY PRESENT!!! Is IRON_ORE Interesting?(Should be? Yes) but is it? " + isInterestingBlock(Blocks.IRON_ORE));
     }
 
     public boolean isInterestingBlock(Block block) {
