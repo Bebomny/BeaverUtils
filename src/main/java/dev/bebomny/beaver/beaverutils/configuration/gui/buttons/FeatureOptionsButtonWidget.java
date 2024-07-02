@@ -13,7 +13,7 @@ public class FeatureOptionsButtonWidget extends ButtonWidget {
         super(x, y, 20, 20, Text.of("du"), action, DEFAULT_NARRATION_SUPPLIER);
     }
 
-    public void renderButton(DrawContext context, int mouseX, int mouseY, float delta) {
+    public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
         //super.renderButton(context, mouseX, mouseY, delta);
 
         IconLocation iconLocation;
