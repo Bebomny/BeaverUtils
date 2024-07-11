@@ -7,7 +7,7 @@ import net.minecraft.util.Identifier;
 
 public class FeatureOptionsButtonWidget extends ButtonWidget {
 
-    private static final Identifier optionsIcon = new Identifier("beaverutils", "options_icon.png");
+    private static final Identifier optionsIcon = Identifier.of("beaverutils", "options_icon.png");
 
     public FeatureOptionsButtonWidget(int x, int y, ButtonWidget.PressAction action) {
         super(x, y, 20, 20, Text.of("du"), action, DEFAULT_NARRATION_SUPPLIER);

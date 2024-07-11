@@ -1,0 +1,13 @@
+{
+  "notification.level.warn": "§6§l[§eWARN§6§l]§r ",
+  "notification.level.info": "§6§l[§fINFO§6§l]§r ",
+  "notification.level.state":"§6§l[§2STATE §0- §2%s§6§l]§r ",
+  "notification.level.debug": "§6§l[§3DEBUG§6§l]§r ",
+  "notification.level.custom": "§6§l[%s§6§l]§r ",
+  "notification.level.command": "§6§l[§5COMMAND§6§l]§r ",
+  "notification.level.config_update": "§6§l[§1CONFIG UPDATED§6§l]§r ",
+  "notification.level.feature": "§6§l[§1FEATURE§6§l]§r ",
+  "notification.level.feature.with_caller_class_name": "§6§l[§1FEATURE §0- §2%s§6§l]§r ",
+  "notification.level.none": "",
+  "notification.level.notification_error": "§c§l[YOU SHOULD NOT SEE THIS, SOMETHING WENT HORRIBLY WRONG]§r "
+}

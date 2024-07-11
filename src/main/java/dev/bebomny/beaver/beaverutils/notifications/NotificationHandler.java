@@ -41,30 +41,30 @@ public class NotificationHandler {
             Categories category = notification.getCategory();
             String customCategory = notification.getCustomCategory();
 
-            String textPrefix = switch (category) {
+            Text textPrefix = switch (category) {
 
-                case WARN -> "§6§l[" + "§eWARN" +"§6§l]" + "§r ";
+                case WARN -> Text.translatable("notification.level.warn");
 
-                case INFO -> "§6§l[" + "§fINFO" +"§6§l]" + "§r ";
+                case INFO -> Text.translatable("notification.level.info");
 
-                case STATE -> "§6§l[" + "§2STATE " + "§0-" + " §2" + notification.getCallerClassName() + "§6§l]" + "§r ";
+                case STATE -> Text.translatable("notification.level.state", notification.getCallerClassName());
 
-                case DEBUG -> "§6§l[" + "§3DEBUG" +"§6§l]" + "§r ";
+                case DEBUG -> Text.translatable("notification.level.debug");
 
-                case CUSTOM -> "§6§l[" + customCategory +"§6§l]" + "§r ";
+                case CUSTOM -> Text.translatable("notification.level.custom", customCategory);
 
-                case COMMAND -> "§6§l[" + "§5COMMAND" +"§6§l]" + "§r ";
+                case COMMAND -> Text.translatable("notification.level.command");
 
-                case CONFIG_UPDATE -> "§6§l[" + "§1CONFIG UPDATED" +"§6§l]" + "§r ";
+                case CONFIG_UPDATE -> Text.translatable("notification.level.config_update");
 
                 case FEATURE -> notification.getCallerClassName() == null ?
-                        "§6§l[" + "§1FEATURE" +"§6§l]" + "§r "
-                        : "§6§l[" + "§1FEATURE " + "§0-" + " §2" + notification.getCallerClassName() +"§6§l]" + "§r ";
+                        Text.translatable("notification.level.feature")
+                        : Text.translatable("notification.level.feature.with_caller_class_name", notification.getCallerClassName());
 
 
-                case NONE -> "";
+                case NONE -> Text.translatable("notification.level.none");
 
-                default -> "§c§l[YOU SHOULD NOT SEE THIS, SOMETHING WENT HORRIBLY WRONG]" + "§r ";
+                default -> Text.translatable("notification.level.notification_error");
             };
 
             Color stockColor = new Color(255, 255, 255);

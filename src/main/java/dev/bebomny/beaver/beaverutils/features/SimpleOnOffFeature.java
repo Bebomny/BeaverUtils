@@ -6,7 +6,7 @@ import dev.bebomny.beaver.beaverutils.notifications.Categories;
 import dev.bebomny.beaver.beaverutils.notifications.Notification;
 import net.minecraft.client.gui.screen.Screen;
 
-public abstract class SimpleOnOffFeature extends Feature{
+public abstract non-sealed class SimpleOnOffFeature extends Feature{
 
     protected boolean enabled;
     protected EnableConfigOption enableConfig;

@@ -35,7 +35,7 @@ public abstract class OptionsMenu extends Screen {
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         //Render the dimmed background
-        this.renderBackground(context);
+        this.renderBackground(context, mouseX, mouseY, delta);
 
         //Maybe add some flowers for this menu here, you know autoPLANT so maybe some fun looking crops?
 

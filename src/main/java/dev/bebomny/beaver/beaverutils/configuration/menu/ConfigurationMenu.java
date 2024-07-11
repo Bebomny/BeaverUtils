@@ -7,7 +7,7 @@ import dev.bebomny.beaver.beaverutils.configuration.gui.buttons.AutoClickerButto
 import dev.bebomny.beaver.beaverutils.configuration.gui.buttons.FeatureOptionsButtonWidget;
 import dev.bebomny.beaver.beaverutils.configuration.gui.buttons.QuickTeleportButton;
 import dev.bebomny.beaver.beaverutils.configuration.gui.buttons.ReachButton;
-import dev.bebomny.beaver.beaverutils.configuration.widget.ListWidget;
+//import dev.bebomny.beaver.beaverutils.configuration.widget.ListWidget;
 import dev.bebomny.beaver.beaverutils.features.SimpleOnOffFeature;
 import dev.bebomny.beaver.beaverutils.helpers.TextUtils;
 import net.minecraft.client.gui.DrawContext;
@@ -25,7 +25,7 @@ public class ConfigurationMenu extends Screen {
 
     private final Screen parent;
     private final BeaverUtilsClient beaverUtilsClient;
-    public ListWidget list;
+    //public ListWidget list;
 
     public static final int STANDARD_HEIGHT = 20;
     public static final int STANDARD_WIDTH = 150;
@@ -59,7 +59,7 @@ public class ConfigurationMenu extends Screen {
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         //Render the dimmed background
-        this.renderBackground(context);
+        this.renderBackground(context, mouseX, mouseY, delta);
 
         //Add tittle
         context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 15, 16777215);

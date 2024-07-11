@@ -24,7 +24,7 @@ public class QuickTeleportButton extends AxisGridWidget {
                 button -> {
                     quickTeleport.fire(TriggerFeature.FiredBy.MENU);
                 }
-        ).width(106).tooltip(tooltip).build();
+        ).width(ConfigurationMenu.STANDARD_WIDTH - 20 - 20 - 2 - 2).tooltip(tooltip).build();
 
         ButtonWidget teleportPlusButton = ButtonWidget.builder(
                 Text.of("§l+"),

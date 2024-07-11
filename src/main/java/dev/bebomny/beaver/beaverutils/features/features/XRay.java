@@ -15,6 +15,10 @@ public class XRay extends KeyOnOffFeature {
 
     private final XRayConfig xRayConfig = config.xRayConfig;
 
+    /**
+     * See {@link dev.bebomny.beaver.beaverutils.mixins.BlockMixin} <br>
+     * and {@link dev.bebomny.beaver.beaverutils.mixins.BlockStateMixin}
+     */
     public XRay() {
         super("XRay"); //GLFW.GLFW_KEY_X
 

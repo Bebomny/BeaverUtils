@@ -29,7 +29,9 @@ public class AutoClickerButton extends AxisGridWidget {
         ButtonWidget autoClickerDelayDisplay = ButtonWidget.builder(
                 Text.of(autoClicker.getDelay() + " ticks"),
                 button -> {
-                    //doesnt do shit, its just a display
+                    //should reset to default
+                    autoClicker.setDelay(30);
+                    button.setMessage(Text.of(autoClicker.getDelay() + " ticks"));
                 }
         ).dimensions(150 + 2, 0, 65, 20).build();
 

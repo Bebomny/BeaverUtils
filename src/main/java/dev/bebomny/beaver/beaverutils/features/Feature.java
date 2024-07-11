@@ -8,7 +8,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import org.slf4j.Logger;
 
-public abstract class Feature {
+public abstract sealed class Feature permits SimpleOnOffFeature, TriggerFeature {
 
     protected final MinecraftClient client;
     protected final BeaverUtilsClient beaverUtilsClient;

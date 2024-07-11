@@ -7,7 +7,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 
-public abstract class TriggerFeature extends Feature{
+public abstract non-sealed class TriggerFeature extends Feature{
 
     protected KeyBinding fireKey;
     protected int keybindingKey;

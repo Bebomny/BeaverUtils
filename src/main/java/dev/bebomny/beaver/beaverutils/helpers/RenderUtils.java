@@ -5,7 +5,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
 import net.minecraft.client.gl.VertexBuffer;
 import net.minecraft.client.render.*;
-import net.minecraft.client.render.BufferBuilder.BuiltBuffer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
@@ -36,9 +35,7 @@ public class RenderUtils {
 
     public static void drawOutlinedBox(Box box, VertexBuffer vertexBuffer) {
         Tessellator tessellator = RenderSystem.renderThreadTesselator();
-        BufferBuilder bufferBuilder = tessellator.getBuffer();
-
-        bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION);
+        BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION);
         drawOutlinedBox(box, bufferBuilder);
         BuiltBuffer buffer = bufferBuilder.end();
 
@@ -50,91 +47,91 @@ public class RenderUtils {
     public static void drawOutlinedBox(Box box, MatrixStack matrixStack) {
         Matrix4f matrix = matrixStack.peek().getPositionMatrix();
         Tessellator tessellator = RenderSystem.renderThreadTesselator();
-        BufferBuilder bufferBuilder = tessellator.getBuffer();
+        BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION);
         RenderSystem.setShader(GameRenderer::getPositionProgram);
 
-        bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION);
-
-        //should be 12
+        /*//should be 12
         //example for a box with line lengths of 1
         //0,0,0 -> 1,0,0
-        bufferBuilder.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).next();
-        bufferBuilder.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).next();
+        bufferBuilder.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ);
+        bufferBuilder.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ);
         //0,0,0 -> 0,1,0
-        bufferBuilder.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).next();
-        bufferBuilder.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).next();
+        bufferBuilder.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ);
+        bufferBuilder.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ);
         //0,0,0 -> 0,0,1
-        bufferBuilder.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).next();
-        bufferBuilder.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).next();
+        bufferBuilder.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ);
+        bufferBuilder.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ);
         //1,0,0 -> 1,0,1
-        bufferBuilder.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).next();
-        bufferBuilder.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).next();
+        bufferBuilder.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ);
+        bufferBuilder.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ);
         //0,0,1 -> 1,0,1
-        bufferBuilder.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).next();
-        bufferBuilder.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).next();
+        bufferBuilder.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ);
+        bufferBuilder.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ);
         //1,0,0 -> 1,1,0
-        bufferBuilder.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).next();
-        bufferBuilder.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).next();
+        bufferBuilder.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ);
+        bufferBuilder.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ);
         //1,0,1 -> 1,1,1
-        bufferBuilder.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).next();
-        bufferBuilder.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).next();
+        bufferBuilder.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ);
+        bufferBuilder.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ);
         //0,0,1 -> 0,1,1
-        bufferBuilder.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).next();
-        bufferBuilder.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).next();
+        bufferBuilder.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ);
+        bufferBuilder.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ);
         //0,1,0 -> 0,1,1
-        bufferBuilder.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).next();
-        bufferBuilder.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).next();
+        bufferBuilder.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ);
+        bufferBuilder.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ);
         //0,1,0 -> 1,1,0
-        bufferBuilder.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).next();
-        bufferBuilder.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).next();
+        bufferBuilder.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ);
+        bufferBuilder.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ);
         //0,1,1 -> 1,1,1
-        bufferBuilder.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).next();
-        bufferBuilder.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).next();
+        bufferBuilder.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ);
+        bufferBuilder.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ);
         //1,1,0 -> 1,1,1
-        bufferBuilder.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).next();
-        bufferBuilder.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).next();
+        bufferBuilder.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ);
+        bufferBuilder.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ);*/
 
-        tessellator.draw();
+        drawOutlinedBox(box, bufferBuilder);
+
+        BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
     }
 
     public static void drawOutlinedBox(Box box, BufferBuilder bufferBuilder) {
         //should be 12
         //example for a box with line lengths of 1
         //0,0,0 -> 1,0,0
-        bufferBuilder.vertex(box.minX, box.minY, box.minZ).next();
-        bufferBuilder.vertex(box.maxX, box.minY, box.minZ).next();
+        bufferBuilder.vertex((float) box.minX, (float) box.minY, (float) box.minZ);
+        bufferBuilder.vertex((float) box.maxX, (float) box.minY, (float) box.minZ);
         //0,0,0 -> 0,1,0
-        bufferBuilder.vertex(box.minX, box.minY, box.minZ).next();
-        bufferBuilder.vertex(box.minX, box.maxY, box.minZ).next();
+        bufferBuilder.vertex((float) box.minX, (float) box.minY, (float) box.minZ);
+        bufferBuilder.vertex((float) box.minX, (float) box.maxY, (float) box.minZ);
         //0,0,0 -> 0,0,1
-        bufferBuilder.vertex(box.minX, box.minY, box.minZ).next();
-        bufferBuilder.vertex(box.minX, box.minY, box.maxZ).next();
+        bufferBuilder.vertex((float) box.minX, (float) box.minY, (float) box.minZ);
+        bufferBuilder.vertex((float) box.minX, (float) box.minY, (float) box.maxZ);
         //1,0,0 -> 1,0,1
-        bufferBuilder.vertex(box.maxX, box.minY, box.minZ).next();
-        bufferBuilder.vertex(box.maxX, box.minY, box.maxZ).next();
+        bufferBuilder.vertex((float) box.maxX, (float) box.minY, (float) box.minZ);
+        bufferBuilder.vertex((float) box.maxX, (float) box.minY, (float) box.maxZ);
         //0,0,1 -> 1,0,1
-        bufferBuilder.vertex(box.minX, box.minY, box.maxZ).next();
-        bufferBuilder.vertex(box.maxX, box.minY, box.maxZ).next();
+        bufferBuilder.vertex((float) box.minX, (float) box.minY, (float) box.maxZ);
+        bufferBuilder.vertex((float) box.maxX, (float) box.minY, (float) box.maxZ);
         //1,0,0 -> 1,1,0
-        bufferBuilder.vertex(box.maxX, box.minY, box.minZ).next();
-        bufferBuilder.vertex(box.maxX, box.maxY, box.minZ).next();
+        bufferBuilder.vertex((float) box.maxX, (float) box.minY, (float) box.minZ);
+        bufferBuilder.vertex((float) box.maxX, (float) box.maxY, (float) box.minZ);
         //1,0,1 -> 1,1,1
-        bufferBuilder.vertex(box.maxX, box.minY, box.maxZ).next();
-        bufferBuilder.vertex(box.maxX, box.maxY, box.maxZ).next();
+        bufferBuilder.vertex((float) box.maxX, (float) box.minY, (float) box.maxZ);
+        bufferBuilder.vertex((float) box.maxX, (float) box.maxY, (float) box.maxZ);
         //0,0,1 -> 0,1,1
-        bufferBuilder.vertex(box.minX, box.minY, box.maxZ).next();
-        bufferBuilder.vertex(box.minX, box.maxY, box.maxZ).next();
+        bufferBuilder.vertex((float) box.minX, (float) box.minY, (float) box.maxZ);
+        bufferBuilder.vertex((float) box.minX, (float) box.maxY, (float) box.maxZ);
         //0,1,0 -> 0,1,1
-        bufferBuilder.vertex(box.minX, box.maxY, box.minZ).next();
-        bufferBuilder.vertex(box.minX, box.maxY, box.maxZ).next();
+        bufferBuilder.vertex((float) box.minX, (float) box.maxY, (float) box.minZ);
+        bufferBuilder.vertex((float) box.minX, (float) box.maxY, (float) box.maxZ);
         //0,1,0 -> 1,1,0
-        bufferBuilder.vertex(box.minX, box.maxY, box.minZ).next();
-        bufferBuilder.vertex(box.maxX, box.maxY, box.minZ).next();
+        bufferBuilder.vertex((float) box.minX, (float) box.maxY, (float) box.minZ);
+        bufferBuilder.vertex((float) box.maxX, (float) box.maxY, (float) box.minZ);
         //0,1,1 -> 1,1,1
-        bufferBuilder.vertex(box.minX, box.maxY, box.maxZ).next();
-        bufferBuilder.vertex(box.maxX, box.maxY, box.maxZ).next();
+        bufferBuilder.vertex((float) box.minX, (float) box.maxY, (float) box.maxZ);
+        bufferBuilder.vertex((float) box.maxX, (float) box.maxY, (float) box.maxZ);
         //1,1,0 -> 1,1,1
-        bufferBuilder.vertex(box.maxX, box.maxY, box.minZ).next();
-        bufferBuilder.vertex(box.maxX, box.maxY, box.maxZ).next();
+        bufferBuilder.vertex((float) box.maxX, (float) box.maxY, (float) box.minZ);
+        bufferBuilder.vertex((float) box.maxX, (float) box.maxY, (float) box.maxZ);
     }
 }

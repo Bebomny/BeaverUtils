@@ -1,8 +1,10 @@
 package dev.bebomny.beaver.beaverutils.configuration.gui.buttons;
 
 import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
+import dev.bebomny.beaver.beaverutils.configuration.ConfigurationMenu;
 import dev.bebomny.beaver.beaverutils.features.features.Reach;
 import dev.bebomny.beaver.beaverutils.helpers.TextUtils;
+import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.AxisGridWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
@@ -12,7 +14,7 @@ public class ReachButton extends AxisGridWidget {
     private Reach reach = BeaverUtilsClient.getInstance().features.reach;
 
     public ReachButton(int x, int y) {
-        super(150, 20, DisplayAxis.HORIZONTAL);//219
+        super(ConfigurationMenu.STANDARD_WIDTH, 20, DisplayAxis.HORIZONTAL);//219
         this.getMainPositioner().alignLeft();
 
         ButtonWidget reachEnable = ButtonWidget.builder(
@@ -21,7 +23,7 @@ public class ReachButton extends AxisGridWidget {
                     reach.setEnabled(!reach.isEnabled());
                     button.setMessage(TextUtils.getEnabledDisabledText(reach.getName(), reach.isEnabled()));
                 }
-        ).width(130).build();
+        ).width(130).tooltip(Tooltip.of(Text.of("§l§4THIS FEATURE IS DEPRECATED!!! Do not use it, it doesnt work!"))).build();
 
         ButtonWidget reachDisplay = ButtonWidget.builder(
                 Text.of(reach.getDistance() + " Blocks"),

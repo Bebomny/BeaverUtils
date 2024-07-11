@@ -20,21 +20,21 @@ public class ClientPlayerInteractionManagerMixin {
         //Autotool
     }
 
-    @Inject(method = "getReachDistance", at = @At("HEAD"), cancellable = true)
-    public void onGetReachDistance(CallbackInfoReturnable<Float> cir) {
-        if(!BeaverUtilsClient.getInstance().features.reach.isEnabled()) {
-            return;
-        }
-
-        cir.setReturnValue(BeaverUtilsClient.getInstance().features.reach.getDistance());
-    }
-
-    @Inject(method = "hasExtendedReach", at = @At("HEAD"), cancellable = true)
-    public void hasExtendedReach(CallbackInfoReturnable<Boolean> cir) {
-        if(!BeaverUtilsClient.getInstance().features.reach.isEnabled()) {
-            return;
-        }
-
-        cir.setReturnValue(true);
-    }
+//    @Inject(method = "getReachDistance", at = @At("HEAD"), cancellable = true)
+//    public void onGetReachDistance(CallbackInfoReturnable<Float> cir) {
+//        if(!BeaverUtilsClient.getInstance().features.reach.isEnabled()) {
+//            return;
+//        }
+//
+//        cir.setReturnValue(BeaverUtilsClient.getInstance().features.reach.getDistance());
+//    }
+//
+//    @Inject(method = "hasExtendedReach", at = @At("HEAD"), cancellable = true)
+//    public void hasExtendedReach(CallbackInfoReturnable<Boolean> cir) {
+//        if(!BeaverUtilsClient.getInstance().features.reach.isEnabled()) {
+//            return;
+//        }
+//
+//        cir.setReturnValue(true);
+//    }
 }

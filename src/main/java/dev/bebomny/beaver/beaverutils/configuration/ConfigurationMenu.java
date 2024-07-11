@@ -6,6 +6,7 @@ import dev.bebomny.beaver.beaverutils.configuration.gui.buttons.*;
 import dev.bebomny.beaver.beaverutils.features.SimpleOnOffFeature;
 import dev.bebomny.beaver.beaverutils.helpers.TextUtils;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.*;
@@ -20,7 +21,7 @@ public class ConfigurationMenu extends Screen{
     private final GeneralConfig generalConfig;
 
     public static final int STANDARD_HEIGHT = 20;
-    public static final int STANDARD_WIDTH = 150;
+    public static final int STANDARD_WIDTH = 160;
     public static final int WIDTH_SPACING = 2;
     public static final int SPACING = 4;
 
@@ -73,6 +74,9 @@ public class ConfigurationMenu extends Screen{
         //AutoPlant Buttons
         adder.add(this.createCombinedButtons(beaverUtilsClient.getFeatures().autoPlant, -(STANDARD_WIDTH + WIDTH_SPACING), getYPosition(4)));
         //adder.add(new AutoPlantButton(-(128 + 4), calculateYPosition(4)));
+
+        //EntityListDisplay Buttons
+        adder.add(this.createCombinedButtons(beaverUtilsClient.getFeatures().entityListDisplay, WIDTH_SPACING, getYPosition(4)));
 
         //Elytra Speed Control Buttons
         adder.add(this.createCombinedButtons(beaverUtilsClient.getFeatures().elytraSpeedControl, -(STANDARD_WIDTH + WIDTH_SPACING), getYPosition(5)));
@@ -127,6 +131,13 @@ public class ConfigurationMenu extends Screen{
 
         this.addDrawableChild(autoEnableButton);
         this.addDrawableChild(debugButton);
+
+
+        //Tittle
+
+        TextWidget tittleText = new TextWidget(0, 40, this.width, 9, this.title, this.textRenderer);
+        this.addDrawableChild(tittleText);
+
     }
 
     public static int getYPosition(int row) {
@@ -146,10 +157,9 @@ public class ConfigurationMenu extends Screen{
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         //Render the dimmed background
-        this.renderBackground(context);
-
+        renderBackground(context, mouseX, mouseY, delta);
         //Add tittle
-        context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 15, 16777215);
+        //context.drawCenteredTextWithShadow(textRenderer, this.title, this.width / 2, 15, 16777215);
 
         super.render(context, mouseX, mouseY, delta);
     }
@@ -164,8 +174,16 @@ public class ConfigurationMenu extends Screen{
         );
 
         AxisGridWidget axisGridWidget = new AxisGridWidget(STANDARD_WIDTH, STANDARD_HEIGHT, AxisGridWidget.DisplayAxis.HORIZONTAL);
-        axisGridWidget.add(optionsButton);
-        axisGridWidget.add(mainButton);
+
+        // Put the settings button on the outer-side
+        if (x < 0) {
+            axisGridWidget.add(optionsButton);
+            axisGridWidget.add(mainButton);
+        } else {
+            axisGridWidget.add(mainButton);
+            axisGridWidget.add(optionsButton);
+        }
+
         axisGridWidget.refreshPositions();
         axisGridWidget.setPosition(x, y);
         return axisGridWidget;
@@ -178,6 +196,6 @@ public class ConfigurationMenu extends Screen{
                     feature.setEnabled(!feature.isEnabled());
                     button.setMessage(TextUtils.getEnabledDisabledText(feature.getName(), feature.isEnabled()));
                 }
-        ).position(x, y).tooltip(feature.getMainToolTip()).build();
+        ).dimensions(x, y, ConfigurationMenu.STANDARD_WIDTH, 20).tooltip(feature.getMainToolTip()).build();
     }
 }

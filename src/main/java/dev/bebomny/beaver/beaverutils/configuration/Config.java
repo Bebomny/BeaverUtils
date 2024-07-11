@@ -42,7 +42,8 @@ public class Config {
     @Expose
     public XRayConfig xRayConfig = new XRayConfig();
 
-
+    @Expose
+    public EntityListDisplayConfig entityListDisplayConfig = new EntityListDisplayConfig();
 
 
 

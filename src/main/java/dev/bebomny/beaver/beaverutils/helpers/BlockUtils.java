@@ -14,7 +14,7 @@ public class BlockUtils {
 
     public static Block getBlockByName(String name) {
         try {
-            return Registries.BLOCK.get(new Identifier(name));
+            return Registries.BLOCK.get(Identifier.of(name));
         } catch(InvalidIdentifierException e) {
             return Blocks.AIR;
         }

@@ -17,6 +17,7 @@ public class Features {
     public NoFallDmg noFallDmg;
     public AutoPlant autoPlant;
     public ElytraSpeedControl elytraSpeedControl;
+    public EntityListDisplay entityListDisplay;
 
     public Features() {
         this.beaverUtilsClient = BeaverUtilsClient.getInstance();
@@ -51,5 +52,8 @@ public class Features {
 
         this.elytraSpeedControl = new ElytraSpeedControl();
         beaverUtilsClient.featureHandler.addFeature(elytraSpeedControl);
+
+        this.entityListDisplay = new EntityListDisplay();
+        beaverUtilsClient.featureHandler.addFeature(entityListDisplay);
     }
 }
