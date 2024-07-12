@@ -6,7 +6,6 @@ import dev.bebomny.beaver.beaverutils.features.features.*;
 public class Features {
 
     private final BeaverUtilsClient beaverUtilsClient;
-
     public XRay xRay;
     public QuickTeleport quickTeleport;
     public FullBright fullBright;

@@ -16,12 +16,12 @@ import java.util.List;
 public class TestCommand extends ClientCommand {
 
     public TestCommand() {
-        super("test", "Test, command used mainly for testing purposes");
+        super(Text.translatable("client_command.test.name"), Text.translatable("client_command.test.description"));
     }
 
     @Override
     public void build(ArgumentBuilder<FabricClientCommandSource, ?> builder, CommandRegistryAccess registryAccess) {
-        builder.then(ClientCommandManager.literal(getName())
+        builder.then(ClientCommandManager.literal(getName().getString())
                 .executes(context -> {
                     context.getSource().sendFeedback(Text.literal("§a Test!"));
                     MinecraftClient client = BeaverUtilsClient.getInstance().client;

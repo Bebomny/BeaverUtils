@@ -3,14 +3,12 @@ package dev.bebomny.beaver.beaverutils.commands.commands;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import dev.bebomny.beaver.beaverutils.commands.ClientCommand;
 import dev.bebomny.beaver.beaverutils.helpers.BlockUtils;
-import dev.bebomny.beaver.beaverutils.notifications.Categories;
 import dev.bebomny.beaver.beaverutils.notifications.Notification;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.hud.DebugHud;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.BlockStateArgument;
 import net.minecraft.command.argument.BlockStateArgumentType;
@@ -18,27 +16,29 @@ import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 
 import java.util.Objects;
 
 public class XRayCommand extends ClientCommand {
 
     public XRayCommand() {
-        super("xray", "Allows for adding and removing Blocks to show when xray is enabled");
+        super(Text.translatable("client_command.xray.name"), Text.translatable("client_command.xray.description"));
     }
 
     @Override
     public void build(ArgumentBuilder<FabricClientCommandSource, ?> builder, CommandRegistryAccess registryAccess) {
-        builder.then(ClientCommandManager.literal(getName())
-                .then(ClientCommandManager.literal("add")
+        builder.then(ClientCommandManager.literal(getName().getString())
+                .then(ClientCommandManager.literal(Text.translatable("client_command.xray.add.literal").getString())
                         .then(ClientCommandManager.argument("block", BlockStateArgumentType.blockState(registryAccess))
                                 .executes(ctx -> {
                                     Block block = ctx.getArgument("block", BlockStateArgument.class).getBlockState().getBlock();
 
                                     if (beaverUtilsClient.getConfig().xRayConfig.interestingBlocksAsCollection.contains(BlockUtils.getBlockName(block))) {
                                         ctx.getSource().sendFeedback(
-                                                Text.of("§l§9" + BlockUtils.getBlockName(block) + " §eis already present in XRay's interesting Blocks")
+                                                Text.translatable("client_command.xray.already_present_text_1", BlockUtils.getBlockName(block))
+                                        );
+                                        ctx.getSource().sendFeedback(
+                                                Text.translatable("client_command.xray.already_present_text_2", BlockUtils.getBlockName(block))
                                         );
                                         return 0;
                                     }
@@ -46,19 +46,19 @@ public class XRayCommand extends ClientCommand {
                                     beaverUtilsClient.getConfig().xRayConfig.interestingBlocksAsCollection.add(BlockUtils.getBlockName(block));
 
                                     ctx.getSource().sendFeedback(
-                                            Text.of("§aAdded §l§9" + BlockUtils.getBlockName(block) + " §ato XRay's interesting Blocks")
+                                            Text.translatable("client_command.xray.add_success_text", BlockUtils.getBlockName(block))
                                     );
 
                                     beaverUtilsClient.getNotifier().newNotification(
-                                            Notification.builder("§aAdded §l§9" + BlockUtils.getBlockName(block) + " §ato XRay's interesting Blocks")
-                                                    .category(Categories.COMMAND, null)
+                                            Notification.builder(Text.translatable("client_command.xray.add_success_text", BlockUtils.getBlockName(block)))
+                                                    .parent(Text.translatable("client_command.text"))
                                                     .duration(100)
                                                     .build()
                                     );
 
                                     return 0;
                                 })
-                        ).then(ClientCommandManager.literal("lookingat")
+                        ).then(ClientCommandManager.literal(Text.translatable("client_command.xray.add_looking_at.literal").getString())
                                 .executes(ctx -> {
                                     MinecraftClient client = beaverUtilsClient.client;
 
@@ -73,43 +73,45 @@ public class XRayCommand extends ClientCommand {
                                         BlockState blockState = client.world.getBlockState(blockPos);
 
                                         if (beaverUtilsClient.getConfig().xRayConfig.interestingBlocksAsCollection.contains(BlockUtils.getBlockName(blockState.getBlock()))) {
-                                            ctx.getSource().sendFeedback(Text.of(
-                                                    "§l§9" + BlockUtils.getBlockName(blockState.getBlock()) + " §eis already present in XRay's interesting Blocks" + '\n'
-                                                            + "§9To remove it use: " + "§l§a/beaverutils xray remove " + BlockUtils.getBlockName(blockState.getBlock())
-                                            ));
+                                            ctx.getSource().sendFeedback(
+                                                    Text.translatable("client_command.xray.already_present_text_1", BlockUtils.getBlockName(blockState.getBlock()))
+                                            );
+                                            ctx.getSource().sendFeedback(
+                                                    Text.translatable("client_command.xray.already_present_text_2", BlockUtils.getBlockName(blockState.getBlock()))
+                                            );
                                             return 0;
                                         }
 
                                         beaverUtilsClient.getConfig().xRayConfig.interestingBlocksAsCollection.add(BlockUtils.getBlockName(blockState.getBlock()));
 
                                         ctx.getSource().sendFeedback(
-                                                Text.of("§aAdded §l§9" + BlockUtils.getBlockName(blockState.getBlock()) + " §ato XRay's interesting Blocks")
+                                                Text.translatable("client_command.xray.add_success_text", BlockUtils.getBlockName(blockState.getBlock()))
                                         );
 
                                         beaverUtilsClient.getNotifier().newNotification(
-                                                Notification.builder("§aAdded §l§9" + BlockUtils.getBlockName(blockState.getBlock()) + " §ato XRay's interesting Blocks")
-                                                        .category(Categories.COMMAND, null)
+                                                Notification.builder(Text.translatable("client_command.xray.add_success_text", BlockUtils.getBlockName(blockState.getBlock())))
+                                                        .parent(Text.translatable("client_command.text"))
                                                         .duration(100)
                                                         .build()
                                         );
                                     } else {
-                                        ctx.getSource().sendFeedback(Text.of("You're not looking at any Blocks!"));
+                                        ctx.getSource().sendFeedback(Text.translatable("client_command.xray.looking_at.fail_text"));
                                     }
 
                                     return 0;
                                 })
                         )
-                ).then(ClientCommandManager.literal("remove")
+                ).then(ClientCommandManager.literal(Text.translatable("client_command.xray.remove.literal").getString())
                         .then(ClientCommandManager.argument("block", BlockStateArgumentType.blockState(registryAccess))
                                 .executes(ctx -> {
                                     Block block = ctx.getArgument("block", BlockStateArgument.class).getBlockState().getBlock();
 
                                     if (!beaverUtilsClient.getConfig().xRayConfig.interestingBlocksAsCollection.contains(BlockUtils.getBlockName(block))) {
                                         ctx.getSource().sendFeedback(
-                                                Text.of(
-                                                        "§l§9" + BlockUtils.getBlockName(block) + " §eis not present in XRay's interesting Blocks" + '\n'
-                                                                + "§9To add it use: " + "§l§a/beaverutils xray add " + BlockUtils.getBlockName(block)
-                                                )
+                                                Text.translatable("client_command.xray.not_present_text_1", BlockUtils.getBlockName(block))
+                                        );
+                                        ctx.getSource().sendFeedback(
+                                                Text.translatable("client_command.xray.not_present_text_2", BlockUtils.getBlockName(block))
                                         );
                                         return 0;
                                     }
@@ -117,19 +119,19 @@ public class XRayCommand extends ClientCommand {
                                     beaverUtilsClient.getConfig().xRayConfig.interestingBlocksAsCollection.remove(BlockUtils.getBlockName(block));
 
                                     ctx.getSource().sendFeedback(
-                                            Text.of("§cRemoved §l§9" + BlockUtils.getBlockName(block) + " §cfrom XRay's interesting Blocks")
+                                            Text.translatable("client_command.xray.remove_success_text", BlockUtils.getBlockName(block))
                                     );
 
                                     beaverUtilsClient.getNotifier().newNotification(
-                                            Notification.builder("§cRemoved §l§9" + BlockUtils.getBlockName(block) + " §cfrom XRay's interesting Blocks")
-                                                    .category(Categories.COMMAND, null)
+                                            Notification.builder(Text.translatable("client_command.xray.remove_success_text", BlockUtils.getBlockName(block)))
+                                                    .parent(Text.translatable("client_command.text"))
                                                     .duration(100)
                                                     .build()
                                     );
 
                                     return 0;
                                 })
-                        ).then(ClientCommandManager.literal("lookingat")
+                        ).then(ClientCommandManager.literal(Text.translatable("client_command.xray.add_looking_at.literal").getString())
                                 .executes(ctx -> {
                                     MinecraftClient client = beaverUtilsClient.client;
 
@@ -144,37 +146,42 @@ public class XRayCommand extends ClientCommand {
                                         BlockState blockState = client.world.getBlockState(blockPos);
 
                                         if (!beaverUtilsClient.getConfig().xRayConfig.interestingBlocksAsCollection.contains(BlockUtils.getBlockName(blockState.getBlock()))) {
-                                            ctx.getSource().sendFeedback(Text.of(
-                                                    "§l§9" + BlockUtils.getBlockName(blockState.getBlock()) + " §eis not present in XRay's interesting Blocks" + '\n'
-                                                            + "§9To add it use: " + "§l§a/beaverutils xray add " + BlockUtils.getBlockName(blockState.getBlock())
-                                            ));
+                                            ctx.getSource().sendFeedback(
+                                                    Text.translatable("client_command.xray.not_present_text_1", BlockUtils.getBlockName(blockState.getBlock()))
+                                            );
+                                            ctx.getSource().sendFeedback(
+                                                    Text.translatable("client_command.xray.not_present_text_2", BlockUtils.getBlockName(blockState.getBlock()))
+                                            );
                                             return 0;
                                         }
 
                                         beaverUtilsClient.getConfig().xRayConfig.interestingBlocksAsCollection.add(BlockUtils.getBlockName(blockState.getBlock()));
 
                                         ctx.getSource().sendFeedback(
-                                                Text.of("§cRemoved §l§9" + BlockUtils.getBlockName(blockState.getBlock()) + " §cfrom XRay's interesting Blocks")
+                                                Text.translatable("client_command.xray.remove_success_text", BlockUtils.getBlockName(blockState.getBlock()))
                                         );
 
                                         beaverUtilsClient.getNotifier().newNotification(
-                                                Notification.builder("§cRemoved §l§9" + BlockUtils.getBlockName(blockState.getBlock()) + " §cfrom XRay's interesting Blocks")
-                                                        .category(Categories.COMMAND, null)
+                                                Notification.builder(Text.translatable("client_command.xray.remove_success_text", BlockUtils.getBlockName(blockState.getBlock())))
+                                                        .parent(Text.translatable("client_command.text"))
                                                         .duration(100)
                                                         .build()
                                         );
                                     } else {
-                                        ctx.getSource().sendFeedback(Text.of("You're not looking at any Blocks!"));
+                                        ctx.getSource().sendFeedback(Text.translatable("client_command.xray.looking_at.fail_text"));
                                     }
 
                                     return 0;
                                 })
                         )
-                ).then(ClientCommandManager.literal("list")
+                ).then(ClientCommandManager.literal(Text.translatable("client_command.xray.list.literal").getString())
                         .executes(ctx -> {
                             if (beaverUtilsClient.getConfig().xRayConfig.interestingBlocksAsCollection.isEmpty()) {
                                 ctx.getSource().sendFeedback(
-                                        Text.of("§c§lXRay's interesting blocks List is Empty!" + '\n' + "&9To add blocks to the list use: " + "§l§a/beaverutils xray add [Block]")
+                                        Text.translatable("client_command.xray.list.empty_text_1")
+                                );
+                                ctx.getSource().sendFeedback(
+                                        Text.translatable("client_command.xray.list.empty_text_2")
                                 );
                                 return 0;
                             }
@@ -185,7 +192,10 @@ public class XRayCommand extends ClientCommand {
                             }
 
                             ctx.getSource().sendFeedback(
-                                    Text.of("§fXray's Interesting Blocks List: " + "§r " + '\n' + list)
+                                    Text.translatable("client_command.xray.list.list_text_1")
+                            );
+                            ctx.getSource().sendFeedback(
+                                    Text.stringifiedTranslatable("client_command.xray.list.list_text_2", list)
                             );
                             return 0;
                         })

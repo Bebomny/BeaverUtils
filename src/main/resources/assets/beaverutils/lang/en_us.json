@@ -1,13 +1,58 @@
 {
-  "notification.level.warn": "§6§l[§eWARN§6§l]§r ",
-  "notification.level.info": "§6§l[§fINFO§6§l]§r ",
-  "notification.level.state":"§6§l[§2STATE §0- §2%s§6§l]§r ",
-  "notification.level.debug": "§6§l[§3DEBUG§6§l]§r ",
-  "notification.level.custom": "§6§l[%s§6§l]§r ",
-  "notification.level.command": "§6§l[§5COMMAND§6§l]§r ",
-  "notification.level.config_update": "§6§l[§1CONFIG UPDATED§6§l]§r ",
-  "notification.level.feature": "§6§l[§1FEATURE§6§l]§r ",
-  "notification.level.feature.with_caller_class_name": "§6§l[§1FEATURE §0- §2%s§6§l]§r ",
-  "notification.level.none": "",
-  "notification.level.notification_error": "§c§l[YOU SHOULD NOT SEE THIS, SOMETHING WENT HORRIBLY WRONG]§r "
+  "notification.level.info": "§6§l[§8%s§6§l]§r %s",
+  "notification.level.debug": "§6§l[§3%s§6§l]§r %s",
+  "notification.level.warn": "§6§l[§e%s§6§l]§r %s",
+  "notification.level.error": "§6§l[§c%s§6§l]§r %s",
+  "notification.parent.missing": "INFO",
+
+
+  "feature.text": "§9Feature",
+  "feature.enabled_text": "%s Enabled",
+  "feature.disabled_text": "%s Disabled",
+  "feature.on_text": "%s ON",
+  "feature.off_text": "%s OFF",
+  "feature.simple_on_off.enabled": "§l§a%s §l§aEnabled",
+  "feature.simple_on_off.disabled": "§l§c%s §l§cDisabled",
+  "feature.trigger.fire_text": "§l§c%s §l§cTriggered",
+
+  "feature.in_game_stats.tps_text": "§%.1f TPS",
+
+  "feature.auto_plant.text": "AutoPlant",
+  "feature.auto_plant.age_text": "Block: %s | AGE: %d |",
+  "feature.auto_plant.plant_success.text": "Seed Planted",
+
+  "feature.auto_clicker.click.attacked.text": "AutoClicker Attacked",
+  "feature.auto_clicker.click.used_item.text": "AutoClicker Used Item",
+  "feature.auto_clicker.click.both.text": "AutoClicker Attacked & Used Item",
+  "feature.auto_clicker.hold.attack.text": "AutoClicker Holding Attack Key",
+  "feature.auto_clicker.hold.use_item.text": "AutoClicker Holding Use Item Key",
+  "feature.auto_clicker.hold.both.text": "AutoClicker Holding Attack & Use Item Key",
+
+
+  "client_command.text": "§9Command",
+  "client_command.xray.name": "xray",
+  "client_command.xray.add.literal": "add",
+  "client_command.xray.description": "Allows for adding and removing Blocks to show when xray is enabled",
+  "client_command.xray.already_present_text_1": "§l§9%s §eis already present in XRay's interesting Blocks",
+  "client_command.xray.already_present_text_2": "§9To remove it use: §l§a/beaverutils xray remove %s",
+  "client_command.xray.add_success_text": "§aAdded §l§9%s §ato XRay's interesting Blocks",
+  "client_command.xray.add_looking_at.literal": "lookingat",
+  "client_command.xray.looking_at.fail_text": "You're not looking at any Blocks!",
+  "client_command.xray.remove.literal": "remove",
+  "client_command.xray.not_present_text_1": "§l§9%s §eis not present in XRay's interesting Blocks",
+  "client_command.xray.not_present_text_2": "§9To add it use: §l§a/beaverutils xray add %s",
+  "client_command.xray.remove_success_text": "§cRemoved §l§9%s §cfrom XRay's interesting Blocks",
+  "client_command.xray.list.literal": "list",
+  "client_command.xray.list.empty_text_1": "§c§lXRay's interesting blocks List is Empty!",
+  "client_command.xray.list.empty_text_2": "&9To add blocks to the list use: §l§a/beaverutils xray add [Block]",
+  "client_command.xray.list.list_text_1": "§fXray's Interesting Blocks List: §r",
+  "client_command.xray.list.list_text_2": "%s",
+
+  "client_command.test.name": "test",
+  "client_command.test.description": "Test, command used mainly for testing purposes",
+
+  "client_command.entity_count.name": "entityCount",
+  "client_command.entity_count.description": "Counts the chosen entity in a certain radius",
+  "client_command.entity_list.name": "entityList",
+  "client_command.entity_list.description": "Lists all entities in a specified radius"
 }

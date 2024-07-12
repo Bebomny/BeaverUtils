@@ -117,7 +117,7 @@ public class InGameStats extends SimpleOnOffFeature {
         else
             tpsFormatting = Formatting.RED;
 
-        //TODO: Add as translatable? for ex: "%.1f TPS"
+        //TODO: Add as translatable? for ex: "%.1f TPS" - the formatting needs to be dynamic so maybe not?
         MutableText tpsText = Text
                 .literal(String.format("%.1f", ticksPerSec))
                 .formatted(tpsFormatting)

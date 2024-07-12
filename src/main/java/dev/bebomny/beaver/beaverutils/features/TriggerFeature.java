@@ -1,11 +1,11 @@
 package dev.bebomny.beaver.beaverutils.features;
 
-import dev.bebomny.beaver.beaverutils.notifications.Categories;
 import dev.bebomny.beaver.beaverutils.notifications.Notification;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.text.Text;
 
 public abstract non-sealed class TriggerFeature extends Feature{
 
@@ -38,9 +38,9 @@ public abstract non-sealed class TriggerFeature extends Feature{
     }
 
     public void fire(FiredBy firedBy) {
-        notifier.newNotification(Notification.builder(
-                        "§l§c" + getName() + " §l§cTriggered"
-                ).category(Categories.FEATURE, getName())
+        notifier.newNotification(Notification
+                .builder(Text.translatable("feature.trigger.fire_text", getName()))
+                .parent(Text.translatable("feature.text"))
                 .build());
     }
 

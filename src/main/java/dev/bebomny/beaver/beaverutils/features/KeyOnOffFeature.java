@@ -1,14 +1,11 @@
 package dev.bebomny.beaver.beaverutils.features;
 
-import dev.bebomny.beaver.beaverutils.configuration.config.EnableConfigOption;
-import dev.bebomny.beaver.beaverutils.notifications.Categories;
-import dev.bebomny.beaver.beaverutils.notifications.Notification;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 
-public abstract class KeyOnOffFeature extends SimpleOnOffFeature{
+public abstract class KeyOnOffFeature extends SimpleOnOffFeature {
 
     //Allows for keybinding On/Off states
     protected KeyBinding activationKey;
@@ -26,14 +23,14 @@ public abstract class KeyOnOffFeature extends SimpleOnOffFeature{
         beaverUtilsClient.keyBindingHandler.registerKeyBinding(name, activationKey);
         LOGGER.atInfo().log("Registered a keybinding for " + getName() + ", with key " + keybindingKey);
 
-        if(!keyPressListenerRegistered & activationKey != null) {
+        if (!keyPressListenerRegistered & activationKey != null) {
             ClientTickEvents.END_CLIENT_TICK.register(this::checkKeyBindPress);
             keyPressListenerRegistered = true;
         }
     }
 
     private void checkKeyBindPress(MinecraftClient client) {
-        while(activationKey.wasPressed()) {
+        while (activationKey.wasPressed()) {
             setEnabled(!isEnabled());
             this.keybindingKey = KeyBindingHelper.getBoundKeyOf(activationKey).getCode();
         }

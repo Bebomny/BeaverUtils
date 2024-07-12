@@ -1,130 +1,164 @@
 package dev.bebomny.beaver.beaverutils.notifications;
 
-import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
+import java.awt.*;
 
+public class Notification implements Comparable<Notification> {
+    public final MutableText text;
+    private final int duration;
+    private MutableText parentText;
 
-public class Notification {
-    private final String text;
-    private final int duration; //in ticks
-    private int customXOffset;
-    private Categories category;
-    @Nullable
-    private String customCategory;
-    private String callerClassName;
+    //The higher the number, the more important the notification is
+    // From "5" and above the notification becomes a "Priority Notification",
+    // and is going to be displayed regardless of the current amount of displayed notifications
+    // TODO: add a special effect to be noticeable more as the priority increases
+    private int priorityValue;
+    private int onScreenDecay;
+    private LEVEL level;
 
-    public static Builder builder(String text) {
+    public static Builder builder(MutableText text) {
         return new Builder(text);
     }
 
-    protected Notification(String text, int duration) {
+    protected Notification(MutableText text, int duration) {
         this.text = text;
         this.duration = duration;
+        this.level = LEVEL.INFO;
     }
 
-    public void setCustomXOffset(int customXOffset) {
-        this.customXOffset = customXOffset;
+    public void renderAt(MinecraftClient client, DrawContext context, float partialTicks, int x, int y) {
+        //TODO: The colors are not applied at all, try to fix them later
+        Text notificationTextAssembly = Text.translatable(
+                level.getNotificationTextKey(),
+                getParentText().getString(), getText());
+
+        Color stockColor = new Color(255, 255, 255);
+        int color = onScreenDecay < 30 ?
+                ((stockColor.getRed() / 30) * onScreenDecay) << 16
+                        | ((stockColor.getGreen() / 30) * onScreenDecay) << 8
+                        | ((stockColor.getBlue() / 30) * onScreenDecay)
+                :
+                stockColor.getRed() << 16
+                        | stockColor.getGreen() << 8
+                        | stockColor.getBlue();
+        int alpha = onScreenDecay < 30 ? ((0xFF / 30) * onScreenDecay) << 24 : 0xFF << 24;
+
+        context.drawCenteredTextWithShadow(
+                client.textRenderer,
+                notificationTextAssembly,
+                x, y,
+                color | alpha);
     }
 
-    public void setCategory(Categories category) {
-        this.category = category;
+    public void setParentText(MutableText parentText) {
+        this.parentText = parentText;
     }
 
-    public void setCustomCategory(@Nullable String customCategory) {
-        this.customCategory = customCategory;
+    public void setPriority(int priorityValue) {
+        this.priorityValue = priorityValue;
     }
 
-    private void setCallerClassName(String callerClassName) {
-        this.callerClassName = callerClassName;
+    protected void setInitialOnScreenDecay(int duration) {
+        this.onScreenDecay = duration;
     }
 
-    public String getText() {
+    public void setLevel(LEVEL level) {
+        this.level = level;
+    }
+
+    //Decrements the decay counter by one, should be called every tick!(Client tick!)
+    public void progressDecay() {
+        this.onScreenDecay--;
+    }
+
+    public MutableText getParentText() {
+        return parentText;
+    }
+
+    public MutableText getText() {
         return text;
-    } //return category == null ? text : getTextWithCategory();
+    }
 
     public int getDuration() {
         return duration;
     }
 
-    public float getCustomXOffset() {
-        return customXOffset;
+    public int getPriority() {
+        return priorityValue;
     }
 
-    public Categories getCategory() {
-        return category;
+    public int getOnScreenDecay() {
+        return onScreenDecay;
     }
 
-    public @Nullable String getCustomCategory() {
-        return customCategory;
+    public LEVEL getLevel() {
+        return level;
     }
 
-    public String getCallerClassName() {
-        return callerClassName;
-    }
-
-    private Text getTextWithCategory() { //useless for now
-        return category == Categories.CUSTOM ?
-                Text.of("§6§l[" + customCategory +"§6§l]" + " " + text)
-                :
-                Text.of("§6§l[" + category +"§6§l]" + " " + text);
+    @Override
+    public int compareTo(@NotNull Notification o) {
+        return o.priorityValue - this.priorityValue; //this.priorityValue - o.priorityValue
     }
 
     public static class Builder {
-        private final String text;
-        private int duration = 60; //in ticks // default - 60
-        private int customXOffset;
-        @Nullable
-        private Categories category;
-        private String callerClassName;
+        private final MutableText text;
+        private int duration = 60;
+        private MutableText parentText = Text.translatable("notification.parent.missing");
+        private int priorityValue = 1;
+        private LEVEL level = LEVEL.INFO;
 
-        @Nullable
-        private String customCategory;
-
-        public Builder(String text) {
+        public Builder(MutableText text) {
             this.text = text;
         }
 
-        public Builder duration(int duration) {
-            this.duration = duration;
+        public Builder duration(int customDuration) {
+            this.duration = customDuration;
             return this;
         }
 
-        /**
-         * Allows to set a category for the notification, by default is set to {@code Categories.NONE}.
-         * The second parameter must be set if the category selected is {@code Categories.STATE} otherwise can be {@code null}
-         * @param category a category under which the notification will be displayed
-         * @param callerName The name to be displayed as the callerClassName
-         * @return {@code this}
-         */
-        public Builder category(Categories category, @Nullable String callerName) {
-            this.category = category;
-            this.callerClassName = callerName;
+        public Builder parent(MutableText parent) {
+            this.parentText = parent;
             return this;
         }
 
-        public Builder customCategory(String customCategory) {
-            this.category = Categories.CUSTOM;
-            this.customCategory = customCategory;
+        public Builder priority(int priorityValue) {
+            this.priorityValue = priorityValue;
             return this;
         }
 
-        public Builder customXOffset(int customXOffset) {
-            this.customXOffset = customXOffset;
+        public Builder level(LEVEL newLevel) {
+            this.level = newLevel;
             return this;
         }
 
         public Notification build() {
             Notification notification = new Notification(text, duration);
-            notification.setCustomXOffset(customXOffset);
-            notification.setCategory(Objects.requireNonNullElse(category, Categories.NONE)); //this is cool
-            notification.setCustomCategory(customCategory);
-            notification.setCallerClassName(callerClassName); //Thread.currentThread().getStackTrace()[2].getClassName()
+            notification.setParentText(parentText);
+            notification.setPriority(priorityValue);
+            notification.setInitialOnScreenDecay(duration);
+            notification.setLevel(level);
             return notification;
         }
-
     }
 
+    public enum LEVEL {
+        INFO,
+        DEBUG,
+        WARN,
+        ERROR;
+
+        public String getNotificationTextKey() {
+            return switch (this) {
+                case INFO -> "notification.level.info";
+                case DEBUG -> "notification.level.debug";
+                case WARN -> "notification.level.warn";
+                case ERROR -> "notification.level.error";
+            };
+        }
+    }
 }

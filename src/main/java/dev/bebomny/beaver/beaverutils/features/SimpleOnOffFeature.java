@@ -2,11 +2,12 @@ package dev.bebomny.beaver.beaverutils.features;
 
 import dev.bebomny.beaver.beaverutils.configuration.config.EnableConfigOption;
 import dev.bebomny.beaver.beaverutils.configuration.gui.menus.OptionsMenu;
-import dev.bebomny.beaver.beaverutils.notifications.Categories;
 import dev.bebomny.beaver.beaverutils.notifications.Notification;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
-public abstract non-sealed class SimpleOnOffFeature extends Feature{
+public abstract non-sealed class SimpleOnOffFeature extends Feature {
 
     protected boolean enabled;
     protected EnableConfigOption enableConfig;
@@ -17,29 +18,29 @@ public abstract non-sealed class SimpleOnOffFeature extends Feature{
     }
 
     protected void onEnable() {
-        notifier.newNotification(Notification.builder(
-                        "§l§a" + getName() + " §l§aEnabled")
-                .category(Categories.STATE, getName())
+        notifier.newNotification(Notification
+                .builder(Text.translatable("feature.simple_on_off.enabled", getName()).formatted(Formatting.RED))
+                .parent(Text.translatable("feature.text"))
                 .build());
 
-        if(enableConfig != null)
+        if (enableConfig != null)
             enableConfig.enabled = true;
     }
 
     protected void onDisable() {
-        notifier.newNotification(Notification.builder(
-                        "§l§c" + getName() + " §l§cDisabled")
-                .category(Categories.STATE, getName())
+        notifier.newNotification(Notification
+                .builder(Text.translatable("feature.simple_on_off.disabled", getName()).formatted(Formatting.RED))
+                .parent(Text.translatable("feature.text"))
                 .build());
 
-        if(enableConfig != null)
+        if (enableConfig != null)
             enableConfig.enabled = false;
     }
 
     protected void setEnableConfig(EnableConfigOption enableConfig) {
         this.enableConfig = enableConfig;
 
-        if(this.enableConfig != null && config.generalConfig.autoEnable)
+        if (this.enableConfig != null && config.generalConfig.autoEnable)
             setEnabled(this.enableConfig.enabled);
     }
 
@@ -52,19 +53,19 @@ public abstract non-sealed class SimpleOnOffFeature extends Feature{
         return optionsMenu;
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
+
     public void setEnabled(boolean enabled) {
-        if(this.enabled == enabled)
+        if (this.enabled == enabled)
             return;
 
         this.enabled = enabled;
 
-        if(enabled)
+        if (enabled)
             onEnable();
         else
             onDisable();
-    }
-
-    public boolean isEnabled() {
-        return enabled;
     }
 }

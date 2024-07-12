@@ -2,23 +2,20 @@ package dev.bebomny.beaver.beaverutils.features.features;
 
 import dev.bebomny.beaver.beaverutils.configuration.config.AutoPlantConfig;
 import dev.bebomny.beaver.beaverutils.configuration.gui.menus.AutoPlantMenu;
-import dev.bebomny.beaver.beaverutils.configuration.gui.menus.OptionsMenu;
 import dev.bebomny.beaver.beaverutils.features.KeyOnOffFeature;
 import dev.bebomny.beaver.beaverutils.helpers.BlockUtils;
-import dev.bebomny.beaver.beaverutils.notifications.Categories;
 import dev.bebomny.beaver.beaverutils.notifications.Notification;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
-import net.minecraft.block.*;
+import net.minecraft.block.AirBlock;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.CropBlock;
+import net.minecraft.block.FarmlandBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.BuiltinRegistries;
-import net.minecraft.state.property.IntProperty;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -34,8 +31,8 @@ import java.util.List;
 
 public class AutoPlant extends KeyOnOffFeature {
 
-    private AutoPlantConfig autoPlantConfig = config.autoPlantConfig;
-    private List<Item> seeds = new ArrayList<>();
+    private final AutoPlantConfig autoPlantConfig = config.autoPlantConfig;
+    private final List<Item> seeds = new ArrayList<>();
 
 
     public AutoPlant() {
@@ -56,10 +53,7 @@ public class AutoPlant extends KeyOnOffFeature {
     }
 
     private boolean beforeBlockBreak(World world, PlayerEntity playerEntity, BlockPos blockPos, BlockState state, @Nullable BlockEntity blockEntity) {
-        if(isEnabled() && autoPlantConfig.preventBreakingNotFullyGrownCrops)
-            return false;
-
-        return true;
+        return !isEnabled() || !autoPlantConfig.preventBreakingNotFullyGrownCrops;
     }
 
     private void afterBlockBreak(World world, PlayerEntity playerEntity, BlockPos blockPos, BlockState state, @Nullable BlockEntity blockEntity) {
@@ -68,24 +62,25 @@ public class AutoPlant extends KeyOnOffFeature {
             int age = ((CropBlock) state.getBlock()).getAge(state);
             notifier.newNotification(
                     Notification.builder(
-                            "Block: " + BlockUtils.getBlockName(state.getBlock()) + " | AGE: " + age + " |"
-                    ).category(Categories.INFO, null).duration(120).build());
+                                    Text.translatable("feature.auto_plant.age_text", BlockUtils.getBlockName(state.getBlock()), age))
+                            .parent(Text.translatable("feature.auto_plant.text"))
+                            .duration(120)
+                            .build());
         }
     }
 
     private void onUpdate(MinecraftClient client) {
-        if(client.player == null)
+        if (client.player == null)
             return;
 
-        if(!isEnabled())
+        if (!isEnabled())
             return;
 
 
-
-        for(int y = -1; y <= 0; y++) {
-            for(int x = -(autoPlantConfig.plantRadius); x <= autoPlantConfig.plantRadius; x++) {
-                for(int z = -(autoPlantConfig.plantRadius); z <= autoPlantConfig.plantRadius; z++) {
-                    if(tryPlant(client, client.player.getBlockPos().add(x,y,z)))
+        for (int y = -1; y <= 0; y++) {
+            for (int x = -(autoPlantConfig.plantRadius); x <= autoPlantConfig.plantRadius; x++) {
+                for (int z = -(autoPlantConfig.plantRadius); z <= autoPlantConfig.plantRadius; z++) {
+                    if (tryPlant(client, client.player.getBlockPos().add(x, y, z)))
                         return;
                 }
             }
@@ -94,9 +89,9 @@ public class AutoPlant extends KeyOnOffFeature {
 
     public boolean tryPlant(MinecraftClient client, BlockPos pos) {
         BlockState blockState = client.world.getBlockState(pos);
-        if(blockState.getBlock() instanceof FarmlandBlock) {
+        if (blockState.getBlock() instanceof FarmlandBlock) {
             BlockState blockStateUp = client.world.getBlockState(pos.up());
-            if(blockStateUp.getBlock() instanceof AirBlock) {
+            if (blockStateUp.getBlock() instanceof AirBlock) {
                 return tryUseSeed(client, pos, Hand.MAIN_HAND) || tryUseSeed(client, pos, Hand.OFF_HAND);
             }
         }
@@ -105,13 +100,15 @@ public class AutoPlant extends KeyOnOffFeature {
 
     public boolean tryUseSeed(MinecraftClient client, BlockPos pos, Hand hand) {
         Item item = client.player.getStackInHand(hand).getItem();
-        if(seeds.contains(item)) {
+        if (seeds.contains(item)) {
             Vec3d blockPos = new Vec3d(pos.getX(), pos.getY(), pos.getZ());
             BlockHitResult hit = new BlockHitResult(blockPos, Direction.UP, pos, false);
             client.interactionManager.interactBlock(client.player, hand, hit);
 
             notifier.newNotification(
-                    Notification.builder("Seed Planted").category(Categories.FEATURE, this.getName()).build()
+                    Notification.builder(Text.translatable("feature.auto_plant.plant_success.text"))
+                            .parent(Text.translatable("feature.auto_plant.text"))
+                            .build()
             );
 
             return true;
@@ -127,20 +124,20 @@ public class AutoPlant extends KeyOnOffFeature {
 //                : Mode.OnlyReplant);
 //    }
 
-    public void setPlantRadius(int newRadius) {
-        autoPlantConfig.plantRadius = newRadius;
-    }
-
-    public void setMode(Mode newMode) {
-        autoPlantConfig.mode = newMode;
-    }
-
     public int getPlantRadius() {
         return autoPlantConfig.plantRadius;
     }
 
+    public void setPlantRadius(int newRadius) {
+        autoPlantConfig.plantRadius = newRadius;
+    }
+
     public Mode getMode() {
         return autoPlantConfig.mode;
+    }
+
+    public void setMode(Mode newMode) {
+        autoPlantConfig.mode = newMode;
     }
 
     public void initializeSeeds() {
@@ -161,7 +158,7 @@ public class AutoPlant extends KeyOnOffFeature {
         private final int id;
         private final String name;
 
-        private Mode(int id, String name) {
+        Mode(int id, String name) {
             this.id = id;
             this.name = name;
         }
@@ -169,12 +166,15 @@ public class AutoPlant extends KeyOnOffFeature {
         public int getId() {
             return this.id;
         }
+
         public Text getCompleteText() {
             return Text.of("Mode: " + this.getName());
         }
+
         public Text getText() {
             return Text.of(this.getName());
         }
+
         public String getName() {
             return this.name;
         }

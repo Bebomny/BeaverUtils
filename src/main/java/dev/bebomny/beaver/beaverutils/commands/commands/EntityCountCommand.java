@@ -31,11 +31,12 @@ import java.util.concurrent.CompletableFuture;
 public class EntityCountCommand extends ClientCommand {
 
     public EntityCountCommand() {
-        super("entityCount", "Counts the chosen entity in a certain radius");
+        super(Text.translatable("client_command.entity_count.name"), Text.translatable("client_command.entity_count.description"));
     }
 
     @Override
     public void build(ArgumentBuilder<FabricClientCommandSource, ?> builder, CommandRegistryAccess registryAccess) {
+        //TODO: convert to translatable
         builder.then(ClientCommandManager.literal("count_entities")
                         .then(ClientCommandManager.argument("entity", StringArgumentType.string())
                                 .suggests(new EntityTypeSuggestionProvider())

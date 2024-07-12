@@ -12,7 +12,7 @@ import net.minecraft.text.Text;
 
 public class AutoClickerButton extends AxisGridWidget {
 
-    private AutoClicker autoClicker = BeaverUtilsClient.getInstance().features.autoClicker;
+    private final AutoClicker autoClicker = BeaverUtilsClient.getInstance().features.autoClicker;
 
     public AutoClickerButton(int x, int y) {
         super(150, 20, DisplayAxis.HORIZONTAL);

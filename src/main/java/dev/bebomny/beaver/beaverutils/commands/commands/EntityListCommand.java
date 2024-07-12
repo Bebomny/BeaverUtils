@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class EntityListCommand extends ClientCommand {
 
     public EntityListCommand() {
-        super("entityList", "Lists all entities in a specified radius");
+        super(Text.translatable("client_command.entity_list.name"), Text.translatable("client_command.entity_list.description"));
     }
 
     @Override

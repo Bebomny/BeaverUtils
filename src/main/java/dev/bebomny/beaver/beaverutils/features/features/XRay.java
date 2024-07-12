@@ -95,6 +95,7 @@ public class XRay extends KeyOnOffFeature {
         collection.add(Blocks.JUKEBOX);
         collection.add(Blocks.NOTE_BLOCK);
         collection.add(Blocks.TNT);
+        collection.add(Blocks.CRAFTER);
         //netherite
         collection.add(Blocks.ANCIENT_DEBRIS);
         collection.add(Blocks.NETHERITE_BLOCK);

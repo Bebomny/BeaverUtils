@@ -116,3 +116,6 @@ run/
 
 # Remapped sources after migrating to a new version
 remappedSrc/
+
+# old files kept during some major changes
+old/

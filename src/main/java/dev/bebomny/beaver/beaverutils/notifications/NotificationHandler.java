@@ -3,111 +3,74 @@ package dev.bebomny.beaver.beaverutils.notifications;
 import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 public class NotificationHandler {
-
     private final MinecraftClient client;
-    private final List<Notification> notificationQueue = new ArrayList<>();
-    private int decay;
+    private final BeaverUtilsClient beaverUtilsClient;
+    private final Queue<Notification> notificationQueue = new PriorityQueue<>();
+    private final List<Notification> displayedNotifications = new ArrayList<>();
 
     public NotificationHandler(MinecraftClient client) {
         this.client = client;
+        this.beaverUtilsClient = BeaverUtilsClient.getInstance();
         ClientTickEvents.END_CLIENT_TICK.register(this::onUpdate);
     }
 
     public void onRenderInit(DrawContext context, float partialTicks) {
-        if(!notificationQueue.isEmpty()) {
-            Notification notification = notificationQueue.get(0);
 
-            //ADD
-            //importance
-            //if above certain  level it will add it to the stack and display a new notificationb under
-            //with a certain max
+        //TODO: allow for manual change of these values later
+        float x = client.getWindow().getScaledWidth() / 2f;
+        float y = client.getWindow().getScaledHeight() - 65f;
 
+        for (int i = 0; i < displayedNotifications.size(); i++) {
+            Notification notification = displayedNotifications.get(i);
 
-            //Color logic using Category property - Maybe move it to the notification class?
-            //the styling of the main notification text is handled directly in the text String
-            //here I am only handling the Category/Prefix text
-            Categories category = notification.getCategory();
-            String customCategory = notification.getCustomCategory();
-
-            Text textPrefix = switch (category) {
-
-                case WARN -> Text.translatable("notification.level.warn");
-
-                case INFO -> Text.translatable("notification.level.info");
-
-                case STATE -> Text.translatable("notification.level.state", notification.getCallerClassName());
-
-                case DEBUG -> Text.translatable("notification.level.debug");
-
-                case CUSTOM -> Text.translatable("notification.level.custom", customCategory);
-
-                case COMMAND -> Text.translatable("notification.level.command");
-
-                case CONFIG_UPDATE -> Text.translatable("notification.level.config_update");
-
-                case FEATURE -> notification.getCallerClassName() == null ?
-                        Text.translatable("notification.level.feature")
-                        : Text.translatable("notification.level.feature.with_caller_class_name", notification.getCallerClassName());
-
-
-                case NONE -> Text.translatable("notification.level.none");
-
-                default -> Text.translatable("notification.level.notification_error");
-            };
-
-            Color stockColor = new Color(255, 255, 255);
-            int color = decay < 20 ?
-                    ((stockColor.getRed() / 30) * decay) << 16 | ((stockColor.getGreen() / 30) * decay) << 8 | ((stockColor.getBlue() / 30) * decay)
-                    :
-                    stockColor.getRed() << 16 | stockColor.getGreen() << 8 | stockColor.getBlue();
-
-            int alpha = decay < 30 ? ((0xFF / 30) * decay) << 24 : 0xFF << 24;
-
-            //Whole message text assembly
-            String text = textPrefix + notification.getText();
-
-            //offset / x & y coordinates on the screen
-            float offset = BeaverUtilsClient.getInstance().client.advanceValidatingTextRenderer.getWidth(text)/2f;
-            float x = (client.getWindow().getScaledWidth()/2f) - offset;
-            float y = client.getWindow().getScaledHeight() - 65f;
-
-            //Drawing to the screen using the inGameHud Object
-                //client.inGameHud.getTextRenderer().drawWithShadow(matrices, text, x, y, color | alpha); //FROM 1.19.3!!!
-            context.drawTextWithShadow(client.textRenderer, text, (int) x, (int) y, color | alpha);
-            //TODO: FIXX HERE
+            float notificationY = y - (i * client.advanceValidatingTextRenderer.fontHeight);
+            notification.renderAt(client, context, partialTicks, (int) x, (int) notificationY);
         }
-
-        if(decay <= 1 && !notificationQueue.isEmpty())
-            notificationQueue.remove(0);
     }
 
     private void onUpdate(MinecraftClient client) {
-        if(!(notificationQueue.isEmpty()))
-            decay--;
+        //If the displayedNotifications list is empty, add a new one and keep them under certain limit,
+        // If a priority one comes in display it regardless of the limit.
+        //if (!(displayedNotifications.isEmpty()))
+        displayedNotifications.forEach(Notification::progressDecay);
+
+        displayedNotifications.removeIf(notification -> notification.getOnScreenDecay() <= 0);
+
+        for (Notification notification : notificationQueue) {
+            if (notification.getPriority() >= 5) {
+                displayedNotifications.addLast(notificationQueue.poll());
+            }
+
+            if (displayedNotifications.size() < beaverUtilsClient.getConfig().generalConfig.softNotificationMax) {
+                displayedNotifications.addLast(notificationQueue.poll());
+                return;
+            }
+        }
+
     }
 
     public void newNotification(Notification notification) {
-        //Check if it's a debug category notification and if debug notifications are enabled
-        //If they are disabled skip this notification completely
-        if(notification.getCategory() == Categories.DEBUG && !BeaverUtilsClient.getInstance().getConfig().generalConfig.debug)
-            return;
+        //If notification comes in as DEBUG message, check if debug is enabled
+        // then add it to the queue.
+        //TODO: add a debug check
+        // if(notification.getLevel() == Notification.LEVEL.DEBUG && {config.general.debug} != true)
+        //   return;
 
-        if(!(notificationQueue.isEmpty()))
-            notificationQueue.remove(0);
-
+        //Check if currently displayed notifications are under the limit, and maybe add it directly?
         notificationQueue.add(notification);
-        decay = notification.getDuration();
+
+        //TODO: add a limit and remove some notifications if it has been reached
+        // Temp solution
+        // dont remove from the queue, try to remove from the current displayed stack quicker
+        if (notificationQueue.size() > 32)
+            notificationQueue.removeIf(notification1 -> true);
     }
 }
