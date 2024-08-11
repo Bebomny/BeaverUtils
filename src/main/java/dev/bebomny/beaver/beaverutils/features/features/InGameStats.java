@@ -22,9 +22,12 @@ public class InGameStats extends SimpleOnOffFeature {
     private float playerSpeed;
     private Vec3d prevPos;
 
+    //FPS
+    private int fpsCounter;
+
     //TPS
     private float ticksPerSec;
-    private float msPerTick;
+    private double msPerTick;
 
     public InGameStats() {
         super("InGameStats");
@@ -32,8 +35,9 @@ public class InGameStats extends SimpleOnOffFeature {
         this.playerSpeed = 0.0f;
         this.prevPos = new Vec3d(0, 0, 0);
 
-        this.ticksPerSec = 0.0f;
-        this.msPerTick = 0.0f;
+        this.ticksPerSec = 0.0F;
+        this.msPerTick = 0.0D;
+        this.fpsCounter = 0;
 
         setEnableConfig(inGameStatsConfig);
 
@@ -76,8 +80,11 @@ public class InGameStats extends SimpleOnOffFeature {
             msPerTick = client.player.getWorld().getTickManager().getMillisPerTick();
         } else {
             ticksPerSec = client.player.getServer().getTickManager().getTickRate();
-            msPerTick = client.player.getServer().getAverageTickTime();
+            //msPerTick = client.player.getServer().getAverageTickTime();
+            msPerTick = (double) client.player.getServer().getAverageNanosPerTick() / 1000000;
         }
+
+        fpsCounter = client.getCurrentFps();
     }
 
 
@@ -104,6 +111,40 @@ public class InGameStats extends SimpleOnOffFeature {
 
 
         /*
+        FPS
+            ... - 37 -> Green
+            36- 16 -> Yellow
+            15 - 0 -> Red
+         */
+        Formatting fpsFormatting;
+        if (fpsCounter >= 59)
+            fpsFormatting = Formatting.GREEN;
+        else if (fpsCounter >= 30)
+            fpsFormatting = Formatting.YELLOW;
+        else
+            fpsFormatting = Formatting.RED;
+
+        //TODO: Add as translatable? for ex: "%.1f TPS" - the formatting needs to be dynamic so maybe not?
+        MutableText fpsText = Text
+                .literal(String.format("%d", fpsCounter))
+                .formatted(fpsFormatting)
+                .append(Text
+                        .literal(" FPS")
+                        .formatted(Formatting.BLUE));
+
+        //Wide number for anchoring the following stats -> TPS and msPerTick
+        MutableText widePlayerSpeed = Text.literal("888 m/s");
+        int previousTextLength = Math.max(client.textRenderer.getWidth(playerSpeedText), client.textRenderer.getWidth(widePlayerSpeed));
+
+        context.drawTextWithShadow(
+                client.textRenderer,
+                fpsText,
+                (int) (client.getWindow().getScaledWidth() / 2.0f + 100.0f + SPACING + previousTextLength),
+                client.getWindow().getScaledHeight() - 14,
+                0xFFFFFF0F
+        );
+
+        /*
         Ticks
             20 - 17 -> Green
             16.9 - 12 -> Yellow
@@ -126,8 +167,8 @@ public class InGameStats extends SimpleOnOffFeature {
                         .formatted(Formatting.BLUE));
 
         //Wide number for anchoring the following stats -> TPS and msPerTick
-        MutableText widePlayerSpeed = Text.literal("888 m/s");
-        int previousTextLength = Math.max(client.textRenderer.getWidth(playerSpeedText), client.textRenderer.getWidth(widePlayerSpeed));
+        previousTextLength += SPACING;
+        previousTextLength += client.textRenderer.getWidth(fpsText);
 
         context.drawTextWithShadow(
                 client.textRenderer,
@@ -157,7 +198,7 @@ public class InGameStats extends SimpleOnOffFeature {
                 .literal(String.format("%.2f", msPerTick))
                 .formatted(msPerTickFormatting)
                 .append(Text
-                        .literal(" ms/tick")
+                        .literal(" MSPT")
                         .formatted(Formatting.BLUE));
 
 

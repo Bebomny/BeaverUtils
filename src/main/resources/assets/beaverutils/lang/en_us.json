@@ -15,7 +15,7 @@
   "feature.simple_on_off.disabled": "§l§c%s §l§cDisabled",
   "feature.trigger.fire_text": "§l§c%s §l§cTriggered",
 
-  "feature.in_game_stats.tps_text": "§%.1f TPS",
+  "feature.in_game_stats.tps_text": "§9%.1f TPS",
 
   "feature.auto_plant.text": "AutoPlant",
   "feature.auto_plant.age_text": "Block: %s | AGE: %d |",
@@ -28,6 +28,10 @@
   "feature.auto_clicker.hold.use_item.text": "AutoClicker Holding Use Item Key",
   "feature.auto_clicker.hold.both.text": "AutoClicker Holding Attack & Use Item Key",
 
+  "feature.entity_list_display.title.entity_name": "Entity Name",
+  "feature.entity_list_display.title.entity_count": "Count",
+  "feature.entity_list_display.title.entity_viewport_count": "Viewport Count",
+  "feature.entity_list_display.title.entity_distance_to_nearest": "Nearest Entity",
 
   "client_command.text": "§9Command",
   "client_command.xray.name": "xray",

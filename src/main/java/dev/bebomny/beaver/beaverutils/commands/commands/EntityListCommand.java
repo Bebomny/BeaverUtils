@@ -57,7 +57,7 @@ public class EntityListCommand extends ClientCommand {
                             }
 
 
-                            //Found 50 types, in total 160 entities!
+                            //Example: Found 50 types, in total 160 entities!
                             MutableText totalText = Text
                                     .literal("Found ")
                                     .formatted(Formatting.GRAY)

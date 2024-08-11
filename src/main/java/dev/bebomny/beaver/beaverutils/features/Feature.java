@@ -25,8 +25,8 @@ public abstract sealed class Feature permits SimpleOnOffFeature, TriggerFeature 
         this.beaverUtilsClient = BeaverUtilsClient.getInstance();
         this.notifier = beaverUtilsClient.getNotifier();
         this.config = beaverUtilsClient.getConfig();
-        this.LOGGER = beaverUtilsClient.getLogger(name);
         this.name = name;
+        this.LOGGER = beaverUtilsClient.getLogger(name);
         this.mainToolTip = null;
     }
 
