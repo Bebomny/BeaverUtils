@@ -4,19 +4,30 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import dev.bebomny.beaver.beaverutils.configuration.config.EntityListDisplayConfig;
 import dev.bebomny.beaver.beaverutils.configuration.gui.menus.EntityListDisplayMenu;
 import dev.bebomny.beaver.beaverutils.features.SimpleOnOffFeature;
+import dev.bebomny.beaver.beaverutils.helpers.RenderUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.VertexBuffer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.client.render.*;
+import net.minecraft.client.render.entity.EntityRenderer;
+import net.minecraft.client.util.BufferAllocator;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
+import net.minecraft.util.math.*;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4f;
+import org.lwjgl.opengl.GL11;
 
 import java.util.*;
 
@@ -25,9 +36,31 @@ public class EntityListDisplay extends SimpleOnOffFeature {
     private static final Identifier GATO = Identifier.of("beaverutils", "gato.png");
     private static final Identifier ARROWS = Identifier.of("beaverutils", "arrows.png");
     private final EntityListDisplayConfig entityListDisplayConfig = config.entityListDisplayConfig;
-    private int entryHeight = 16;
+
+    //TODO: I shouldn't have 3 lists basically containing the same stuff
+    private final Map<EntityType<?>, EntityListEntry> entityEntryMap;
     private List<Entity> entityList;
     private List<EntityListEntry> entityListEntries;
+
+    // Time measurement
+    public List<Long> timeMeasurements = new ArrayList<>();
+    public int measurementCountLimit = 100; // in ticks 20 = 1 second of measurements
+    private int entryHeight = 16;
+
+    //Drawing
+    private final VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(new BufferAllocator(256));
+
+
+
+    // On each tick update all entries ->
+    // 1. on first tick initiate all entryLists
+    // 2. then on every tick check if there are any new entities and add them into the list
+    // 3. remove any that have no entities
+    // 4. check if any new entities of already existing entryLists spawned if so then add them into there corresponding lists
+    // 5. remove entities if they are dead (Beware of possible null values there)
+    // 6. at the end recalculate all counts, distances, names and coordinates
+    //
+    // this allows for persisting states of entities, and provides better performance with caching
 
     public EntityListDisplay() {
         super("EntityDisplay");
@@ -37,6 +70,9 @@ public class EntityListDisplay extends SimpleOnOffFeature {
 
 
         ClientTickEvents.END_CLIENT_TICK.register(this::onUpdate);
+        HudRenderCallback.EVENT.register(this::onHudRenderInit);
+        WorldRenderEvents.BEFORE_DEBUG_RENDER.register(this::onRenderWorld);
+
         //Update on world(client?) tick to safe resources by not building a new list on every frame
         //Do something different with players
         //DebugHud;
@@ -45,8 +81,10 @@ public class EntityListDisplay extends SimpleOnOffFeature {
         this.entryHeight = Math.max(9 + 2 + 2, entryHeight);
         this.entityList = new ArrayList<>();
         this.entityListEntries = new ArrayList<>();
+        this.entityEntryMap = new HashMap<>();
 
     }
+
 
     //TODO somehow render a table to the screen with all entities listed
     private void onUpdate(MinecraftClient client) {
@@ -56,16 +94,50 @@ public class EntityListDisplay extends SimpleOnOffFeature {
         if (!isEnabled())
             return;
 
+        ///Time calculation
+        long calculationStart = System.nanoTime();
+
         Box playerBox = new Box(client.player.getBlockPos()).expand(entityListDisplayConfig.searchRadius);
 
+        //TODO: Consider item entities, they are currently not handled correctly
+        // cause go entity.isAlive() checks instead of item related
+
         //TODO: Add a blacklist here, in the predicate
-        entityList = client.player
+        // client.world.getEntities() ???????
+        this.entityList = client.player
                 .getWorld()
                 .getEntitiesByClass(
                         Entity.class, playerBox,
                         entity -> true);
 
-        this.entityListEntries = mapEntitiesToEntityEntryList(entityList);
+        ///////TODO: Use completable futures? at least try I guess
+        // Add new Entries to the list - Done
+        // updateEntries - Done
+        // - Check if any entities where killed - Done
+        // - calculate distance
+        // - choose the chosen entity
+        // remove any EntityListEntries if the
+
+
+        for (Entity entity : entityList) {
+            EntityType<?> type = entity.getType();
+
+            this.entityEntryMap.computeIfAbsent(type, entityType -> new EntityListEntry(entity))
+                    .updateEntryWithEntity(entity);
+        }
+
+        this.entityListEntries = new ArrayList<>(entityEntryMap.values());
+
+        this.entityListEntries.forEach(EntityListEntry::updateEntry);
+        this.entityListEntries.removeIf(EntityListEntry::isAbsent);
+
+        //Time calculation
+        long calculationEnd = System.nanoTime();
+        if (timeMeasurements.size() >= measurementCountLimit) {
+            timeMeasurements.removeFirst();
+        }
+        timeMeasurements.addLast(calculationEnd - calculationStart);
+
 
     }
 
@@ -74,6 +146,7 @@ public class EntityListDisplay extends SimpleOnOffFeature {
         //get all entities in render distance
         //client.player.getServer().getWorlds().
         //TODO: Add a total at the top(as an entry?) If an entry then set entity as null and check it?
+        //TODO: Put as much stuff from here to tick updates? Or maybe not, the render thread could fetch some some stuff async and it wouldnt look nice :?
 
         if (!isEnabled())
             return;
@@ -161,61 +234,135 @@ public class EntityListDisplay extends SimpleOnOffFeature {
         }
     }
 
-    private List<EntityListEntry> mapEntitiesToEntityEntryList(List<Entity> entities) {
+    private void onRenderWorld(WorldRenderContext worldRenderContext) {
+        MatrixStack matrixStack = worldRenderContext.matrixStack();
 
-        Map<EntityType<?>, EntityListEntry> entityEntryMap = new HashMap<>();
+        //Draw conditions
+        // - EntityListDisplay enabled
+        // - The rendering stack is available
+        // - The player exists
+        if (!isEnabled() || (matrixStack == null) || client.player == null)
+            return;
 
-        for (Entity entity : entities) {
-            //If this entity isn't in the list
-            EntityType<?> type = entity.getType();
+        //OpenGL settings
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        RenderSystem.disableDepthTest();
 
-            entityEntryMap.computeIfAbsent(type, entityType -> new EntityListEntry(entity)).updateEntry(entity);
+        matrixStack.push(); // Stage 1 - All outlines, textures and text
+
+        Camera camera = MinecraftClient.getInstance().gameRenderer.getCamera();
+
+        for (EntityListEntry entry : entityListEntries) {
+            Entity entity = entry.getClosestEntity();
+
+            //skip the player - for now all players so its easier to debug
+            //TODO: dont skip other players and display their nickname above their head
+            if (entity instanceof PlayerEntity)
+                continue;
+
+            matrixStack.push(); // Stage 2 - Each individual entity entry
+
+            Box entityBox = entity.getBoundingBox();
+
+            //We lerp the position of the entity to allow for smooth animation
+            // then translate the box to not start at the center of the entity
+            // adjusted to start at one of the corners of the entity's bounding box
+            Vec3d entityPos = entity.getLerpedPos(worldRenderContext.tickCounter().getTickDelta(true));
+            Vec3d entityPosCorner = entityPos.subtract(entityBox.getLengthX() / 2, 0, entityBox.getLengthZ() / 2);
+
+            //Translate entity's bounding box according to the camera position and move it to entities position
+            matrixStack.translate(entityPosCorner.getX() - camera.getPos().x, entityPosCorner.getY() - camera.getPos().y, entityPosCorner.getZ() - camera.getPos().z);
+
+            //Whatever happened here it works? -
+            // The bounding boxes are already translated by the line above into their correct places
+            // - the whole matrix is moved to the entity's position
+            // so no need to further move them according to their own position
+            // we set their position to 0,0,0 on the matrix, so it renders in the correct place and isn't offset twice
+            entityBox = entityBox.offset(new Vec3d(entityBox.minX, entityBox.minY, entityBox.minZ).negate());
 
 
-//            float distanceToEntity;
-//            if(client.player != null)
-//                distanceToEntity = client.player.distanceTo(entity);
-//            else
-//                distanceToEntity = Float.MAX_VALUE;
-//
-//            //TODO: Ray cast to see if the entity is in the player's viewport?
-//
-//            entityEntryMap.computeIfAbsent(type, entityType -> {
-//                Text name = entityType.getName();
-//
-//                return new EntityListEntry(
-//                        name,
-//                        0, -1,
-//                        distanceToEntity,
-//                        entity.getClass(), type);
-//            }).updateCountAndDistance(distanceToEntity);
+            matrixStack.push(); // Stage 3.1 - Bounding Box outline
+            RenderUtils.drawOutlinedBox(entityBox, matrixStack);
+            //RenderUtils.drawOutlinedBoxRainbow(entityBox, matrixStack);
+            matrixStack.pop(); // Stage 3.1 - Bounding Box outline
+
+            // TODO: Adjust the pitch
+            Vec3d target = client.player.getPos(); //client.player.getPos()
+            double d = target.x - entityPos.x;
+//            double e = target.y - entityBoxCenterPos.y;
+            double f = target.z - entityPos.z;
+//            double g = Math.sqrt(d * d + f * f);
+//            float pitch = MathHelper.wrapDegrees((float)(-(MathHelper.atan2(e, g) * 57.2957763671875)));
+            float yaw = MathHelper.wrapDegrees((float) (MathHelper.atan2(f, d) * 57.2957763671875 + 90.0F));
+
+            matrixStack.push(); // Stage 3.2 - Textures and Text
+            Vec3d center = entityBox.getCenter();
+            matrixStack.translate(center.getX(), entityBox.getLengthY(), center.getZ());
+
+            //Rotate the matrix plain to face the player
+            matrixStack.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(yaw));
+
+            //Draw textures
+            //RenderUtils.drawTexture(ARROWS, 8, 4, matrixStack); //4
+            //RenderUtils.drawTexture(GATO, 1, 1, matrixStack);
 
 
-//            if(!entityEntryMap.containsKey(type)) { //entityEntryList.stream().filter(entityEntry -> entityEntry.entityClass() == entity.getClass()).count() == 0
-//
-//                Text entityName = type.getName();
-//
-//
-//
-//                EntityEntry newEntityEntry = new EntityEntry(
-//                        entityName,
-//                        1, -1,
-//                        distanceToEntity,
-//                        entity.getClass(), type);
-//
-//                entityEntryMap.put(type, newEntityEntry);
-//            } else {
-//                EntityEntry entityEntry = entityEntryMap.remove(type);
-//                entityEntry.incrementCount();
-//
-//                if(distanceToEntity < entityEntry.getDistanceToNearest())
-//                    entityEntry.setDistanceToNearest(distanceToEntity);
-//
-//                entityEntryMap.put(type, entityEntry);
-//            }
+            //Name tags
+            //TODO:
+            // `client.options.getGuiScale().getValue()` doesnt quite work right
+            // maybe make a custom scale setting?
+            double scale = 1; // for testing = 1
+            matrixStack.scale(-0.025f * (float) scale, -0.025f * (float) scale, 1);
+            matrixStack.translate(0, -10, 0);
+
+            //TODO: Change whats displayed based on:
+            // Item -> item name
+            // Player -> Nickname
+            // This could be done in the `getEntityName()` method in the `EntityListEntry` class instead of here
+            Text text = entry.getEntityName();//Text.literal("Test Test Test");
+            int opacity = (int) (client.options.getTextBackgroundOpacity(0.25F) * 255.0F) << 24;
+            float halfWidth = ((float) client.textRenderer.getWidth(text) / 2);
+
+            client.textRenderer.draw(
+                    text, -halfWidth, 0f,
+                    553648127, false,
+                    matrixStack.peek().getPositionMatrix(), immediate,
+                    TextRenderer.TextLayerType.SEE_THROUGH,
+                    opacity, 0xf000f0);
+            immediate.draw();
+
+            client.textRenderer.draw(
+                    text, -halfWidth, 0f,
+                    -1, false,
+                    matrixStack.peek().getPositionMatrix(), immediate,
+                    TextRenderer.TextLayerType.SEE_THROUGH,
+                    0, 0xf000f0);
+            immediate.draw();
+
+
+            matrixStack.pop(); // Stage 3.2 - Textures and Text
+            matrixStack.pop(); // Stage 2 - Each individual entity entry
         }
 
-        return new ArrayList<>(entityEntryMap.values());
+        matrixStack.pop(); // Stage 1 - All outlines, textures and text
+
+        // OpenGL setting resets
+        RenderSystem.setShaderColor(1, 1, 1, 1);
+        RenderSystem.enableDepthTest();
+        RenderSystem.disableBlend();
+    }
+
+    public enum EntrySortBy {
+        NAME,
+        NAME_REVERSED,
+        COUNT,
+        COUNT_REVERSED,
+        VIEWPORT_COUNT,
+        VIEWPORT_COUNT_REVERSED,
+        DISTANCE,
+        DISTANCE_REVERSED
     }
 
     //TODO:
@@ -234,7 +381,7 @@ public class EntityListDisplay extends SimpleOnOffFeature {
         float distanceToNearest = Float.MAX_VALUE;
         Entity closestEntity;
         Entity chosenEntity; //TODO: make sure that the entity is still alive
-        List<Entity> entityList;
+        List<Entity> entryEntityList;
 
         public EntityListEntry(Entity newEntity) {
             this.entityType = newEntity.getType();
@@ -243,15 +390,10 @@ public class EntityListDisplay extends SimpleOnOffFeature {
 
             this.count = 0;
             this.viewportCount = -1;
-            this.distanceToNearest = 42069;
-            this.entityList = new ArrayList<>();
-//            this.entityList.add(newEntity);
-//
-//            float distanceToPlayer = client.player != null ? client.player.distanceTo(newEntity) : Float.MAX_VALUE;
-//
-//            if(distanceToPlayer < this.getDistanceToNearest())
-//                this.setDistanceToNearest(distanceToPlayer);
-
+            this.distanceToNearest = Float.MAX_VALUE;
+            this.closestEntity = null;
+            this.chosenEntity = null;
+            this.entryEntityList = new ArrayList<>();
         }
 
         public EntityListEntry(Text entityName, int count, int viewportCount, float distanceToNearest, Class<? extends Entity> entityClass, EntityType<?> entityType) {
@@ -264,23 +406,76 @@ public class EntityListDisplay extends SimpleOnOffFeature {
             this.entityClass = entityClass;
             this.entityType = entityType;
 
-            this.entityList = new ArrayList<>();
+            this.entryEntityList = new ArrayList<>();
         }
 
 
-        public void updateEntry(Entity newEntity) {
-            this.entityList.add(newEntity);
-            this.count++;
+        public void updateEntry() {
+            entryEntityList.removeIf(entity -> {
+                if ((!entity.isAlive()) || !entityList.contains(entity)) {
+                    if (entity == this.chosenEntity)
+                        this.chosenEntity = null;
+                    if (entity == this.closestEntity) {
+                        this.closestEntity = null;
+                        this.distanceToNearest = Float.MAX_VALUE;
+                    }
+                    return true;
+                }
+                return false;
+            });
 
-            //LOGGER.atInfo().log("Trying to get distance for: " + newEntity.getName() + " | and of type: " + newEntity.getType().getName());
-            float distanceToPlayer = client.player != null ? client.player.distanceTo(newEntity) : Float.MAX_VALUE;
+            //Recalculate distance and other stuff here
+            this.count = entryEntityList.size();
 
-            if (distanceToPlayer < this.getDistanceToNearest()) {
-                this.setDistanceToNearest(distanceToPlayer);
-                this.closestEntity = newEntity;
+            if (client.player == null)
+                return;
+
+//            this.chosenEntity = null;
+//            this.closestEntity = null;
+
+
+            //Nearest entity
+            for (Entity entity : entryEntityList) {
+                float distanceToPlayer = client.player.distanceTo(entity);
+
+                if (distanceToPlayer < distanceToNearest) {
+                    this.closestEntity = entity;
+                }
             }
 
+            if (this.closestEntity != null)
+                this.setDistanceToNearest(client.player.distanceTo(this.closestEntity));
+
+            //Chosen entity isn't set on first tick
+            if (chosenEntity == null)
+                this.chosenEntity = closestEntity;
+
+
+        }
+
+        public void updateEntryWithEntity(Entity entity) {
+            if (entryEntityList.contains(entity))
+                return;
+
+
+            this.entryEntityList.add(entity);
+            //this.count++;
+
+            //TODO: calculate distance in EntityListEntry::updateEntry
+//            float distanceToPlayer = client.player != null ? client.player.distanceTo(newEntity) : Float.MAX_VALUE;
+//
+//            if (distanceToPlayer < this.getDistanceToNearest()) {
+//                this.setDistanceToNearest(distanceToPlayer);
+//                this.closestEntity = newEntity;
+//                if(chosenEntity == null)
+//                    this.chosenEntity = closestEntity;
+//            }
+
             //TODO: Ray cast to see if the entity is in the player's viewport?
+        }
+
+        public boolean isAbsent() {
+            return entryEntityList.isEmpty();
         }
 
         public Text getEntityName() {
@@ -308,6 +503,8 @@ public class EntityListDisplay extends SimpleOnOffFeature {
         }
 
         public Text getDistanceToNearestText() {
+            if (this.closestEntity == null)
+                return Text.literal("Missing");
             BlockPos closestEntityPos = this.closestEntity.getBlockPos();
             return Text.literal(String.format(
                     "%.1fm (x:%d | y:%d | z:%d)",
@@ -347,6 +544,18 @@ public class EntityListDisplay extends SimpleOnOffFeature {
             return entityType;
         }
 
+        public Entity getClosestEntity() {
+            return closestEntity;
+        }
+
+        public Entity getChosenEntity() {
+            return chosenEntity;
+        }
+
+        public List<Entity> getEntryEntityList() {
+            return entryEntityList;
+        }
+
         @Override
         public int compareTo(@NotNull EntityListDisplay.EntityListEntry o) {
             //TODO: Test this after implementing a button for customization
@@ -361,16 +570,6 @@ public class EntityListDisplay extends SimpleOnOffFeature {
                 case DISTANCE_REVERSED -> (int) (this.distanceToNearest - o.distanceToNearest);
             };
         }
-    }
 
-    public enum EntrySortBy {
-        NAME,
-        NAME_REVERSED,
-        COUNT,
-        COUNT_REVERSED,
-        VIEWPORT_COUNT,
-        VIEWPORT_COUNT_REVERSED,
-        DISTANCE,
-        DISTANCE_REVERSED;
     }
 }

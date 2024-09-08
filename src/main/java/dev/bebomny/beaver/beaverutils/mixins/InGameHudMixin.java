@@ -25,6 +25,7 @@ public abstract class InGameHudMixin {
         BeaverUtilsClient clientInstance = BeaverUtilsClient.getInstance();
         clientInstance.notifier.onRenderInit(context, tickCounter.getTickDelta(true));
         clientInstance.getFeatures().inGameStats.onRenderInit(context, tickCounter.getTickDelta(true));
-        clientInstance.getFeatures().entityListDisplay.onHudRenderInit(context, tickCounter);
+        //clientInstance.getFeatures().entityListDisplay.onHudRenderInit(context, tickCounter);
+        //TODO: Change to event calls -> HudRenderCallback
     }
 }

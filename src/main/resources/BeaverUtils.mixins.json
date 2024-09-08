@@ -12,6 +12,7 @@
     "ClientPlayerEntityMixin",
     "ClientPlayerInteractionManagerMixin",
     "GameMenuScreenMixin",
+    "GameRendererMixin",
     "IGridWidgetAccessor",
     "InGameHudMixin",
     "MinecraftClientMixin",
