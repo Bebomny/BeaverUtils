@@ -58,5 +58,17 @@
   "client_command.entity_count.name": "entityCount",
   "client_command.entity_count.description": "Counts the chosen entity in a certain radius",
   "client_command.entity_list.name": "entityList",
-  "client_command.entity_list.description": "Lists all entities in a specified radius"
+  "client_command.entity_list.description": "Lists all entities in a specified radius",
+
+  "client_command.tps.name": "tps",
+  "client_command.tps.description": "Shows the server(or clients) tps and mspt measured over time",
+  "client_command.tps.prefix": "§8----------§6TPS§8----------",
+  "client_command.tps.dedicated_server_1": "§eYou are playing on a Dedicated Server",
+  "client_command.tps.dedicated_server_2": "§eThe TPS averages are measured on the client, so they may not be accurate!",
+  "client_command.tps.integrated_server_1": "§eYou are playing on an Integrated Server",
+  "client_command.tps.integrated_server_2": "§eThe TPS averages are measured on the server!",
+  "client_command.tps.time_intervals": "§a10sec/60sec/5min/15min",
+  "client_command.tps.formatted_values": "%s/%s/%s/%s     Last: %s",
+  "client_command.tps.tps_message": "§9TPS:",
+  "client_command.tps.mspt_message": "§9MSPT:"
 }

@@ -58,7 +58,7 @@ public class RenderUtils {
         return rainbow;
     }
 
-    public static void drawLine(Vec3d vecStart, Vec3d vecEnd, MatrixStack matrixStack) {
+    public static void drawCompleteLine(Vec3d vecStart, Vec3d vecEnd, MatrixStack matrixStack) {
         Matrix4f matrices = matrixStack.peek().getPositionMatrix();
         Tessellator tessellator = RenderSystem.renderThreadTesselator();
         BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION);
@@ -106,6 +106,58 @@ public class RenderUtils {
         vertexBuffer.bind();
         vertexBuffer.upload(buffer);
         VertexBuffer.unbind();
+    }
+
+    public static void drawOutlinedBox(Box box, float lineThickness, MatrixStack matrixStack, int colorARGB) {
+        //Matrix4f matrices = matrixStack.peek().getPositionMatrix();
+        Tessellator tessellator = RenderSystem.renderThreadTesselator();
+        BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
+        RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
+        RenderSystem.lineWidth(lineThickness);
+        //RenderSystem.setShaderColor(0, 0, 0, 255);
+        //RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
+
+        drawOutlinedBoxVertexLines(box, bufferBuilder, matrixStack, colorARGB);
+        //drawOutlinedBoxVertex(box, bufferBuilder, matrixStack);
+
+        BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
+    }
+
+    private static void drawOutlinedBoxVertexLines(Box box, BufferBuilder bufferBuilder, MatrixStack matrixStack, int colorARGB) {
+        //0,0,0 -> 1,0,0
+        drawLine(bufferBuilder, matrixStack, (float) box.minX, (float) box.minY, (float) box.minZ, (float) box.maxX, (float) box.minY, (float) box.minZ, colorARGB);
+        //0,0,0 -> 0,1,0
+        drawLine(bufferBuilder, matrixStack, (float) box.minX, (float) box.minY, (float) box.minZ, (float) box.minX, (float) box.maxY, (float) box.minZ, colorARGB);
+        //0,0,0 -> 0,0,1
+        drawLine(bufferBuilder, matrixStack, (float) box.minX, (float) box.minY, (float) box.minZ, (float) box.minX, (float) box.minY, (float) box.maxZ, colorARGB);
+        //1,0,0 -> 1,0,1
+        drawLine(bufferBuilder, matrixStack, (float) box.maxX, (float) box.minY, (float) box.minZ, (float) box.maxX, (float) box.minY, (float) box.maxZ, colorARGB);
+        //0,0,1 -> 1,0,1
+        drawLine(bufferBuilder, matrixStack, (float) box.minX, (float) box.minY, (float) box.maxZ, (float) box.maxX, (float) box.minY, (float) box.maxZ, colorARGB);
+        //1,0,0 -> 1,1,0
+        drawLine(bufferBuilder, matrixStack, (float) box.maxX, (float) box.minY, (float) box.minZ, (float) box.maxX, (float) box.maxY, (float) box.minZ, colorARGB);
+        //1,0,1 -> 1,1,1
+        drawLine(bufferBuilder, matrixStack, (float) box.maxX, (float) box.minY, (float) box.maxZ, (float) box.maxX, (float) box.maxY, (float) box.maxZ, colorARGB);
+        //0,0,1 -> 0,1,1
+        drawLine(bufferBuilder, matrixStack, (float) box.minX, (float) box.minY, (float) box.maxZ, (float) box.minX, (float) box.maxY, (float) box.maxZ, colorARGB);
+        //0,1,0 -> 0,1,1
+        drawLine(bufferBuilder, matrixStack, (float) box.minX, (float) box.maxY, (float) box.minZ, (float) box.minX, (float) box.maxY, (float) box.maxZ, colorARGB);
+        //0,1,0 -> 1,1,0
+        drawLine(bufferBuilder, matrixStack, (float) box.minX, (float) box.maxY, (float) box.minZ, (float) box.maxX, (float) box.maxY, (float) box.minZ, colorARGB);
+        //0,1,1 -> 1,1,1
+        drawLine(bufferBuilder, matrixStack, (float) box.minX, (float) box.maxY, (float) box.maxZ, (float) box.maxX, (float) box.maxY, (float) box.maxZ, colorARGB);
+        //1,1,0 -> 1,1,1
+        drawLine(bufferBuilder, matrixStack, (float) box.maxX, (float) box.maxY, (float) box.minZ, (float) box.maxX, (float) box.maxY, (float) box.maxZ, colorARGB);
+    }
+
+    private static void drawLine(BufferBuilder bufferBuilder, MatrixStack matrixStack, float x1, float y1, float z1, float x2, float y2, float z2, int colorARGB) {
+        Matrix4f matrices = matrixStack.peek().getPositionMatrix();
+        //Matrix3f normal = matrixStack.peek().getNormalMatrix();
+
+        Vector3f normalVec = getNormal(x1, y1, z1, x2, y2, z2);
+
+        bufferBuilder.vertex(matrices, x1, y1, z1).normal(matrixStack.peek(), normalVec.x(), normalVec.y(), normalVec.z()).color(colorARGB);
+        bufferBuilder.vertex(matrices, x2, y2, z2).normal(matrixStack.peek(), normalVec.x(), normalVec.y(), normalVec.z()).color(colorARGB);
     }
 
     public static void drawOutlinedBox(Box box, MatrixStack matrixStack) {

@@ -16,6 +16,7 @@
     "IGridWidgetAccessor",
     "InGameHudMixin",
     "MinecraftClientMixin",
+    "RotatingCubeMapRendererMixin",
     "SimpleOptionMixin"
   ],
   "injectors": {
