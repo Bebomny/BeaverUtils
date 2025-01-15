@@ -14,6 +14,12 @@ public class FlightConfig extends EnableConfigOption{
     @Expose
     public float flightSpeed = 0.05f;
 
+    @Expose
+    public boolean ctrlBoost = false;
+
+    @Expose
+    public float ctrlBoostSpeed = 0.12f;
+
     public FlightConfig() {
 
     }

@@ -13,6 +13,12 @@ public class ElytraSpeedControlConfig extends EnableConfigOption{
     @Expose
     public float launchControlInitialVelocity = 20.0f;
 
+    @Expose
+    public boolean ctrlBoostIncrement = false;
+
+    @Expose
+    public float ctrlBoostIncrementSpeed = 0.12f;
+
     public ElytraSpeedControlConfig() {
 
     }

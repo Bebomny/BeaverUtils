@@ -25,9 +25,6 @@ public class ElytraSpeedControl extends SimpleOnOffFeature {
         setOptionsMenu(new ElytraSpeedControlMenu());
         setMainToolTip(Tooltip.of(Text.of("Elytra Speed Control - Control your elytra's speed with 'w' and 's' keys! No need for fireworks!")));
 
-//        if(config.generalConfig.autoEnable)
-//            setEnabled(enableConfig.enabled);
-
         ClientTickEvents.END_CLIENT_TICK.register(this::onUpdate);
     }
 
@@ -41,28 +38,30 @@ public class ElytraSpeedControl extends SimpleOnOffFeature {
         if(chest.getItem() != Items.ELYTRA)
             return;
 
-        if(client.player.isFallFlying()) {
-            if(client.player.isTouchingWater()) {
-                sendStartStopPacket();
-                return;
-            }
-
-            float yaw = (float)Math.toRadians(client.player.getYaw());
-            Vec3d boostForward = new Vec3d(
-                    -MathHelper.sin(yaw) * elytraSpeedControlConfig.speedIncrement,
-                    0,
-                    MathHelper.cos(yaw) * elytraSpeedControlConfig.speedIncrement
-            );
-
-            Vec3d velocity = client.player.getVelocity();
-
-            if(client.options.forwardKey.isPressed())
-                client.player.setVelocity(velocity.add(boostForward));
-            else if (client.options.backKey.isPressed())
-                client.player.setVelocity(velocity.subtract(boostForward));
-
+        if(!client.player.isFallFlying()) {
             return;
         }
+
+        if(client.player.isTouchingWater()) {
+            sendStartStopPacket();
+            return;
+        }
+
+        float yaw = (float)Math.toRadians(client.player.getYaw());
+        Vec3d boostForward = new Vec3d(
+                -MathHelper.sin(yaw) * getActualSpeedIncrement(),
+                0,
+                MathHelper.cos(yaw) * getActualSpeedIncrement()
+        );
+
+        Vec3d velocity = client.player.getVelocity();
+
+        if(client.options.forwardKey.isPressed())
+            client.player.setVelocity(velocity.add(boostForward));
+        else if (client.options.backKey.isPressed())
+            client.player.setVelocity(velocity.subtract(boostForward));
+
+        return;
     }
 
     private void sendStartStopPacket() {
@@ -73,11 +72,35 @@ public class ElytraSpeedControl extends SimpleOnOffFeature {
         client.player.networkHandler.sendPacket(packet);
     }
 
+    public float getActualSpeedIncrement() {
+        return elytraSpeedControlConfig.ctrlBoostIncrement && client.options.sprintKey.isPressed()
+                ? getBoostSpeedIncrement()
+                : getNormalSpeedIncrement();
+    }
+
+    public float getNormalSpeedIncrement() {
+        return elytraSpeedControlConfig.speedIncrement;
+    }
+
+    public float getBoostSpeedIncrement() {
+        return elytraSpeedControlConfig.ctrlBoostIncrementSpeed;
+    }
+
     public void setSpeedIncrement(float newSpeedIncrement) {
         elytraSpeedControlConfig.speedIncrement = newSpeedIncrement;
     }
 
-    public float getSpeedIncrement() {
-        return elytraSpeedControlConfig.speedIncrement;
+    public void setBoostSpeedIncrement(float newBoostSpeedIncrement) {
+        elytraSpeedControlConfig.ctrlBoostIncrementSpeed = newBoostSpeedIncrement;
     }
+
+    public boolean isCtrlBoostEnabled() {
+        return elytraSpeedControlConfig.ctrlBoostIncrement;
+    }
+
+    public void setCtrlBoostState(boolean newState) {
+        elytraSpeedControlConfig.ctrlBoostIncrement = newState;
+    }
+
+
 }

@@ -53,7 +53,7 @@ public class Flight extends KeyOnOffFeature {
 
         if (isEnabled()) {
 
-            abilities.setFlySpeed(getFlightSpeed());
+            abilities.setFlySpeed(getActualFlightSpeed());
 
             switch (flightConfig.flightMode) {
                 case Creative -> {
@@ -133,11 +133,33 @@ public class Flight extends KeyOnOffFeature {
         setMode(flightConfig.flightMode == Mode.Creative ? Mode.Position : Mode.Creative);
     }
 
-    public float getFlightSpeed() {
+    private float getActualFlightSpeed() {
+        return flightConfig.ctrlBoost && client.options.sprintKey.isPressed()
+                ? getBoostFlightSpeed()
+                : getNormalFlightSpeed();
+    }
+
+    public float getNormalFlightSpeed() {
         return flightConfig.flightSpeed;
     }
 
-    public void setFlightSpeed(float newSpeed) {
+    public float getBoostFlightSpeed() {
+        return  flightConfig.ctrlBoostSpeed;
+    }
+
+    public boolean isCtrlBoostEnabled() {
+        return flightConfig.ctrlBoost;
+    }
+
+    public void setCtrlBoostState(boolean newState) {
+        flightConfig.ctrlBoost = newState;
+    }
+
+    public void setBoostFlightSpeed(float newSpeed) {
+        flightConfig.ctrlBoostSpeed = newSpeed;
+    }
+
+    public void setNormalFlightSpeed(float newSpeed) {
         flightConfig.flightSpeed = newSpeed;
     }
 
