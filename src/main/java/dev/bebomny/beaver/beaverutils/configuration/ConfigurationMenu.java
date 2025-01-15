@@ -80,6 +80,10 @@ public class ConfigurationMenu extends Screen{
 
         //Elytra Speed Control Buttons
         adder.add(this.createCombinedButtons(beaverUtilsClient.getFeatures().elytraSpeedControl, -(STANDARD_WIDTH + WIDTH_SPACING), getYPosition(5)));
+
+        //Custom Renderer
+        adder.add(this.createCombinedButtons(beaverUtilsClient.getFeatures().customRenderer, WIDTH_SPACING, getYPosition(5)));
+
         //Add a DONE button
         adder.add(
                 ButtonWidget.builder(

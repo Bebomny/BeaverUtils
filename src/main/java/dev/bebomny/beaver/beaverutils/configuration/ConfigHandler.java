@@ -1,12 +1,13 @@
 package dev.bebomny.beaver.beaverutils.configuration;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.util.math.Vec3d;
 import org.slf4j.Logger;
 
 import java.io.*;
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
@@ -18,6 +19,8 @@ public class ConfigHandler {
     private final Gson gson = new GsonBuilder()
             .setPrettyPrinting()
             .excludeFieldsWithoutExposeAnnotation()
+            .registerTypeAdapter(Vec3d.class, new Vec3dSerializer())
+            .registerTypeAdapter(Vec3d.class, new Vec3dDeserializer())
             .create();
     public final Path configDirectory;
     private File configFile;
@@ -90,5 +93,30 @@ public class ConfigHandler {
         //beaverUtilsClient.features = new Features();
         beaverUtilsClient.config = new Config();
         saveConfig();
+    }
+
+    // Vec3d Serializer
+    private static class Vec3dSerializer implements JsonSerializer<Vec3d> {
+        @Override
+        public JsonElement serialize(Vec3d src, Type typeOfSrc, JsonSerializationContext context) {
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("x", src.x);
+            jsonObject.addProperty("y", src.y);
+            jsonObject.addProperty("z", src.z);
+            return jsonObject;
+        }
+    }
+
+    // Vec3d Deserializer
+    private static class Vec3dDeserializer implements JsonDeserializer<Vec3d> {
+        @Override
+        public Vec3d deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+                throws JsonParseException {
+            JsonObject jsonObject = json.getAsJsonObject();
+            double x = jsonObject.get("x").getAsDouble();
+            double y = jsonObject.get("y").getAsDouble();
+            double z = jsonObject.get("z").getAsDouble();
+            return new Vec3d(x, y, z);
+        }
     }
 }

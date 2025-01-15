@@ -45,7 +45,8 @@ public class Config {
     @Expose
     public EntityListDisplayConfig entityListDisplayConfig = new EntityListDisplayConfig();
 
-
+    @Expose
+    public CustomRendererConfig customRendererConfig = new CustomRendererConfig();
 
     public Config() {
 

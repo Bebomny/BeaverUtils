@@ -2,10 +2,7 @@ package dev.bebomny.beaver.beaverutils.commands;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
-import dev.bebomny.beaver.beaverutils.commands.commands.EntityCountCommand;
-import dev.bebomny.beaver.beaverutils.commands.commands.EntityListCommand;
-import dev.bebomny.beaver.beaverutils.commands.commands.TestCommand;
-import dev.bebomny.beaver.beaverutils.commands.commands.XRayCommand;
+import dev.bebomny.beaver.beaverutils.commands.commands.*;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -26,6 +23,8 @@ public class CommandHandler {
         registerClientside(new TestCommand());
         registerClientside(new EntityCountCommand());
         registerClientside(new EntityListCommand());
+        registerClientside(new CustomRendererCommand());
+        registerClientside(new TPSCommand());
 
         beaverUtilsClient.LOGGER.atInfo().log("Registered " + clientCommands.size() + " commands!");
     }

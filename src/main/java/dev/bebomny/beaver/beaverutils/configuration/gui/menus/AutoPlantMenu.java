@@ -23,16 +23,28 @@ public class AutoPlantMenu extends OptionsMenu {
     //TODO: todo
 
     @Override
-    protected void init() {
+    protected void initWidgets() {
         GridWidget gridWidget = new GridWidget();
         gridWidget.getMainPositioner().marginX(5).marginBottom(4).alignHorizontalCenter();
 
         GridWidget.Adder adder = gridWidget.createAdder(1);
 
         //Radius
+        Text radiusText = Text.of("§fAutoPlant Radius - by default 2");
+        adder.add(new TextWidget(
+                -(this.textRenderer.getWidth(radiusText)/2),
+                ConfigurationMenu.getYPosition(1),
+                this.textRenderer.getWidth(radiusText), 20,
+                radiusText, this.textRenderer));
         adder.add(this.createRadiusIncrementWidget(0, ConfigurationMenu.getYPosition(2)));
 
         //Mode
+        Text modeText = Text.of("§fAutoPlant Mode - by default DontLookAt");
+        adder.add(new TextWidget(
+                -(this.textRenderer.getWidth(modeText)/2),
+                ConfigurationMenu.getYPosition(3),
+                this.textRenderer.getWidth(modeText), 20,
+                modeText, this.textRenderer));
         adder.add(this.createModeCyclingButtonWidget(0, ConfigurationMenu.getYPosition(4)));
 
         //Add a DONE button
@@ -63,12 +75,12 @@ public class AutoPlantMenu extends OptionsMenu {
         //Maybe add some flowers for this menu here, you know autoPLANT so maybe some fun looking crops?
 
         //Radius
-        context.drawCenteredTextWithShadow(this.textRenderer, Text.of("§fAutoPlant Radius - by default 2"), this.width/2, ConfigurationMenu.getYPosition(3), 0xFF << 24);
+        //context.drawCenteredTextWithShadow(this.textRenderer, Text.of("§fAutoPlant Radius - by default 2"), this.width/2, ConfigurationMenu.getYPosition(3), 0xFF << 24);
 
         //Mode
-        context.drawCenteredTextWithShadow(this.textRenderer, Text.of("§fAutoPlant Mode - by default DontLookAt"), this.width/2, ConfigurationMenu.getYPosition(5), 0xFF << 24);
+        //context.drawCenteredTextWithShadow(this.textRenderer, Text.of("§fAutoPlant Mode - by default DontLookAt"), this.width/2, ConfigurationMenu.getYPosition(5), 0xFF << 24);
 
-        context.drawCenteredTextWithShadow(this.textRenderer, Text.of("§l§cCurrently nothing to see here, yet"), this.width/2, ConfigurationMenu.getYPosition(7), 0xff << 24);
+        //context.drawCenteredTextWithShadow(this.textRenderer, Text.of("§l§cCurrently nothing to see here, yet"), this.width/2, ConfigurationMenu.getYPosition(7), 0xff << 24);
 
         super.render(context, mouseX, mouseY, delta);
     }

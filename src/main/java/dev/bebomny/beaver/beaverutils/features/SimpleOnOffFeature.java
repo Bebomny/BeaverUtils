@@ -19,7 +19,7 @@ public abstract non-sealed class SimpleOnOffFeature extends Feature {
 
     protected void onEnable() {
         notifier.newNotification(Notification
-                .builder(Text.translatable("feature.simple_on_off.enabled", getName()).formatted(Formatting.RED))
+                .builder(Text.translatable("feature.simple_on_off.enabled", getName()).formatted(Formatting.WHITE))
                 .parent(Text.translatable("feature.text"))
                 .build());
 
@@ -29,7 +29,7 @@ public abstract non-sealed class SimpleOnOffFeature extends Feature {
 
     protected void onDisable() {
         notifier.newNotification(Notification
-                .builder(Text.translatable("feature.simple_on_off.disabled", getName()).formatted(Formatting.RED))
+                .builder(Text.translatable("feature.simple_on_off.disabled", getName()).formatted(Formatting.WHITE))
                 .parent(Text.translatable("feature.text"))
                 .build());
 
