@@ -2,9 +2,12 @@ package dev.bebomny.beaver.beaverutils.features.features;
 
 import dev.bebomny.beaver.beaverutils.configuration.config.InGameStatsConfig;
 import dev.bebomny.beaver.beaverutils.features.SimpleOnOffFeature;
+import dev.bebomny.beaver.beaverutils.helpers.DoubleRollingAverage;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -26,7 +29,17 @@ public class InGameStats extends SimpleOnOffFeature {
     private int fpsCounter;
 
     //TPS
+    private static final int TPS = 20;
     private float ticksPerSec;
+
+    //MSPT
+    private boolean dedicatedServer;
+    private long lastTickNano;
+    private final DoubleRollingAverage rollingMsPerTick10sec;
+    private final DoubleRollingAverage rollingMsPerTick60sec;
+    private final DoubleRollingAverage rollingMsPerTick5min;
+    private final DoubleRollingAverage rollingMsPerTick15min;
+    private final DoubleRollingAverage[] rollingAverages;
     private double msPerTick;
 
     public InGameStats() {
@@ -36,8 +49,16 @@ public class InGameStats extends SimpleOnOffFeature {
         this.prevPos = new Vec3d(0, 0, 0);
 
         this.ticksPerSec = 0.0F;
-        this.msPerTick = 0.0D;
         this.fpsCounter = 0;
+
+        this.dedicatedServer = false;
+        this.msPerTick = 0.0D;
+        this.lastTickNano = System.nanoTime();
+        this.rollingMsPerTick10sec = new DoubleRollingAverage(TPS * 10);
+        this.rollingMsPerTick60sec = new DoubleRollingAverage(TPS * 60);
+        this.rollingMsPerTick5min = new DoubleRollingAverage(TPS * 60 * 5);
+        this.rollingMsPerTick15min = new DoubleRollingAverage(TPS * 60 * 15);
+        this.rollingAverages = new DoubleRollingAverage[]{rollingMsPerTick10sec, rollingMsPerTick60sec, rollingMsPerTick5min, rollingMsPerTick15min};
 
         setEnableConfig(inGameStatsConfig);
 
@@ -45,6 +66,21 @@ public class InGameStats extends SimpleOnOffFeature {
 //            setEnabled(inGameStatsConfig.enabled);
 
         ClientTickEvents.END_CLIENT_TICK.register(this::onUpdate);
+        ServerTickEvents.END_SERVER_TICK.register(this::onServerUpdate);
+    }
+
+    private void onServerUpdate(MinecraftServer minecraftServer) {
+        if (minecraftServer.isDedicated()) {
+            return;
+        }
+
+        this.dedicatedServer = false;
+        long now = System.nanoTime();
+        msPerTick = (double) (now - lastTickNano) / 1000000;
+        for (DoubleRollingAverage rollingAverage : rollingAverages) {
+            rollingAverage.add(msPerTick);
+        }
+        lastTickNano = now;
     }
 
     private void onUpdate(MinecraftClient client) {
@@ -77,11 +113,25 @@ public class InGameStats extends SimpleOnOffFeature {
         //msPerTick = client.player.getWorld().getTickManager().getMillisPerTick();
         if (client.player.getServer() == null) {
             ticksPerSec = client.player.getWorld().getTickManager().getTickRate();
-            msPerTick = client.player.getWorld().getTickManager().getMillisPerTick();
+            //msPerTick = client.player.getWorld().getTickManager().getMillisPerTick();
         } else {
             ticksPerSec = client.player.getServer().getTickManager().getTickRate();
             //msPerTick = client.player.getServer().getAverageTickTime();
-            msPerTick = (double) client.player.getServer().getAverageNanosPerTick() / 1000000;
+            //msPerTick = (double) client.player.getServer().getAverageNanosPerTick() / 1000000;
+        }
+
+        //when on dedicated this will be null
+        if (client.getServer() == null) {
+            if(!client.isIntegratedServerRunning()) {
+                this.dedicatedServer = true;
+            }
+
+            long now = System.nanoTime();
+            msPerTick = (double) (now - lastTickNano) / 1000000;
+            for (DoubleRollingAverage rollingAverage : rollingAverages) {
+                rollingAverage.add(msPerTick);
+            }
+            lastTickNano = now;
         }
 
         fpsCounter = client.getCurrentFps();
@@ -187,18 +237,18 @@ public class InGameStats extends SimpleOnOffFeature {
          */
 
         Formatting msPerTickFormatting;
-        if (msPerTick <= 58.8f)
+        if (rollingMsPerTick10sec.average() <= 58.8f)
             msPerTickFormatting = Formatting.GREEN;
-        else if (msPerTick <= 83.3f)
+        else if (rollingMsPerTick10sec.average() <= 83.3f)
             msPerTickFormatting = Formatting.YELLOW;
         else
             msPerTickFormatting = Formatting.RED;
 
         MutableText msPerTickText = Text
-                .literal(String.format("%.2f", msPerTick))
+                .literal(String.format("%.2f", rollingMsPerTick10sec.average())) //msPerTick
                 .formatted(msPerTickFormatting)
                 .append(Text
-                        .literal(" MSPT")
+                        .literal(" MSPT(10sec)")
                         .formatted(Formatting.BLUE));
 
 
@@ -211,5 +261,33 @@ public class InGameStats extends SimpleOnOffFeature {
                 (int) (client.getWindow().getScaledHeight() - 14.0f),
                 0xFFFFFF0F
         );
+    }
+
+    public boolean isDedicatedServer() {
+        return dedicatedServer;
+    }
+
+    public DoubleRollingAverage getRollingMsPerTick10sec() {
+        return rollingMsPerTick10sec;
+    }
+
+    public DoubleRollingAverage getRollingMsPerTick60sec() {
+        return rollingMsPerTick60sec;
+    }
+
+    public DoubleRollingAverage getRollingMsPerTick5min() {
+        return rollingMsPerTick5min;
+    }
+
+    public DoubleRollingAverage getRollingMsPerTick15min() {
+        return rollingMsPerTick15min;
+    }
+
+    public double getMsPerLastTick() {
+        return msPerTick;
+    }
+
+    public float getTicksPerSec() {
+        return ticksPerSec;
     }
 }
