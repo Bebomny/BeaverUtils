@@ -17,7 +17,7 @@ public class EntityListDisplayMenu extends OptionsMenu{
     }
 
     @Override
-    protected void init() {
+    protected void initWidgets() {
         TextWidget nothingToSeeHereWidget = new TextWidget(
                 0, ConfigurationMenu.getYPosition(6),
                 this.width, 9,

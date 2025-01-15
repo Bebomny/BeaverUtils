@@ -5,6 +5,7 @@ import dev.bebomny.beaver.beaverutils.configuration.config.EntityListDisplayConf
 import dev.bebomny.beaver.beaverutils.configuration.gui.menus.EntityListDisplayMenu;
 import dev.bebomny.beaver.beaverutils.features.SimpleOnOffFeature;
 import dev.bebomny.beaver.beaverutils.helpers.RenderUtils;
+import dev.bebomny.beaver.beaverutils.helpers.TextRenderUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -15,6 +16,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.VertexBuffer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.util.BufferAllocator;
@@ -22,6 +24,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.MaceItem;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
@@ -46,6 +49,7 @@ public class EntityListDisplay extends SimpleOnOffFeature {
     public List<Long> timeMeasurements = new ArrayList<>();
     public int measurementCountLimit = 100; // in ticks 20 = 1 second of measurements
     private int entryHeight = 16;
+    private int totalWidth = 100;
 
     //Drawing
     private final VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(new BufferAllocator(256));
@@ -189,10 +193,12 @@ public class EntityListDisplay extends SimpleOnOffFeature {
 
         //context.drawHorizontalLine(entryPosX, entryPosX + nameColumnWidth + countColumnWidth + distanceToNearestColumnWidth, entryPosY, 0xFFFFFFFF); //13911217
 
+        this.totalWidth = nameColumnWidth + countColumnWidth + distanceToNearestColumnWidth + 4;
+
         context.fill(
                 entryPosX - 4,
                 entryPosY,
-                entryPosX + nameColumnWidth + countColumnWidth + distanceToNearestColumnWidth + 4, // + viewportCountColumnWidth
+                entryPosX + totalWidth, // + viewportCountColumnWidth
                 entryPosY + entryHeight + (entryHeight * entityListEntryQueue.size()),
                 Integer.MIN_VALUE);
 
@@ -288,61 +294,31 @@ public class EntityListDisplay extends SimpleOnOffFeature {
             //RenderUtils.drawOutlinedBoxRainbow(entityBox, matrixStack);
             matrixStack.pop(); // Stage 3.1 - Bounding Box outline
 
-            // TODO: Adjust the pitch
-            Vec3d target = client.player.getPos(); //client.player.getPos()
-            double d = target.x - entityPos.x;
-//            double e = target.y - entityBoxCenterPos.y;
-            double f = target.z - entityPos.z;
-//            double g = Math.sqrt(d * d + f * f);
-//            float pitch = MathHelper.wrapDegrees((float)(-(MathHelper.atan2(e, g) * 57.2957763671875)));
-            float yaw = MathHelper.wrapDegrees((float) (MathHelper.atan2(f, d) * 57.2957763671875 + 90.0F));
-
-            matrixStack.push(); // Stage 3.2 - Textures and Text
             Vec3d center = entityBox.getCenter();
             matrixStack.translate(center.getX(), entityBox.getLengthY(), center.getZ());
 
-            //Rotate the matrix plain to face the player
-            matrixStack.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(yaw));
-
             //Draw textures
-            //RenderUtils.drawTexture(ARROWS, 8, 4, matrixStack); //4
-            //RenderUtils.drawTexture(GATO, 1, 1, matrixStack);
+//            matrixStack.push(); // Stage 4 - Textures
+//            matrixStack.translate(0f, 0.3f, 0f);
+//            //RenderUtils.drawTexture(ARROWS, 8, 4, matrixStack); //4
+//            RenderUtils.drawTexture(GATO, 1, 1, matrixStack);
+//            matrixStack.pop(); // Stage 4 - Textures
+            // Rendering was moved to TextRenderUtils
 
-
-            //Name tags
-            //TODO:
-            // `client.options.getGuiScale().getValue()` doesnt quite work right
-            // maybe make a custom scale setting?
-            double scale = 1; // for testing = 1
-            matrixStack.scale(-0.025f * (float) scale, -0.025f * (float) scale, 1);
-            matrixStack.translate(0, -10, 0);
 
             //TODO: Change whats displayed based on:
             // Item -> item name
             // Player -> Nickname
             // This could be done in the `getEntityName()` method in the `EntityListEntry` class instead of here
             Text text = entry.getEntityName();//Text.literal("Test Test Test");
-            int opacity = (int) (client.options.getTextBackgroundOpacity(0.25F) * 255.0F) << 24;
-            float halfWidth = ((float) client.textRenderer.getWidth(text) / 2);
 
-            client.textRenderer.draw(
-                    text, -halfWidth, 0f,
-                    553648127, false,
-                    matrixStack.peek().getPositionMatrix(), immediate,
-                    TextRenderer.TextLayerType.SEE_THROUGH,
-                    opacity, 0xf000f0);
-            immediate.draw();
-
-            client.textRenderer.draw(
-                    text, -halfWidth, 0f,
-                    -1, false,
-                    matrixStack.peek().getPositionMatrix(), immediate,
-                    TextRenderer.TextLayerType.SEE_THROUGH,
-                    0, 0xf000f0);
-            immediate.draw();
-
-
+            matrixStack.push(); // Stage 3.2 - Textures and Text
+//            TextRenderUtils.drawTextWithTextureAtPos(
+//                    text, matrixStack, entityPos,
+//                    GATO, 1, 1);
+            TextRenderUtils.drawTextAtPos(text, matrixStack, entityPos);
             matrixStack.pop(); // Stage 3.2 - Textures and Text
+
             matrixStack.pop(); // Stage 2 - Each individual entity entry
         }
 
@@ -352,6 +328,10 @@ public class EntityListDisplay extends SimpleOnOffFeature {
         RenderSystem.setShaderColor(1, 1, 1, 1);
         RenderSystem.enableDepthTest();
         RenderSystem.disableBlend();
+    }
+
+    public int getTotalWidth() {
+        return totalWidth;
     }
 
     public enum EntrySortBy {

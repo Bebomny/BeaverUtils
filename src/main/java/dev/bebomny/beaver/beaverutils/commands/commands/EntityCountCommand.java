@@ -131,9 +131,11 @@ public class EntityCountCommand extends ClientCommand {
                     .stream()
                     .distinct()
                     .map(entity -> entity
+//                            .getType()
+//                            .getName()
+//                            .getString())
                             .getType()
-                            .getName()
-                            .getString())
+                            .getUntranslatedName())
                     .toList();
 
             entitySuggestions.forEach(builder::suggest);
