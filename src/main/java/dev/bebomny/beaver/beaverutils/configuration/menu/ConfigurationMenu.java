@@ -3,7 +3,7 @@ package dev.bebomny.beaver.beaverutils.configuration.menu;
 import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
 import dev.bebomny.beaver.beaverutils.configuration.Config;
 import dev.bebomny.beaver.beaverutils.configuration.config.GeneralConfig;
-import dev.bebomny.beaver.beaverutils.configuration.gui.buttons.AutoClickerButton;
+//import dev.bebomny.beaver.beaverutils.configuration.gui.buttons.AutoClickerButton;
 import dev.bebomny.beaver.beaverutils.configuration.gui.buttons.FeatureOptionsButtonWidget;
 import dev.bebomny.beaver.beaverutils.configuration.gui.buttons.QuickTeleportButton;
 import dev.bebomny.beaver.beaverutils.configuration.gui.buttons.ReachButton;

@@ -5,6 +5,8 @@
   "notification.level.error": "§6§l[§c%s§6§l]§r %s",
   "notification.parent.missing": "INFO",
 
+  "global.text.enabled": "Enabled",
+  "global.text.disabled": "Disabled",
 
   "feature.text": "§9Feature",
   "feature.enabled_text": "%s Enabled",
@@ -27,6 +29,10 @@
   "feature.auto_clicker.hold.attack.text": "AutoClicker Holding Attack Key",
   "feature.auto_clicker.hold.use_item.text": "AutoClicker Holding Use Item Key",
   "feature.auto_clicker.hold.both.text": "AutoClicker Holding Attack & Use Item Key",
+  "feature.auto_clicker.click_type.text": "Click Type",
+  "feature.auto_clicker.click_type.hold.text": "Hold",
+  "feature.auto_clicker.click_type.click.text": "Click",
+  "feature.auto_clicker.delay.text": "Delay",
 
   "feature.entity_list_display.title.entity_name": "Entity Name",
   "feature.entity_list_display.title.entity_count": "Count",

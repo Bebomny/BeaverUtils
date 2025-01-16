@@ -2,6 +2,9 @@ package dev.bebomny.beaver.beaverutils.configuration;
 
 import com.google.gson.*;
 import dev.bebomny.beaver.beaverutils.client.BeaverUtilsClient;
+import dev.bebomny.beaver.beaverutils.features.features.autoclicker.LeftMouseClickActionImpl;
+import dev.bebomny.beaver.beaverutils.features.features.autoclicker.MouseClickAction;
+import dev.bebomny.beaver.beaverutils.features.features.autoclicker.RightMouseClickActionImpl;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.Vec3d;
 import org.slf4j.Logger;
@@ -21,6 +24,7 @@ public class ConfigHandler {
             .excludeFieldsWithoutExposeAnnotation()
             .registerTypeAdapter(Vec3d.class, new Vec3dSerializer())
             .registerTypeAdapter(Vec3d.class, new Vec3dDeserializer())
+            .registerTypeAdapter(MouseClickAction.class, new MouseClickActionAdapter())
             .create();
     public final Path configDirectory;
     private File configFile;
@@ -117,6 +121,33 @@ public class ConfigHandler {
             double y = jsonObject.get("y").getAsDouble();
             double z = jsonObject.get("z").getAsDouble();
             return new Vec3d(x, y, z);
+        }
+    }
+
+    public static class MouseClickActionAdapter implements JsonDeserializer<MouseClickAction>, JsonSerializer<MouseClickAction> {
+
+        @Override
+        public MouseClickAction deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+                throws JsonParseException {
+            JsonObject jsonObject = json.getAsJsonObject();
+            String mouseButton = jsonObject.get("mouseButton").getAsString();
+
+            return switch (mouseButton) {
+                case "LEFT" -> context.deserialize(jsonObject, LeftMouseClickActionImpl.class);
+                case "RIGHT" -> context.deserialize(jsonObject, RightMouseClickActionImpl.class);
+                default -> throw new JsonParseException("Unknown type: " + mouseButton);
+            };
+        }
+
+        @Override
+        public JsonElement serialize(MouseClickAction src, Type typeOfSrc, JsonSerializationContext context) {
+            JsonObject jsonObject = context.serialize(src).getAsJsonObject();
+            if (src instanceof LeftMouseClickActionImpl) {
+                jsonObject.addProperty("mouseButton", "LEFT");
+            } else if (src instanceof RightMouseClickActionImpl) {
+                jsonObject.addProperty("mouseButton", "RIGHT");
+            }
+            return jsonObject;
         }
     }
 }

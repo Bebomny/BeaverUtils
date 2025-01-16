@@ -54,7 +54,8 @@ public class ConfigurationMenu extends Screen{
         //adder.add(new XRayButton(-(STANDARD_WIDTH + WIDTH_SPACING), calculateYPosition(1)));
 
         //AutoClicker buttons
-        adder.add(new AutoClickerButton(WIDTH_SPACING, getYPosition(1))); //For now, it stays
+        //adder.add(new AutoClickerButton(WIDTH_SPACING, getYPosition(1))); //For now, it stays
+        adder.add(this.createCombinedButtons(beaverUtilsClient.getFeatures().autoClicker, WIDTH_SPACING, getYPosition(1)));
 
         //Flight buttons
         adder.add(this.createCombinedButtons(beaverUtilsClient.getFeatures().flight, -(STANDARD_WIDTH + WIDTH_SPACING), getYPosition(2)));
