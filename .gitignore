@@ -119,3 +119,6 @@ remappedSrc/
 
 # old files kept during some major changes
 old/
+
+# build script environmental variables
+build.env
