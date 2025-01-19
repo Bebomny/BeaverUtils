@@ -1,5 +1,6 @@
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
+import java.nio.file.Paths
 
 plugins {
     id 'fabric-loom' version '1.7-SNAPSHOT' //before port 1.0.16 second port 1.2-SNAPSHOT
@@ -87,9 +88,26 @@ publishing {
 task buildAndPutInMainMinecraft {
     dependsOn("build")
     doLast {
-        java.nio.file.Path source = java.nio.file.Path.of("D:\\.IdeaProjects\\Fabric Mods\\1.21\\BeaverUtils\\build\\libs\\BeaverUtils-1.21.1-${project.mod_version}.jar")
-        java.nio.file.Path destination = java.nio.file.Path.of("C:\\Users\\lukas\\AppData\\Roaming\\PrismLauncher\\instances\\Fabric 1.21.1\\.minecraft\\mods\\BeaverUtils-1.21.1-${project.mod_version}.jar")
+        def configFile = file(Paths.get(projectDir.toString(), 'build.env').toString())
+
+        def config = loadFile(configFile as File)
+
+        java.nio.file.Path source = java.nio.file.Path.of("${config.get("buildAndPutInMainMinecraft_source")}${project.archives_base_name}-${project.mod_version}.jar")
+        java.nio.file.Path destination = java.nio.file.Path.of("${config.get("buildAndPutInMainMinecraft_destination")}${project.archives_base_name}-${project.mod_version}.jar")
+        println "source:" + source.toAbsolutePath()
+        println "dest:" + destination.toAbsolutePath()
         Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING)
     }
     group = "_Upload"
+}
+
+static def loadFile(File file) {
+    def variables = [:] // Creates a new HashMap
+    file.eachLine { line ->
+        if (!line.startsWith("#")) {
+            def keyValue = line.split('=', 2) // Splits the line into key and value
+            variables[keyValue[0].trim()] = keyValue[1].trim()
+        }
+    }
+    return variables
 }
