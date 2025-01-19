@@ -58,7 +58,7 @@ public class XRayCommand extends ClientCommand {
 
                                     return 0;
                                 })
-                        ).then(ClientCommandManager.literal(Text.translatable("client_command.xray.add_looking_at.literal").getString())
+                        ).then(ClientCommandManager.literal(Text.translatable("client_command.xray.looking_at.literal").getString())
                                 .executes(ctx -> {
                                     MinecraftClient client = beaverUtilsClient.client;
 
@@ -116,7 +116,7 @@ public class XRayCommand extends ClientCommand {
                                         return 0;
                                     }
 
-                                    beaverUtilsClient.getConfig().xRayConfig.interestingBlocksAsCollection.remove(BlockUtils.getBlockName(block));
+                                    beaverUtilsClient.getFeatures().xRay.xRayConfig.interestingBlocksAsCollection.remove(BlockUtils.getBlockName(block));
 
                                     ctx.getSource().sendFeedback(
                                             Text.translatable("client_command.xray.remove_success_text", BlockUtils.getBlockName(block))
@@ -131,7 +131,7 @@ public class XRayCommand extends ClientCommand {
 
                                     return 0;
                                 })
-                        ).then(ClientCommandManager.literal(Text.translatable("client_command.xray.add_looking_at.literal").getString())
+                        ).then(ClientCommandManager.literal(Text.translatable("client_command.xray.looking_at.literal").getString())
                                 .executes(ctx -> {
                                     MinecraftClient client = beaverUtilsClient.client;
 
@@ -155,7 +155,7 @@ public class XRayCommand extends ClientCommand {
                                             return 0;
                                         }
 
-                                        beaverUtilsClient.getConfig().xRayConfig.interestingBlocksAsCollection.add(BlockUtils.getBlockName(blockState.getBlock()));
+                                        beaverUtilsClient.getConfig().xRayConfig.interestingBlocksAsCollection.remove(BlockUtils.getBlockName(blockState.getBlock()));
 
                                         ctx.getSource().sendFeedback(
                                                 Text.translatable("client_command.xray.remove_success_text", BlockUtils.getBlockName(blockState.getBlock()))

@@ -13,7 +13,7 @@ import java.util.Collection;
 
 public class XRay extends KeyOnOffFeature {
 
-    private final XRayConfig xRayConfig = config.xRayConfig;
+    public final XRayConfig xRayConfig = config.xRayConfig;
 
     /**
      * See {@link dev.bebomny.beaver.beaverutils.mixins.BlockMixin} <br>
@@ -33,7 +33,7 @@ public class XRay extends KeyOnOffFeature {
         if (xRayConfig.interestingBlocksAsCollection.isEmpty())
             xRayConfig.interestingBlocksAsCollection = populateInterestingBlocksWithStrings();
 
-        LOGGER.atInfo().log("XRAY PRESENT!!! Is IRON_ORE Interesting?(Should be? Yes) but is it? " + isInterestingBlock(Blocks.IRON_ORE));
+        LOGGER.atDebug().log("XRAY PRESENT!!! Is IRON_ORE Interesting?(Should be? Yes) but is it? " + isInterestingBlock(Blocks.IRON_ORE));
     }
 
     public boolean isInterestingBlock(Block block) {

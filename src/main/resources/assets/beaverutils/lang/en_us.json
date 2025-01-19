@@ -46,7 +46,7 @@
   "client_command.xray.already_present_text_1": "§l§9%s §eis already present in XRay's interesting Blocks",
   "client_command.xray.already_present_text_2": "§9To remove it use: §l§a/beaverutils xray remove %s",
   "client_command.xray.add_success_text": "§aAdded §l§9%s §ato XRay's interesting Blocks",
-  "client_command.xray.add_looking_at.literal": "lookingat",
+  "client_command.xray.looking_at.literal": "lookingat",
   "client_command.xray.looking_at.fail_text": "You're not looking at any Blocks!",
   "client_command.xray.remove.literal": "remove",
   "client_command.xray.not_present_text_1": "§l§9%s §eis not present in XRay's interesting Blocks",
