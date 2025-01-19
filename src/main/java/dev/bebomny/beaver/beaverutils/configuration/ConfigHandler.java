@@ -47,29 +47,25 @@ public class ConfigHandler {
         configFile = new File(configDirectory.toFile(), "config.json");
 
         if(configFile.exists()) {
-            try {
-                InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(configFile), StandardCharsets.UTF_8);
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-
+            try (InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(configFile), StandardCharsets.UTF_8);
+                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
                 LOGGER.atDebug().log("Starting to load config from a JSON file");
                 beaverUtilsClient.config = gson.fromJson(
                         bufferedReader,
-                        Config.class//Features.class
+                        Config.class
                 );
 
                 if(beaverUtilsClient.config != null)
-                    LOGGER.atInfo().log("Loaded Config from file");
+                    LOGGER.atInfo().log("Successfully loaded Config from file");
             } catch (IOException e) {
-                LOGGER.atError().log("Error at Config load");
-                e.printStackTrace();
-                LOGGER.atError().log("Exception while reading " + configFile.getName() + ". Will load blank config");
+                LOGGER.atError().log("Error at Config load! {}", e);
+                LOGGER.atError().log("Exception while reading " + configFile.getName() + ". Will load a blank config");
             }
         }
 
         if(beaverUtilsClient.config == null) {
             // If the config does not exist, generate the default one
             LOGGER.atInfo().log("Creating blank config and saving to file at " + configFile.getPath());
-            //beaverUtilsClient.features = new Features();
             beaverUtilsClient.config = new Config();
             saveConfig();
         }
@@ -93,7 +89,6 @@ public class ConfigHandler {
 
     public void resetConfig() {
         LOGGER.atWarn().log("Resetting Config to defaults");
-        //beaverUtilsClient.features = new Features();
         beaverUtilsClient.config = new Config();
         saveConfig();
     }
