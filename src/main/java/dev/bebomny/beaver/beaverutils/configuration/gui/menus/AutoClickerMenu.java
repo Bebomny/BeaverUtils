@@ -30,7 +30,10 @@ public class AutoClickerMenu extends OptionsMenu {
 
         int actionCounter = 1;
         for(ClickAction clickAction : autoClicker.getMouseClickActions()) {
-            adder.add(clickAction.createMouseActionClickControlSubMenu(0, ConfigurationMenu.getYPosition(4 * actionCounter) + (10 * actionCounter), this.textRenderer));
+            adder.add(clickAction.createMouseActionClickControlSubMenu(
+                    0,
+                    ConfigurationMenu.getYPosition(4 * actionCounter) + (10 * actionCounter),
+                    this.textRenderer));
             actionCounter++;
         }
 
@@ -46,11 +49,18 @@ public class AutoClickerMenu extends OptionsMenu {
                 2, adder.copyPositioner().marginTop(6)
         );
 
+//        SimplePositioningWidget.setPos(
+//                gridWidget,
+//                0, 40, //this.height / 6 - 12
+//                this.width, this.height,
+//                0.5f, 0.00f //0.05f
+//        );
+
         SimplePositioningWidget.setPos(
                 gridWidget,
-                0, 40, //this.height / 6 - 12
+                0, this.height / 24 - 12,
                 this.width, this.height,
-                0.5f, 0.00f //0.05f
+                0.5f, 0.002f
         );
 
         gridWidget.forEachChild(this::addDrawableChild);
