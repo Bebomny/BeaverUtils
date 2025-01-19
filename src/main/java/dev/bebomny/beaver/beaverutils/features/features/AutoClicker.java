@@ -15,7 +15,7 @@ public class AutoClicker extends KeyOnOffFeature {
 
     private long ticksPast;
 
-    private MouseClickAction[] mouseClickActions;
+    private final MouseClickAction[] mouseClickActions;
 
     public AutoClicker() {
         super("AutoClicker");
@@ -48,107 +48,7 @@ public class AutoClicker extends KeyOnOffFeature {
         }
 
         ticksPast++;
-
-//        switch(autoClickerConfig.type) {
-//            case ClickType.CLICK -> {
-//                if(ticksPast >= getDelay()) {
-//                    switch (autoClickerConfig.mode) {
-//                        case ATTACK -> {
-//                            ((IMinecraftClientInvoker) client).invokeDoAttack();
-//                            notifier.newNotification(Notification.builder(Text.translatable("feature.auto_clicker.click.attacked.text"))
-//                                    .parent(Text.translatable("feature.text"))
-//                                    .duration(10)
-//                                    .build());
-//                        }
-//
-//                        case USE -> {
-//                            ((IMinecraftClientInvoker) client).invokeDoItemUse();
-//                            notifier.newNotification(Notification.builder(Text.translatable("feature.auto_clicker.click.used_item.text"))
-//                                    .parent(Text.translatable("feature.text"))
-//                                    .duration(10)
-//                                    .build());
-//                        }
-//
-//                        case BOTH -> {
-//                            ((IMinecraftClientInvoker) client).invokeDoAttack();
-//                            ((IMinecraftClientInvoker) client).invokeDoItemUse();
-//                            notifier.newNotification(Notification.builder(Text.translatable("feature.auto_clicker.click.both.text"))
-//                                    .parent(Text.translatable("feature.text"))
-//                                    .duration(10)
-//                                    .build());
-//                        }
-//                    }
-//                    ticksPast = 0;
-//                }
-//                ticksPast++;
-//            }
-//
-//            case ClickType.HOLD -> {
-//                switch (autoClickerConfig.mode) {
-//                    case ATTACK -> {
-//                        client.options.attackKey.setPressed(true);
-//                        notifier.newNotification(Notification.builder(Text.translatable("feature.auto_clicker.hold.attack.text"))
-//                                .parent(Text.translatable("feature.text"))
-//                                .duration(10)
-//                                .build());
-//                    }
-//
-//                    case USE -> {
-//                        client.options.useKey.setPressed(true);
-//                        notifier.newNotification(Notification.builder(Text.translatable("feature.auto_clicker.hold.use_item.text"))
-//                                .parent(Text.translatable("feature.text"))
-//                                .duration(10)
-//                                .build());
-//                    }
-//
-//                    case BOTH -> {
-//                        client.options.attackKey.setPressed(true);
-//                        client.options.useKey.setPressed(true);
-//                        notifier.newNotification(Notification.builder(Text.translatable("feature.auto_clicker.hold.both.text"))
-//                                .parent(Text.translatable("feature.text"))
-//                                .duration(10)
-//                                .build());
-//                    }
-//                }
-//            }
-//        }
-
     }
-
-//    public void changeMode() {
-//        setMode(
-//                getMode() == Mode.ATTACK
-//                        ? Mode.USE : getMode() == Mode.BOTH
-//                        ? Mode.ATTACK : Mode.BOTH);
-//    }
-//
-//    public void changeType() {
-//        setType(getType() == Type.CLICK ? Type.HOLD : Type.CLICK);
-//    }
-//
-//    public int getDelay() {
-//        return autoClickerConfig.delay;
-//    }
-//
-//    public Type getType() {
-//        return autoClickerConfig.type;
-//    }
-//
-//    public Mode getMode() {
-//        return autoClickerConfig.mode;
-//    }
-//
-//    public void setDelay(int newDelay) {
-//        autoClickerConfig.delay = newDelay;
-//    }
-//
-//    public void setType(Type newType) {
-//        autoClickerConfig.type = newType;
-//    }
-//
-//    public void setMode(Mode newMode) {
-//        autoClickerConfig.mode = newMode;
-//    }
 
     public MouseClickAction[] getMouseClickActions() {
         return mouseClickActions;

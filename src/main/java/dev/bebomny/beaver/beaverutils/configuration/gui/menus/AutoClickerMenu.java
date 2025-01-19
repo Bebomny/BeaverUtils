@@ -7,6 +7,7 @@ import dev.bebomny.beaver.beaverutils.features.features.autoclicker.ClickAction;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.GridWidget;
 import net.minecraft.client.gui.widget.SimplePositioningWidget;
+import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 
@@ -37,6 +38,9 @@ public class AutoClickerMenu extends OptionsMenu {
             actionCounter++;
         }
 
+        Text comingLaterText = Text.of("§4Keyboard clicker coming this century, maybe");
+        adder.add(new TextWidget(-(this.width/2), ConfigurationMenu.getYPosition(14), this.width, 9, comingLaterText, this.textRenderer));
+
         //Add a DONE button
         adder.add(
                 ButtonWidget.builder(
@@ -45,7 +49,7 @@ public class AutoClickerMenu extends OptionsMenu {
                             this.close();
                             beaverUtilsClient.configHandler.saveConfig();
                         }
-                ).width(200).position(-102, ConfigurationMenu.getYPosition(13)).build(),
+                ).width(200).position(-102, ConfigurationMenu.getYPosition(15)).build(),
                 2, adder.copyPositioner().marginTop(6)
         );
 
