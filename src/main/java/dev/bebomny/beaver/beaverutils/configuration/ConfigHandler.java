@@ -32,7 +32,7 @@ public class ConfigHandler {
     public ConfigHandler() {
         this.client = MinecraftClient.getInstance();
         this.beaverUtilsClient = BeaverUtilsClient.getInstance();
-        this.LOGGER = beaverUtilsClient.getLogger("ConfigHandler");
+        this.LOGGER = BeaverUtilsClient.getLogger("ConfigHandler");
 
         this.configDirectory = client.runDirectory.toPath().resolve("config/BeaverConfigs/BeaverUtils");
         this.configFile = null;
@@ -51,7 +51,7 @@ public class ConfigHandler {
                 InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(configFile), StandardCharsets.UTF_8);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
-                LOGGER.atInfo().log("Loading from JSON");
+                LOGGER.atDebug().log("Starting to load config from a JSON file");
                 beaverUtilsClient.config = gson.fromJson(
                         bufferedReader,
                         Config.class//Features.class
@@ -88,7 +88,6 @@ public class ConfigHandler {
             writer.close();
         } catch (IOException e) {
             LOGGER.atError().log("Could not save config file to " + configFile.getPath(), e);
-            e.printStackTrace();
         }
     }
 

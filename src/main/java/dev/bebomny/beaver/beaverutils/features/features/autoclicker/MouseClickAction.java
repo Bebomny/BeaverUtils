@@ -83,11 +83,11 @@ public abstract class MouseClickAction implements ClickAction {
 
         AxisGridWidget verticalGridWidget = new AxisGridWidget(
                 200,
-                ConfigurationMenu.STANDARD_HEIGHT * verticalLayers + ConfigurationMenu.SPACING,
+                ConfigurationMenu.STANDARD_HEIGHT * verticalLayers + (ConfigurationMenu.SPACING * verticalLayers/2),
                 AxisGridWidget.DisplayAxis.VERTICAL);
 
         //Layer 1 - Text widget
-        Text actionTitleText = Text.of(String.format("§f %s Action Controls", mouseButton.getDisplayText().getLiteralString()));
+        Text actionTitleText = Text.of(String.format("§f%s Action Controls", mouseButton.getDisplayText().getLiteralString()));
         TextWidget actionTitleTextWidget = new TextWidget(
                 -(textRenderer.getWidth(actionTitleText) / 2),
                 ConfigurationMenu.getYPosition(1),
@@ -101,7 +101,7 @@ public abstract class MouseClickAction implements ClickAction {
                 ConfigurationMenu.STANDARD_HEIGHT,
                 AxisGridWidget.DisplayAxis.HORIZONTAL);
 
-        Text actionEnableText = Text.of(String.format("§f %s", mouseButton.getDisplayText().getLiteralString()));
+        Text actionEnableText = Text.of(String.format("§f%s", mouseButton.getDisplayText().getLiteralString()));
         TextWidget actionEnableTextWidget = new TextWidget(
                 -(textRenderer.getWidth(actionEnableText) / 2),
                 ConfigurationMenu.getYPosition(2),

@@ -26,7 +26,7 @@ public class CommandHandler {
         registerClientside(new CustomRendererCommand());
         registerClientside(new TPSCommand());
 
-        beaverUtilsClient.LOGGER.atInfo().log("Registered " + clientCommands.size() + " commands!");
+        BeaverUtilsClient.getLogger("CommandHandler").atInfo().log("Registered " + clientCommands.size() + " commands!");
     }
 
     public static void registerClientside(ClientCommand command) {

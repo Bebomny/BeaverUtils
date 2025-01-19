@@ -21,7 +21,7 @@ public abstract class KeyOnOffFeature extends SimpleOnOffFeature {
 
         this.activationKey = new KeyBinding(name, keybindingKey, "BeaverUtils");
         beaverUtilsClient.keyBindingHandler.registerKeyBinding(name, activationKey);
-        LOGGER.atInfo().log("Registered a keybinding for " + getName() + ", with key " + keybindingKey);
+        //LOGGER.atInfo().log("Registered a keybinding for " + getName() + ", with key " + keybindingKey);
 
         if (!keyPressListenerRegistered & activationKey != null) {
             ClientTickEvents.END_CLIENT_TICK.register(this::checkKeyBindPress);

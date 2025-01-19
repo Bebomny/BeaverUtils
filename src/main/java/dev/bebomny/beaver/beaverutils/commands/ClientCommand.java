@@ -18,7 +18,7 @@ public abstract class ClientCommand {
         this.name = name;
         this.description = description;
         this.beaverUtilsClient = BeaverUtilsClient.getInstance();
-        this.LOGGER = beaverUtilsClient.getLogger("Command");
+        this.LOGGER = BeaverUtilsClient.getLogger("Command");
     }
 
     public abstract void build(ArgumentBuilder<FabricClientCommandSource, ?> builder, CommandRegistryAccess registryAccess);

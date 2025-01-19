@@ -22,7 +22,7 @@ public abstract non-sealed class TriggerFeature extends Feature{
 
         this.fireKey = new KeyBinding(name, keybindingKey, "BeaverUtils");
         beaverUtilsClient.keyBindingHandler.registerKeyBinding(name, fireKey);
-        LOGGER.atInfo().log("Registered a keybinding for " + getName() + ", with key " + keybindingKey);
+        //LOGGER.atInfo().log("Registered a keybinding for " + getName() + ", with key " + keybindingKey);
 
         if(!keyPressListenerRegistered & fireKey != null) {
             ClientTickEvents.END_CLIENT_TICK.register(this::checkKeyBindPress);

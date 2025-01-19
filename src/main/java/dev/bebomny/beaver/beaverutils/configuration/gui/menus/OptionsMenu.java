@@ -30,6 +30,7 @@ public abstract class OptionsMenu extends Screen {
         this.initWidgets();
 
         this.addDrawableChild(new TextWidget(0, 40, this.width, 9, this.title, this.textRenderer));
+
     }
 
     protected abstract void initWidgets();

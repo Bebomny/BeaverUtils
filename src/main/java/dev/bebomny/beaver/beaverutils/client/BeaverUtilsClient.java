@@ -20,7 +20,7 @@ public class BeaverUtilsClient implements ClientModInitializer {
 
     public static BeaverUtilsClient INSTANCE;
     public MinecraftClient client;
-    public Logger LOGGER = LoggerFactory.getLogger("BeaverUtils");
+    public Logger LOGGER = getLogger("Main");
     public NotificationHandler notifier;
     public FeatureHandler featureHandler;
     public KeyBindingHandler keyBindingHandler;
@@ -52,14 +52,22 @@ public class BeaverUtilsClient implements ClientModInitializer {
      esp?
      */
 
+    public static BeaverUtilsClient getInstance() {
+        return INSTANCE;
+    }
+
+    public static Logger getLogger(String name) {
+        return LoggerFactory.getLogger("BeaverUtils/" + String.format("%s", name));
+    }
+
     @Override
     public void onInitializeClient() {
         //Initialization Start
         long startTime = System.currentTimeMillis();
 
         //Actual Starting Point
-        if(INSTANCE == null) INSTANCE = this;
-        if(this.client == null) this.client = MinecraftClient.getInstance();
+        if (INSTANCE == null) INSTANCE = this;
+        if (this.client == null) this.client = MinecraftClient.getInstance();
 
         //TODO: Rewrite from scratch, think of something smart, im dumb
         // @Expose fields to save into config in <Feature> objects
@@ -89,10 +97,9 @@ public class BeaverUtilsClient implements ClientModInitializer {
         // todo! hell nah I am doing it in a completely different way anyway
 
 
-        //handlers random
+        //handlers load
         this.keyBindingHandler = new KeyBindingHandler();
         this.notifier = new NotificationHandler(client);
-
 
         //config load
         this.configHandler = new ConfigHandler();
@@ -102,7 +109,6 @@ public class BeaverUtilsClient implements ClientModInitializer {
         this.featureHandler = new FeatureHandler();
         this.features = new Features();
 
-
         //command load
         this.commandHandler = new CommandHandler();
 
@@ -111,10 +117,6 @@ public class BeaverUtilsClient implements ClientModInitializer {
         //Initialization End
         long elapsedTime = System.currentTimeMillis() - startTime;
         LOGGER.atInfo().log("Initialized in " + elapsedTime + "ms Have a nice Game! ~ BeaverUtils");
-    }
-
-    public static BeaverUtilsClient getInstance() {
-        return INSTANCE;
     }
 
     public NotificationHandler getNotifier() {
@@ -127,9 +129,5 @@ public class BeaverUtilsClient implements ClientModInitializer {
 
     public Config getConfig() {
         return config;
-    }
-
-    public Logger getLogger(String name) {
-        return LoggerFactory.getLogger("BeaverUtils/" + "name}");
     }
 }
